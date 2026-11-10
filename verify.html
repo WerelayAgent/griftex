@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en" data-accent="signal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verify San Verano — GRIFTEX CITY</title>
+<meta name="description" content="Every city night San Verano posts a merkle root of every resident's cash to a contract on Solana Network. Check any resident's cash against it, in your own browser.">
+<link rel="canonical" href="https://griftex.city/verify">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GRIFTEX">
+<meta property="og:url" content="https://griftex.city/verify">
+<meta property="og:title" content="Verify San Verano — GRIFTEX CITY">
+<meta property="og:description" content="Any resident's cash at the end of any city night, checked against the root on Solana Network in your browser.">
+<meta property="og:image" content="https://griftex.city/assets/landing/downtown-sunset.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="/css/palette.css">
+<link rel="stylesheet" href="/css/landing.css">
+<!-- viem from THIS origin (js/vendor/viem-wallet.js, built by tools/viembundle.mjs): no third-party script on a page that touches wallets (docs/deploy-wallet.md) -->
+<script type="importmap">{ "imports": { "viem": "/js/vendor/viem-wallet.js" } }</script>
+<style>
+/* ===========================================================================
+   VERIFY — the city's commitments as an explorer: a hero, four readouts, a
+   search bar, filters, the recent nights as a table, and a resident's proof
+   as a key/value record with the proof folded under it. GRIFT's clothes:
+   #landing's shell and header, the pixel face for the title and the labels,
+   the mono for every hash and figure, square hairline boxes on a dot grid.
+   Pass is the accent; fail is the voided-stamp red.
+   ======================================================================== */
+/* the header floats over the page as it scrolls: a scrim keeps it off the records under it */
+#landing .fd-head { background: linear-gradient(to bottom, rgba(8,9,10,.96) 62%, rgba(8,9,10,0)); }
+#landing { background: var(--gr-void) radial-gradient(rgba(237,230,214,.07) 1px, transparent 1.2px) 0 0 / 22px 22px; }
+.vf-shell { width: min(100% - 32px, 1240px); margin-inline: auto; }
+@media (min-width: 720px) { .vf-shell { width: min(100% - 8vw, 1240px); } }
+.vf-lab { font-family: var(--gr-display); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--gr-ink-3); }
+
+/* the hero */
+.vf-top { padding: 88px 0 30px; border-bottom: 1px solid var(--gr-line-2); }
+.vf-h1 { margin: 0; font-family: var(--gr-display); font-weight: 700; font-size: clamp(38px, 6vw, 76px); line-height: .95; letter-spacing: -.02em; text-transform: uppercase; color: var(--gr-ink); }
+.vf-sub { margin: 14px 0 20px; font-size: clamp(14px, 1.4vw, 17px); line-height: 1.5; color: var(--gr-ink-2); max-width: 72ch; }
+.vf-cta { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; background: var(--gr-ink); color: var(--gr-void) !important; font: 12px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; }
+.vf-cta::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.vf-cta[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+
+.vf-band { padding-top: 28px; }
+
+/* the four readouts */
+.vf-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--gr-line-3); background: var(--gr-void); }
+.vf-tile { padding: 20px 20px 18px; border-right: 1px solid var(--gr-line-3); min-width: 0; }
+.vf-tile:last-child { border-right: 0; }
+.vf-tile .vf-lab { display: flex; justify-content: space-between; gap: 8px; }
+.vf-tile .big { margin: 18px 0 14px; font-family: var(--gr-display); font-size: clamp(24px, 2.6vw, 34px); line-height: 1; color: var(--gr-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* figures in the mono, as every hash and figure is: Pixelify's 5 reads as an S */
+.vf-tile .big.num { font-family: var(--gr-data); font-weight: 500; letter-spacing: -.01em; }
+@media (max-width: 560px) { .vf-tile { padding: 18px 14px 16px; } .vf-tile .big.num { font-size: 21px; letter-spacing: -.03em; } }
+.vf-tile .foot { font: 11px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-3); }
+.vf-live { color: var(--gr-accent); font: 10px var(--gr-data); letter-spacing: .12em; }
+.vf-live::before { content: '■ '; }
+.vf-live.off { color: var(--gr-ink-4); }
+@media (max-width: 860px) { .vf-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .vf-tile:nth-child(2) { border-right: 0; } .vf-tile:nth-child(-n+2) { border-bottom: 1px solid var(--gr-line-3); } }
+
+/* the notice */
+.vf-note { margin-top: 26px; padding: 12px 16px; border: 1px solid var(--gr-line-2); background: var(--gr-panel); font: 13px var(--gr-data); color: var(--gr-ink-2); }
+.vf-note b { font-family: var(--gr-display); font-weight: 400; letter-spacing: .18em; color: var(--gr-ink-3); margin-right: 10px; font-size: 11px; }
+
+/* the search */
+.vf-search { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; }
+.vf-search .in { flex: 1 1 360px; display: flex; border: 1px solid var(--gr-line-3); background: var(--gr-void); min-width: 0; }
+.vf-search .in:focus-within { border-color: var(--gr-accent-a4); }
+.vf-search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: 0; color: var(--gr-ink); font: 14px var(--gr-data); padding: 13px 16px; letter-spacing: .04em; }
+.vf-search input#night { flex: 0 0 150px; border-left: 1px solid var(--gr-line-2); }
+.vf-search input::placeholder { color: var(--gr-ink-3); }
+.vf-btn { border: 1px solid var(--gr-line-3); background: transparent; color: var(--gr-ink); font: 12px var(--gr-data); letter-spacing: .16em; text-transform: uppercase; padding: 0 20px; min-height: 44px; cursor: pointer; }
+.vf-btn.solid { background: var(--gr-ink); color: var(--gr-void); border-color: var(--gr-ink); }
+.vf-btn[disabled] { opacity: .5; cursor: default; }
+.vf-btn.danger { border-color: rgba(224,106,90,.6); color: var(--gr-danger); }
+@media (max-width: 560px) { .vf-search input#night { flex-basis: 110px; } .vf-search .vf-btn { flex: 1; } }
+
+/* the filters */
+.vf-filters { margin-top: 22px; padding: 14px 0; border-top: 1px solid var(--gr-line-2); border-bottom: 1px solid var(--gr-line-2); display: flex; gap: 10px 16px; align-items: center; flex-wrap: wrap; }
+.vf-chips { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.vf-chip { border: 1px solid var(--gr-line-2); background: transparent; color: var(--gr-ink-2); font: 11px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; padding: 7px 11px; cursor: pointer; }
+.vf-chip[aria-pressed="true"] { background: var(--gr-ink); color: var(--gr-void); border-color: var(--gr-ink); }
+.vf-stream { margin-left: auto; display: inline-flex; gap: 12px; align-items: center; }
+.vf-stream .vf-btn { min-height: 32px; padding: 0 12px; font-size: 11px; }
+
+/* the boxes */
+.vf-box { margin-top: 22px; border: 1px solid var(--gr-line-3); background: var(--gr-void); }
+.vf-boxh { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--gr-line-3); }
+.vf-boxh .r { font: 11px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-3); }
+.vf-empty { padding: 44px 16px; text-align: center; }
+.vf-empty .vf-lab { color: var(--gr-ink-2); }
+.vf-empty p { margin: 10px 0 0; font-size: 13px; color: var(--gr-ink-3); }
+
+/* the recent nights */
+.vf-scroll { overflow-x: auto; }
+.vf-table { width: 100%; border-collapse: collapse; font: 13px var(--gr-data); }
+.vf-table th { text-align: left; font-family: var(--gr-display); font-weight: 400; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--gr-ink-3); padding: 10px 16px; border-bottom: 1px solid var(--gr-line-2); white-space: nowrap; }
+.vf-table td { padding: 11px 16px; border-bottom: 1px solid var(--gr-line); color: var(--gr-ink); white-space: nowrap; }
+.vf-table tr:last-child td { border-bottom: 0; }
+.vf-table tbody tr { cursor: pointer; }
+.vf-table tbody tr:hover td { background: rgba(237,230,214,.035); }
+.vf-table a { color: var(--gr-accent) !important; }
+.vf-tag { display: inline-block; padding: 2px 8px; border: 1px solid; font: 10px var(--gr-data); letter-spacing: .14em; }
+.vf-tag.posted, .vf-tag.pass { color: var(--gr-accent); border-color: var(--gr-accent-a4); background: var(--gr-accent-a); }
+.vf-tag.sealed, .vf-tag.wait { color: var(--gr-caution); border-color: rgba(224,163,60,.45); }
+.vf-tag.bad, .vf-tag.fail { color: var(--gr-danger); border-color: rgba(224,106,90,.5); background: rgba(224,106,90,.10); }
+.vf-dim { color: var(--gr-ink-3); }
+.vf-stream-name { font-family: var(--gr-data); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gr-ink-2); }
+
+/* the stream tabs */
+.vf-tabs { margin-top: 22px; display: flex; gap: 0; border-bottom: 1px solid var(--gr-line-3); overflow-x: auto; }
+.vf-tab { border: 1px solid transparent; border-bottom: 0; background: transparent; color: var(--gr-ink-3); font: 12px var(--gr-data); letter-spacing: .16em; text-transform: uppercase; padding: 11px 18px; cursor: pointer; white-space: nowrap; margin-bottom: -1px; }
+.vf-tab:hover { color: var(--gr-ink); }
+.vf-tab[aria-selected="true"] { color: var(--gr-ink); border-color: var(--gr-line-3); background: var(--gr-void); border-bottom: 1px solid var(--gr-void); }
+.vf-tabs + .vf-search { margin-top: 14px; }
+.vf-pre { margin: 10px 0 0; max-height: 360px; overflow: auto; padding: 10px; border: 1px solid var(--gr-line); background: rgba(237,230,214,.03); font: 11.5px/1.5 var(--gr-data); color: var(--gr-ink-2); white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* a resident's record */
+.vf-kv { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr); margin: 0; }
+.vf-kv dt, .vf-kv dd { margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--gr-line); }
+.vf-kv dt { font-family: var(--gr-display); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-3); display: flex; align-items: center; gap: 6px; }
+.vf-kv dt i { font-style: normal; display: inline-grid; place-items: center; width: 14px; height: 14px; border: 1px solid var(--gr-line-3); font: 9px var(--gr-data); color: var(--gr-ink-3); cursor: help; text-transform: none; }
+.vf-kv dd { font-size: 14px; color: var(--gr-ink); overflow-wrap: anywhere; }
+.vf-kv dt:nth-last-of-type(1), .vf-kv dd:nth-last-of-type(1) { border-bottom: 0; }
+.vf-kv a { color: var(--gr-accent) !important; }
+.vf-kv a:hover { text-decoration: underline !important; }
+.vf-h { font-family: var(--gr-data); font-size: 13px; }
+.vf-kv .vf-dim { font-size: 12px; margin-left: 8px; }
+.vf-ok { color: var(--gr-accent); } .vf-bad { color: var(--gr-danger); }
+.vf-kv details summary { cursor: pointer; color: var(--gr-accent); font: 13px var(--gr-data); }
+.vf-kv details ol { margin: 10px 0 0; padding-left: 26px; display: grid; gap: 4px; }
+.vf-kv details li { font: 12.5px var(--gr-data); color: var(--gr-ink-2); }
+@media (max-width: 640px) { .vf-kv { grid-template-columns: 1fr; } .vf-kv dt { border-bottom: 0; padding-bottom: 2px; } .vf-kv dd { padding-top: 2px; } }
+
+/* the proof, folded — leaf at the bottom, root at the top, drawn a level at a time */
+.vf-tree { padding: 18px 16px; display: flex; flex-direction: column-reverse; }
+.vf-lvl { display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr); align-items: center; opacity: 0; transform: translateY(8px); animation: vf-in .38s ease forwards; animation-delay: calc(var(--d) * 260ms); }
+.vf-up { height: 22px; width: 2px; margin: 0 auto; background: var(--gr-line-2); opacity: 0; animation: vf-in .3s ease forwards; animation-delay: calc(var(--d) * 260ms + 130ms); }
+.vf-up.bad { background: var(--gr-danger); }
+.vf-up.good { background: var(--gr-accent-a4); }
+@keyframes vf-in { to { opacity: 1; transform: none; } }
+.vf-node { border: 1px solid var(--gr-line-2); padding: 8px 10px; min-width: 0; background: rgba(237,230,214,.03); }
+.vf-node b { display: block; font-family: var(--gr-data); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--gr-ink-3); font-weight: 400; margin-bottom: 3px; }
+.vf-node code { font: 12px var(--gr-data); color: var(--gr-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.vf-node.path { border-color: var(--gr-accent-a4); background: var(--gr-accent-a); }
+.vf-node.path.bad { border-color: rgba(224,106,90,.55); background: rgba(224,106,90,.10); }
+.vf-node.solo { grid-column: 1 / -1; justify-self: center; width: min(100%, 460px); }
+.vf-plus { text-align: center; color: var(--gr-ink-3); font: 14px var(--gr-data); }
+.vf-eq { text-align: center; font: 700 16px var(--gr-data); }
+.vf-tools { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 0 16px 18px; }
+.vf-tools p { margin: 0; font-size: 13px; color: var(--gr-ink-2); max-width: 64ch; }
+@media (prefers-reduced-motion: reduce) { .vf-lvl, .vf-up { animation: none; opacity: 1; transform: none; } }
+
+/* THE LIVE STRIP — each stream's last commit, read from the chain: how long ago, and its tx */
+.vf-strip { margin: 0 0 34px; border: 1px solid var(--gr-line-3); background: rgba(8,9,10,.72); }
+.vf-strip-h { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--gr-line-2); }
+.vf-strip-h .vf-live { font-size: 10px; }
+.vf-strip-row { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.vf-sc { padding: 11px 14px 12px; border-right: 1px solid var(--gr-line); min-width: 0; }
+.vf-sc:last-child { border-right: 0; }
+.vf-sc .n { display: flex; align-items: center; gap: 7px; font-family: var(--gr-display); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink); }
+.vf-sc .n::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--gr-ink-4); flex: none; }
+.vf-sc.fresh .n::before { background: var(--gr-accent); box-shadow: 0 0 0 3px var(--gr-accent-a); }
+.vf-sc.stale .n::before { background: var(--gr-caution); }
+.vf-sc .ago { margin-top: 6px; font: 13px var(--gr-data); color: var(--gr-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vf-sc.off .ago { color: var(--gr-ink-3); }
+.vf-sc .tx { margin-top: 3px; font: 11px var(--gr-data); color: var(--gr-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vf-sc .tx a { color: var(--gr-accent) !important; }
+@media (max-width: 860px) {
+  .vf-strip-row { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: minmax(168px, 44%); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .vf-strip-row::-webkit-scrollbar { display: none; }
+  .vf-sc { scroll-snap-align: start; }
+}
+
+/* A DECISION, AS A PERSON: who, what trade, why, which night — and whether the chain holds it. The proof is under it. */
+.vf-dec { scroll-margin-top: 84px; margin-top: 22px; border: 1px solid var(--gr-line-3); background: var(--gr-void); display: grid; grid-template-columns: minmax(0, 1fr) minmax(270px, 360px); }
+.vf-dec-main { padding: 26px 28px 24px; min-width: 0; }
+.vf-dec-night { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; font-family: var(--gr-display); font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: var(--gr-ink-2); }
+.vf-dec-night b { font: 500 22px var(--gr-data); color: var(--gr-ink); letter-spacing: .02em; }
+.vf-dec-night .vf-dim { font: 12px var(--gr-data); letter-spacing: .1em; }
+.vf-dec-name { margin: 18px 0 0; font-family: var(--gr-display); font-weight: 700; font-size: clamp(34px, 5.2vw, 64px); line-height: .98; letter-spacing: -.01em; color: var(--gr-ink); overflow-wrap: anywhere; }
+.vf-dec-name a { color: inherit !important; }
+.vf-dec-name a:hover { text-decoration: underline !important; text-decoration-thickness: 2px !important; text-underline-offset: 6px; }
+.vf-dec-trade { margin-top: 10px; font: 13px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-2); }
+.vf-dec-why { margin: 22px 0 0; padding: 0; font-size: clamp(20px, 2.5vw, 30px); line-height: 1.3; font-weight: 500; color: var(--gr-ink); max-width: 30ch; overflow-wrap: anywhere; }
+.vf-dec-why.long { font-size: clamp(17px, 1.9vw, 22px); max-width: 46ch; }
+.vf-dec-why .q { color: var(--gr-ink-3); }
+.vf-dec-aft { margin: 10px 0 0; font-size: 14px; color: var(--gr-ink-2); max-width: 60ch; }
+.vf-dec-aft span { font: 11px var(--gr-data); letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-3); margin-right: 10px; }
+.vf-dec-why.bad { color: var(--gr-danger); }
+.vf-dec-kind { margin-top: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font: 12px var(--gr-data); color: var(--gr-ink-3); }
+.vf-dec-seal { border-left: 1px solid var(--gr-line-3); padding: 26px 24px 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.vf-dec-badge { font-family: var(--gr-display); font-weight: 700; font-size: clamp(24px, 2.3vw, 31px); line-height: 1.02; text-transform: uppercase; letter-spacing: .01em; }
+.vf-dec-badge .nw { white-space: nowrap; }
+.vf-dec-badge .ck { display: inline-grid; place-items: center; width: 1.05em; height: 1.05em; margin-left: .18em; vertical-align: -.12em; border-radius: 50%; background: var(--gr-accent); color: var(--gr-on-accent); font: 700 .62em var(--gr-body); }
+.vf-dec-seal.pass { background: var(--gr-accent-a); } .vf-dec-seal.pass .vf-dec-badge { color: var(--gr-accent); }
+.vf-dec-seal.wait .vf-dec-badge { color: var(--gr-caution); }
+.vf-dec-seal.fail { background: rgba(224,106,90,.08); } .vf-dec-seal.fail .vf-dec-badge { color: var(--gr-danger); }
+.vf-dec-seal .what { font-size: 13px; line-height: 1.5; color: var(--gr-ink-2); }
+.vf-dec-seal .tx { font: 12px var(--gr-data); color: var(--gr-ink-3); overflow-wrap: anywhere; }
+.vf-dec-seal .tx a { color: var(--gr-accent) !important; }
+.vf-dec-share { margin-top: auto; padding-top: 6px; display: flex; gap: 8px; flex-wrap: wrap; }
+.vf-dec-share .vf-btn { min-height: 38px; padding: 0 14px; font-size: 11px; display: inline-flex; align-items: center; color: var(--gr-ink) !important; }
+@media (max-width: 760px) {
+  .vf-dec { grid-template-columns: 1fr; }
+  .vf-dec-main { padding: 20px 18px 18px; }
+  .vf-dec-seal { border-left: 0; border-top: 1px solid var(--gr-line-3); padding: 18px; }
+  .vf-dec-share .vf-btn { flex: 1; justify-content: center; }
+  .vf-proof > summary .r { display: none; }
+  .vf-strip-h .long { display: none; }
+}
+
+/* the proof under a decision: collapsed until asked for */
+.vf-proof { margin-top: 0; }
+.vf-proof > summary { list-style: none; cursor: pointer; margin-top: 10px; padding: 13px 16px; border: 1px solid var(--gr-line-2); display: flex; justify-content: space-between; gap: 12px; align-items: center; font: 12px var(--gr-data); letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-2); }
+.vf-proof > summary::-webkit-details-marker { display: none; }
+.vf-proof > summary:hover { color: var(--gr-ink); border-color: var(--gr-line-3); }
+.vf-proof > summary .chev { transition: transform .2s ease; }
+.vf-proof[open] > summary .chev { transform: rotate(90deg); }
+.vf-proof > summary .r { color: var(--gr-ink-3); text-transform: none; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vf-proof.flat > summary { display: none; }
+.vf-proof > summary + .vf-box { margin-top: 10px; }
+
+.vf-how { padding: 40px 0 72px; font-size: 13.5px; color: var(--gr-ink-2); line-height: 1.6; }
+.vf-how > div { max-width: 78ch; }
+.vf-how h2 { margin: 0 0 10px; }
+.vf-how code { font: 12px var(--gr-data); color: var(--gr-ink); }
+.vf-how a { color: var(--gr-accent) !important; }
+</style>
+<link rel="stylesheet" href="/css/ecosystem.css">
+</head>
+<body class="gr-ecosystem eco-verify eco-page-verify">
+<div id="landing">
+
+  <header class="fd-head" id="fd-head">
+    <a class="fd-hmark" href="/" aria-label="GRIFTEX CITY — home">GRIFTEX CITY</a>
+    <nav class="fd-hpill" id="fd-hpill" aria-label="the guide"></nav>
+    <div class="fd-hright">
+      <button class="fd-hburger" id="fd-hburger" type="button" aria-expanded="false" aria-controls="fd-hsheet" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="fd-hsheet" id="fd-hsheet" hidden aria-label="the guide"></nav>
+  </header>
+<nav class="eco-context" aria-label="Ecosystem"><div class="eco-location"><a href="/">San Verano</a><span aria-hidden="true">/</span><span>Verify</span></div><div class="eco-wayfinding"><a href="/?spectate=1">Spectate ↗</a><details class="eco-directory"><summary>Explore systems <span aria-hidden="true">+</span></summary><div class="eco-directory-panel"><div><h3>City & residents</h3><a href="/civ">Civic record</a><a href="/resident">Resident</a><a href="/pets">Pets</a><a href="/clinic">Clinic</a><a href="/compute">Compute</a><a href="/square">Town square</a></div><div><h3>Economy</h3><a href="/economy">Economy</a><a href="/bank">Bank</a><a href="/credit-line">Credit line</a><a href="/exchange">Exchange</a><a href="/league">League</a><a href="/coins">The Mint</a><a href="/coindesk">Coin desk</a></div><div><h3>Build & work</h3><a href="/plots">Plots</a><a href="/company">Companies</a><a href="/foundry">Foundry</a><a href="/garage">Garage</a><a href="/hire">Hire</a><a href="/jobs">Jobs</a><a href="/apps">The Arcade</a><a href="/billboards">Billboards</a></div><div><h3>Civic life</h3><a href="/election">Election</a><a href="/crews">Crews</a><a href="/court">Court</a><a href="/strikes">Strikes</a><a href="/freeport">Freeport</a><a href="/poker">Poker</a><a href="/fights">Fights</a></div><div><h3>Develop & verify</h3><a href="/agents">External agents</a><a href="/agents/record">Agent record</a><a href="/x402">Paid feeds</a><a href="/verify" aria-current="page">Verify</a><a href="/guide">City tour</a><a href="/guide.html">Manual</a></div></div></details></div></nav>
+
+
+  <section class="vf-top"><div class="vf-shell">
+    <div class="vf-strip" id="strip" aria-label="each stream's last commit on chain">
+      <div class="vf-strip-h"><span class="vf-lab">Last commit<span class="long">, per stream</span></span><span class="vf-live off"><span id="strip-live">READING</span><span class="long"> · FROM THE CHAIN</span></span></div>
+      <div class="vf-strip-row" id="strip-row">
+        <div class="vf-sc off" data-s="cash"><div class="n">Cash</div><div class="ago">—</div><div class="tx">&nbsp;</div></div>
+        <div class="vf-sc off" data-s="decisions"><div class="n">Decisions</div><div class="ago">—</div><div class="tx">&nbsp;</div></div>
+        <div class="vf-sc off" data-s="businesses"><div class="n">Businesses</div><div class="ago">—</div><div class="tx">&nbsp;</div></div>
+        <div class="vf-sc off" data-s="x402"><div class="n">x402</div><div class="ago">—</div><div class="tx">&nbsp;</div></div>
+        <div class="vf-sc off" data-s="hook"><div class="n">Hook</div><div class="ago">—</div><div class="tx">&nbsp;</div></div>
+      </div>
+    </div>
+    <h1 class="vf-h1">Verify the city</h1>
+    <p class="vf-sub">San Verano posts merkle roots of its own record to Solana Network: every resident's cash and every decision each night, every business's night, every paid call. Look anything up to check it against the root on chain. The check runs in your browser and reads the chain directly, so you don't have to trust this site.</p>
+    <a class="vf-cta" id="cta" href="#" aria-disabled="true">Open the contract on Blockscout</a>
+  </div></section>
+
+  <section class="vf-band"><div class="vf-shell">
+    <div class="vf-tiles">
+      <div class="vf-tile"><div class="vf-lab">Nights</div><div class="big num" id="t-nights">—</div><div class="foot">committed on chain</div></div>
+      <div class="vf-tile"><div class="vf-lab">Residents</div><div class="big num" id="t-leaves">—</div><div class="foot" id="t-leaves-foot">in the latest tree</div></div>
+      <div class="vf-tile"><div class="vf-lab"><span>Current block</span><span class="vf-live off" id="t-live">LIVE</span></div><div class="big num" id="t-block">—</div><div class="foot">Solana network</div></div>
+      <div class="vf-tile"><div class="vf-lab">Network</div><div class="big">SOLANA</div><div class="foot">chain id 4663</div></div>
+    </div>
+
+    <div class="vf-note"><b>STREAMS</b>Cash: every resident's city cash at the end of each night (CityCommits). Decisions: what every resident decided and why, with its full trace. Businesses: each business's night, with its $GRIFTEX bought and burnt. x402: every paid call, with the hash of what it was sold. Hook: each business's buy through the hook wrapper, with its reason and its burn. Loans: the credit desk's book. Shops: every sale, with the two transactions that paid the seller's own wallet and the burn, and the hash of what was delivered. Passport: every resident's agent passport that has a line, as built for the night: the hash of what it said, its lines and what counted (CityCommitsV2).</div>
+
+    <div class="vf-tabs" id="tabs" role="tablist" aria-label="streams">
+      <button class="vf-tab" type="button" role="tab" data-tab="cash" aria-selected="true">Cash</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="decisions" aria-selected="false">Decisions</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="businesses" aria-selected="false">Businesses</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="x402" aria-selected="false">x402</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="hook" aria-selected="false">Hook</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="loans" aria-selected="false">Loans</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="shops" aria-selected="false">Shops</button>
+      <button class="vf-tab" type="button" role="tab" data-tab="passport" aria-selected="false">Passport</button>
+    </div>
+
+    <form class="vf-search" id="ask" role="search">
+      <div class="in">
+        <input id="resident" inputmode="numeric" autocomplete="off" placeholder="Search by resident number, e.g. 42" aria-label="Resident number" required>
+        <input id="night" inputmode="numeric" autocomplete="off" placeholder="Night: latest" aria-label="Night (blank for the latest)">
+      </div>
+      <button class="vf-btn solid" id="go" type="submit">→ Verify</button>
+    </form>
+
+    <div id="detail" hidden>
+      <div class="vf-dec" id="dec" hidden></div>
+      <details class="vf-proof flat" id="proof" open>
+        <summary><span><span class="chev">▸</span> The proof: leaf, root and hashes</span><span class="r" id="proofsum"></span></summary>
+        <div class="vf-box">
+          <div class="vf-boxh"><span class="vf-lab" id="cardtitle">Proof</span><span class="r" id="cardsub"></span></div>
+          <div id="record"></div>
+        </div>
+        <div class="vf-box" id="treebox" hidden>
+          <div class="vf-boxh"><span class="vf-lab">The proof, folded</span><span class="r">leaf at the bottom · root at the top</span></div>
+          <div class="vf-tree" id="tree"></div>
+          <div class="vf-tools"><button class="vf-btn danger" id="tamper" type="button">Tamper: add $1</button><p id="tamperline"></p></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="vf-filters">
+      <span class="vf-lab">Status</span>
+      <span class="vf-chips" id="chips">
+        <button class="vf-chip" type="button" data-f="all" aria-pressed="true">All</button>
+        <button class="vf-chip" type="button" data-f="posted" aria-pressed="false">Posted</button>
+        <button class="vf-chip" type="button" data-f="sealed" aria-pressed="false">Sealed, not posted</button>
+      </span>
+      <span class="vf-lab">Stream</span>
+      <span class="vf-chips" id="schips">
+        <button class="vf-chip" type="button" data-s="all" aria-pressed="true">All</button>
+        <button class="vf-chip" type="button" data-s="cash" aria-pressed="false">Cash</button>
+        <button class="vf-chip" type="button" data-s="decisions" aria-pressed="false">Decisions</button>
+        <button class="vf-chip" type="button" data-s="businesses" aria-pressed="false">Businesses</button>
+        <button class="vf-chip" type="button" data-s="x402" aria-pressed="false">x402</button>
+        <button class="vf-chip" type="button" data-s="hook" aria-pressed="false">Hook</button>
+      </span>
+      <span class="vf-stream"><span class="vf-live" id="s-live">STREAM LIVE</span><button class="vf-btn" id="pause" type="button">❚❚ Pause</button></span>
+    </div>
+
+    <div class="vf-box">
+      <div class="vf-boxh"><span class="vf-lab">Recent commitments</span><span class="r" id="recent-r">live · 30s</span></div>
+      <div id="recent"><div class="vf-empty"><div class="vf-lab">Reading the city…</div></div></div>
+    </div>
+  </div></section>
+
+  <section><div class="vf-shell vf-how"><div>
+    <h2 class="vf-lab">How the check works</h2>
+    <p>The site sends the resident's leaf: the night, the resident's number and their cash in micro-dollars. It also sends the sibling hashes that lead up to the root. This page then does three things:</p>
+    <ol>
+      <li>It hashes the leaf itself: <code>keccak256(keccak256(abi.encode(night, resident, cashMicros)))</code>.</li>
+      <li>It folds the siblings up, hashing each pair in sorted order.</li>
+      <li>It asks the contract for that night's root (<code>rootOf</code>) and runs the contract's own <code>verify</code>.</li>
+    </ol>
+    <p>If any of these disagree, the check fails. The page knows the contract's address from its own code, not from the site's answer. City cash never converts to anything on chain.</p>
+    <p id="contract"></p>
+  </div></div></section>
+
+</div>
+<script type="module" src="/js/verifypage.js"></script>
+</body>
+</html>

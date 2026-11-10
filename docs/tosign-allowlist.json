@@ -1,0 +1,450 @@
+{
+  "name": "San Verano: every transaction the city may ask a wallet to sign",
+  "release": "2.0.0",
+  "updated": "2026-10-25",
+  "url": "https://griftex.city/docs/tosign-allowlist.json",
+  "changelog": "https://griftex.city/changelog",
+  "rule": "The city never holds or asks for a key. When an answer asks your own wallet to send a transaction (MCP: toSign; HTTP: transfers, calls, toSign, approvalTx), that transaction's (chainId, to, selector) is a row of this list, or the city refuses to hand it to you at all: the MCP server (api/mcp.js) answers an error instead, and the approvals queue of a wallet-deployed agent (api/_tosign.js toQueue) never queues it. selector is the first 4 bytes of tx.data. A row with spenders also holds an approve's first argument to those addresses. A row marked bounded is BOUNDED TO THE ACTION: an approve is for exactly the amount of the action it is for and not a unit more (Permit2: the quoted price of the x402 call; PlotDeed: the deed's price as the contract prices it; the testnet CreditLine: the quote's collateral, or principal plus fee), and never 2^256-1. Every $GRIFTEX transfer and approve an answer carries is also held to the op's own record before it is handed over (api/_tosignbind.js): its recipient worked out again where it is decided (0x…dEaD for a burn, the yard and the clinic from the configuration, a business's owner from its deed, a worker from the wallet its resident is keyed to) and its exact quoted amount; any other is refused whole (TOSIGN_BINDING_MISMATCH). typedData lists every EIP-712 message the city asks a wallet to sign, with its domain, its types, and for Permit2 its spender and witness.to: the same rules.signing holds them. No row sends ETH: tx.value is 0. Check a transaction against this file yourself before you sign it, or ask the city to simulate it first (GET /api/agents/simulate, the MCP tool simulate): an eth_call from your wallet at the latest block, for a transaction on this list only.",
+  "changes": "Anything that widens this list (a row, a spender, a template, a row that may send ETH or an approve no longer bounded) is a major release, never under the security exception, named on the changelog and not on this file before the day it takes effect (the changelog's rules.signing). Until release 6.0.0 takes effect it is also announced at least 7 days before that day. From 6.0.0 there is no minimum wait, and its entry records the owner's approval, so check this file each time you sign. A row removed or narrowed is a breaking change, announced at least 7 days before it takes effect. A preview or a test on a chain of its own may add rows (TOSIGN_ALLOWLIST_EXTRA); production reads this file and nothing else.",
+  "entries": [
+    {
+      "chainId": 4663,
+      "to": "live now on pump.fun",
+      "selector": "0xa9059cbb",
+      "contract": "$GRIFTEX",
+      "function": "transfer(address,uint256)",
+      "emittedBy": [
+        "stallQuote (the yard's pay and the burn)",
+        "jobs and jobPaid (an employer's pay to the worker)",
+        "billboards, once a held face is APPROVED (its burn)",
+        "plotBuy, plotOrders, plotLet, plotDealPay and a resale (each leg)",
+        "brandJobs (what is owed)",
+        "foundrySpawn, clinicBuy, garageBuild, computeCredits, coinLaunch, hireResident (each one burn)",
+        "x402Pay's burn sentence",
+        "/deploy (the hosted visa and the upkeep)"
+      ],
+      "note": "the recipient is the quote's own: a resident's or an owner's wallet, the yard, a clinic, or 0x000000000000000000000000000000000000dEaD; the visa (the spec's onChain.visa) is this same call, 0 $GRIFTEX to 0x…dEaD"
+    },
+    {
+      "chainId": 4663,
+      "to": "live now on pump.fun",
+      "selector": "0x095ea7b3",
+      "contract": "$GRIFTEX",
+      "function": "approve(address,uint256)",
+      "bounded": true,
+      "spenders": [
+        {
+          "address": "0x14411CCd561825Aa32A171938f2c8729840d8c69",
+          "name": "PlotDeed",
+          "amount": "exactly the plot's price (PlotDeed.priceOf), no headroom (plotBuy's calls[0])"
+        },
+        {
+          "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+          "name": "Permit2",
+          "amount": "exactly the price of the x402 call being paid (x402Pay's 412 approvalTx)"
+        }
+      ],
+      "emittedBy": [
+        "plotBuy from the deed contract (calls[0])",
+        "x402Pay (412 PERMIT2_ALLOWANCE_REQUIRED: approvalTx)"
+      ]
+    },
+    {
+      "chainId": 4663,
+      "to": "0x14411CCd561825Aa32A171938f2c8729840d8c69",
+      "selector": "0xd6febde8",
+      "contract": "PlotDeed",
+      "function": "buy(uint256,uint256)",
+      "emittedBy": [
+        "plotBuy from the deed contract (calls[1])"
+      ],
+      "note": "the price at the sale is burnt, never above the second argument; the deed is minted to the sender"
+    },
+    {
+      "chainId": 46630,
+      "to": "0x7d4A2732996aEEE1EFa953E099B9D13A52E08637",
+      "selector": "0x095ea7b3",
+      "contract": "tGRIFTEX (TESTNET, worth nothing)",
+      "function": "approve(address,uint256)",
+      "bounded": true,
+      "spenders": [
+        {
+          "address": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+          "name": "CreditLine (testnet)",
+          "amount": "exactly the quote's collateral"
+        }
+      ],
+      "emittedBy": [
+        "creditLineApply and creditSeasonQuote (before borrow)"
+      ]
+    },
+    {
+      "chainId": 46630,
+      "to": "0xbe081009f8b002ae4426E45041E0253bc9D2a186",
+      "selector": "0x095ea7b3",
+      "contract": "tUSDG (TESTNET, worth nothing)",
+      "function": "approve(address,uint256)",
+      "bounded": true,
+      "spenders": [
+        {
+          "address": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+          "name": "CreditLine (testnet)",
+          "amount": "principal plus fee, exactly"
+        }
+      ],
+      "emittedBy": [
+        "creditLineApply and creditSeasonQuote (before repay)"
+      ]
+    },
+    {
+      "chainId": 46630,
+      "to": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+      "selector": "0xadf459ca",
+      "contract": "CreditLine (TESTNET)",
+      "function": "borrow(uint256,uint256,uint256)",
+      "emittedBy": [
+        "creditLineApply and creditSeasonQuote"
+      ]
+    },
+    {
+      "chainId": 46630,
+      "to": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+      "selector": "0x371fd8e6",
+      "contract": "CreditLine (TESTNET)",
+      "function": "repay(uint256)",
+      "emittedBy": [
+        "creditLineApply and creditSeasonQuote, with a line open"
+      ]
+    },
+    {
+      "chainId": 46630,
+      "to": "0x9Ef67DAD0383fDeC95C631F2Ae93e604428EBcBF",
+      "selector": "0x4e71d92d",
+      "contract": "CreditFaucet (TESTNET)",
+      "function": "claim()",
+      "emittedBy": [
+        "creditSeasonFaucet"
+      ]
+    },
+    {
+      "chainId": 46630,
+      "to": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+      "selector": "0xe625e6b5",
+      "contract": "CreditLine (TESTNET)",
+      "function": "register(address,uint256,uint256,bytes,uint256)",
+      "template": true,
+      "emittedBy": [
+        "creditLineApply (step register: the function and its arguments, around the owner's EIP-712 consent)"
+      ],
+      "note": "handed as a template, not calldata: you encode it with your own signature"
+    },
+    {
+      "chainId": 46630,
+      "to": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525",
+      "selector": "0xfb26bfda",
+      "contract": "CreditLine (TESTNET)",
+      "function": "claimHeadStart((uint256,string,uint256,int256,uint256,string),bytes32[],bytes)",
+      "template": true,
+      "emittedBy": [
+        "creditLineApply (headStart.step: the function and its arguments)"
+      ],
+      "note": "handed as a template, not calldata: you encode it with the proof and the attestation the answer carries"
+    },
+    {
+      "chainId": 4663,
+      "to": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "selector": "0x095ea7b3",
+      "contract": "USDG (Global Dollar)",
+      "function": "approve(address,uint256)",
+      "city": true,
+      "bounded": true,
+      "spenders": [
+        {
+          "address": "0x026df18fbd2A7639089D0a16293383ec687A5Ca1",
+          "name": "Longbow Core USDG vault",
+          "amount": "exactly the deposit being made (never Longbow's default unlimited approve)"
+        },
+        {
+          "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+          "name": "Permit2",
+          "amount": "at most twice LONGBOW_BUSINESS_MAX (the business's cap), refreshed when short; never 2^256-1"
+        }
+      ],
+      "emittedBy": [
+        "the city's business wallets before a Longbow deposit (api/_longbowsupply.js)",
+        "the city's business wallets before the USDG → ETH swap that funds their restocks (api/_longbowsupply.js)"
+      ],
+      "note": "signed by the server for the city's own wallets; never handed to an agent"
+    },
+    {
+      "chainId": 4663,
+      "to": "0x026df18fbd2A7639089D0a16293383ec687A5Ca1",
+      "selector": "0x6e553f65",
+      "contract": "Longbow Core USDG vault (ERC-4626)",
+      "function": "deposit(uint256,address)",
+      "city": true,
+      "emittedBy": [
+        "the city's business wallets: a USDG deposit into Longbow, built by Longbow's own MCP (build_supply_tx with LONGBOW_BUILDER_CODE) and checked here (api/_longbowsupply.js)"
+      ],
+      "note": "the receiver is always the depositing business's own wallet; the amount is the move's own, under LONGBOW_BUSINESS_MAX"
+    },
+    {
+      "chainId": 4663,
+      "to": "0x026df18fbd2A7639089D0a16293383ec687A5Ca1",
+      "selector": "0xb460af94",
+      "contract": "Longbow Core USDG vault (ERC-4626)",
+      "function": "withdraw(uint256,address,address)",
+      "city": true,
+      "emittedBy": [
+        "the city's business wallets: a USDG withdrawal from Longbow, exactly what the next restock needs (api/_longbowsupply.js)"
+      ],
+      "note": "receiver and owner are always the withdrawing business's own wallet; Longbow's MCP has no withdraw tool, so this call is the standard ERC-4626 one, built here"
+    },
+    {
+      "chainId": 4663,
+      "to": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "selector": "0x87517c45",
+      "contract": "Permit2",
+      "function": "approve(address,address,uint160,uint48)",
+      "city": true,
+      "bounded": true,
+      "emittedBy": [
+        "the city's business wallets before the USDG → ETH swap through the universal router (api/_longbowsupply.js)"
+      ],
+      "note": "Permit2's approve(token, spender, amount, expiration): the token is USDG, the spender the universal router",
+      "permit2": {
+        "token": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+        "spender": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+        "amount": "USDG only, to the universal router only, at most twice LONGBOW_BUSINESS_MAX, with an expiry (LONGBOW_BUSINESS_APPROVAL_EXPIRY_SEC): never 2^160-1, never 2^48-1"
+      }
+    },
+    {
+      "chainId": 4663,
+      "to": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+      "selector": "0x3593564c",
+      "contract": "UniversalRouter (Uniswap v4, 4663)",
+      "function": "execute(bytes,bytes[],uint256)",
+      "city": true,
+      "emittedBy": [
+        "the city's business wallets: USDG → ETH on the deepest hookless USDG/ETH pool (fee 500), exactly the USDG withdrawn from Longbow for the next restocks, the ETH to the business's own wallet (api/_longbowsupply.js swapData)"
+      ],
+      "note": "value is always 0: the USDG is pulled through Permit2 under the bounded approval above; the ETH is taken to the signing wallet and nowhere else (TAKE_ALL pays msg.sender). The $GRIFTEX itself is then bought with that ETH on the existing pons path, with its 50% burn, exactly as before"
+    }
+  ],
+  "typedData": [
+    {
+      "id": "x402-permit2",
+      "primaryType": "PermitWitnessTransferFrom",
+      "domain": {
+        "name": "Permit2",
+        "chainId": 4663,
+        "verifyingContract": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+      },
+      "types": {
+        "PermitWitnessTransferFrom": [
+          {
+            "name": "permitted",
+            "type": "TokenPermissions"
+          },
+          {
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "name": "nonce",
+            "type": "uint256"
+          },
+          {
+            "name": "deadline",
+            "type": "uint256"
+          },
+          {
+            "name": "witness",
+            "type": "Witness"
+          }
+        ],
+        "TokenPermissions": [
+          {
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "name": "amount",
+            "type": "uint256"
+          }
+        ],
+        "Witness": [
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "validAfter",
+            "type": "uint256"
+          }
+        ]
+      },
+      "spender": "0x402085c248EeA27D92E8b30b2C58ed07f9E20001",
+      "witnessTo": "0x8e8346FAf55fBAE785C18C57d2471CbD424d46b7",
+      "tokens": [
+        "live now on pump.fun"
+      ],
+      "amount": "exactly the quoted price of the call",
+      "deadlineMaxSeconds": 600,
+      "emittedBy": [
+        "x402Pay (the 402's paymentRequired)"
+      ],
+      "note": "spender is x402's ExactPermit2Proxy; witness.to is the counter wallet: the only place the tokens may go. The door refuses any other spender, recipient, amount, or a deadline more than 600 s out (js/econ/x402rules.js checkPayload); production refuses to quote at all if its counter wallet is not this witnessTo"
+    },
+    {
+      "id": "request",
+      "primaryType": "Request",
+      "domain": {
+        "name": "San Verano",
+        "version": "1"
+      },
+      "types": {
+        "Request": [
+          {
+            "name": "msg",
+            "type": "string"
+          }
+        ]
+      },
+      "emittedBy": [
+        "every wallet-signed /api/agents op (alg eip712): join with a key, tokenIssue, and every seq'd or nonce'd op"
+      ],
+      "note": "moves nothing; msg is the op's own JSON text, bound to one key, one moment and one seq or nonce. EIP-191 personal_sign of the same text is the alternative (alg eip191)"
+    },
+    {
+      "id": "owner-link",
+      "primaryType": "Owner",
+      "domain": {
+        "name": "San Verano",
+        "version": "1"
+      },
+      "types": {
+        "Owner": [
+          {
+            "name": "statement",
+            "type": "string"
+          },
+          {
+            "name": "agent",
+            "type": "address"
+          },
+          {
+            "name": "ts",
+            "type": "uint256"
+          }
+        ]
+      },
+      "emittedBy": [
+        "ownerLink (/deploy/wallet: the owner's wallet)"
+      ],
+      "note": "statement is exactly \"owner of agent <the agent's address, checksummed>\"; ts within 10 minutes of the city's clock; moves nothing"
+    },
+    {
+      "id": "creditline-consent",
+      "primaryType": "Consent",
+      "domain": {
+        "name": "San Verano Credit Line",
+        "version": "1",
+        "chainId": 46630,
+        "verifyingContract": "0xe75AE61f50Ce20E267655ee96d83384d83bFE525"
+      },
+      "types": {
+        "Consent": [
+          {
+            "name": "agent",
+            "type": "address"
+          },
+          {
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "name": "nonce",
+            "type": "uint256"
+          },
+          {
+            "name": "deadline",
+            "type": "uint256"
+          }
+        ]
+      },
+      "emittedBy": [
+        "creditLineApply and creditSeasonQuote (step register, TESTNET)"
+      ],
+      "note": "the owner's consent consumed by CreditLine.register; moves nothing itself"
+    }
+  ],
+  "citySigned": [
+    {
+      "primaryType": "CreditAttestation",
+      "by": "the credit attester (config.creditAttester; KeyRegistry.activeKey(CREDIT_ATTESTER) under domain v3)",
+      "domains": [
+        { "name": "San Verano credit attestation", "version": "2", "chainId": 4663, "verifier": "config.creditAttester on GET /api/x402 (attestations issued before the KeyRegistry; still readable)" },
+        { "name": "San Verano credit attestation", "version": "3", "chainId": "KEY_REGISTRY_CHAIN_ID (4663)", "verifyingContract": "the KeyRegistry (KEY_REGISTRY_ADDRESS; config.keyRegistry on GET /api/x402)", "verifier": "signer == KeyRegistry.activeKey(keccak256('CREDIT_ATTESTER')) now, or isActive(role, signer, issuedAt)" }
+      ],
+      "note": "the city's statement about a record; never asked of a wallet. The message is the same under both domains (js/econ/x402rules.js ATTESTATION_TYPES)."
+    },
+    {
+      "primaryType": "ResponseAttestation",
+      "by": "the response signer (config.attester; KeyRegistry.activeKey(X402_RESPONSE_SIGNER) under the eip712/1 scheme)",
+      "domain": { "name": "San Verano x402 response", "version": "1", "chainId": "KEY_REGISTRY_CHAIN_ID (4663)", "verifyingContract": "the KeyRegistry (KEY_REGISTRY_ADDRESS)" },
+      "types": { "ResponseAttestation": [{ "name": "responseHash", "type": "bytes32" }, { "name": "issuedAt", "type": "uint256" }] },
+      "note": "the city's signature on every paid x402 answer's bytes, X-RESPONSE-SIGNATURE with X-RESPONSE-SCHEME eip712/1;registry=…;role=X402_RESPONSE_SIGNER;issuedAt=…; the eip191/1 scheme (no registry) is EIP-191 over the 32-byte X-RESPONSE-HASH and has no typed data. Never asked of a wallet."
+    },
+    {
+      "primaryType": "ResidentWallet",
+      "by": "the credit line's attester",
+      "note": "binds a resident number to a wallet for claimHeadStart; never asked of a wallet"
+    },
+    {
+      "primaryType": "AgentWalletSet",
+      "by": "the GRIFT team's own: team agent #100117's wallet, for its own identity only, in the team's tool on the owner's own machine (tools/erc8004.mjs), never on the city's servers. No key of the city's signs it: the city's and the four businesses' identities have their agentWallet cleared",
+      "domain": { "name": "ERC8004IdentityRegistry", "version": "1", "chainId": 4663, "verifyingContract": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432" },
+      "types": { "AgentWalletSet": [{ "name": "agentId", "type": "uint256" }, { "name": "newWallet", "type": "address" }, { "name": "owner", "type": "address" }, { "name": "deadline", "type": "uint256" }] },
+      "note": "the ERC-8004 Identity Registry's consent: #100117's wallet agrees to be the agentWallet of the team's identity for it (docs/erc8004.md), owner the team's MetaMask, deadline at most 300 s out, consumed by the MetaMask's setAgentWallet. Never asked of anyone else's wallet. From release 4.0.0 (2026-11-01) a wallet-deployed agent's own key signs the same message on /deploy/wallet, and it is listed under typedData then (docs/erc8004/allowlist-4.0.0.json)"
+    },
+    {
+      "primaryType": "TransferWithAuthorization",
+      "by": "the city's own buyer wallets, server-side: the five businesses' supply wallets (SUPPLY_CHAIN_<VENUE>_KEY) and the Courier's reporter's (X402_BUY_COURIER_KEY), api/_x402buyer.js",
+      "domain": { "name": "Global Dollar", "version": "1", "chainId": 4663, "verifyingContract": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168" },
+      "types": { "TransferWithAuthorization": [{ "name": "from", "type": "address" }, { "name": "to", "type": "address" }, { "name": "value", "type": "uint256" }, { "name": "validAfter", "type": "uint256" }, { "name": "validBefore", "type": "uint256" }, { "name": "nonce", "type": "bytes32" }] },
+      "to": ["0xaBF4FAbd7c416fB67202E5f9002389Fc75e2a9D0"],
+      "valueMax": "20000 (0.02 USDG; each allowlist row has its own ceiling)",
+      "validForMaxSeconds": 600,
+      "note": "EIP-3009, x402's exact scheme: one payment to an allowlisted outside service (js/econ/x402buyrules.js LIVE), from the buyer's own wallet to the row's pinned payTo for exactly the quoted amount, bound and simulated before it is signed (docs/x402-buying.md). Never asked of anyone else's wallet; release 2.10.0."
+    },
+    {
+      "primaryType": "Message",
+      "by": "GRIFT's own Interworld agent keys, server-side (tools/interworld.mjs; js/interworld/door.js, buyer.js): San Verano's testnet mandate agent, and the testnet sellers' ERC-8004 wallets (Lamplight Market's founder, The Dockyard's operator). An outside world that joins signs with its own key, in its own process",
+      "domain": { "name": "GRIFT Interworld Negotiation", "version": "1", "chainId": "the escrow's chain (46630 on the testnet)", "verifyingContract": "the InterworldEscrow (js/interworld/deployments.json)" },
+      "types": { "Message": [{ "name": "kind", "type": "string" }, { "name": "rfqId", "type": "bytes32" }, { "name": "round", "type": "uint256" }, { "name": "fromAgentId", "type": "uint256" }, { "name": "toAgentId", "type": "uint256" }, { "name": "bodyHash", "type": "bytes32" }, { "name": "prevHash", "type": "bytes32" }, { "name": "issuedAt", "type": "uint256" }, { "name": "expiresAt", "type": "uint256" }] },
+      "note": "one step of a negotiation between worlds (rfq, quote, decline, counter, accept, reject, walkaway; js/interworld/protocol.js MESSAGE_TYPES). No contract reads it and it moves nothing. Never asked of a wallet."
+    },
+    {
+      "primaryType": "Agreement",
+      "by": "GRIFT's own Interworld agent keys, server-side (tools/interworld.mjs; js/interworld/door.js, buyer.js): San Verano's testnet mandate agent, and the testnet sellers' ERC-8004 wallets (Lamplight Market's founder, The Dockyard's operator). An outside world that joins signs with its own key, in its own process. Both sides sign the same agreement: InterworldEscrow.open checks the buyer's signature against its mandate's agent and the seller's against its ERC-8004 wallet",
+      "domain": { "name": "GRIFT Interworld", "version": "1", "chainId": "the escrow's chain (46630 on the testnet)", "verifyingContract": "the InterworldEscrow (js/interworld/deployments.json)" },
+      "types": { "Agreement": [{ "name": "buyerWorld", "type": "bytes32" }, { "name": "sellerWorld", "type": "bytes32" }, { "name": "buyerAgentId", "type": "uint256" }, { "name": "sellerAgentId", "type": "uint256" }, { "name": "mandateId", "type": "uint256" }, { "name": "payTo", "type": "address" }, { "name": "price", "type": "uint256" }, { "name": "termsHash", "type": "bytes32" }, { "name": "negotiationHash", "type": "bytes32" }, { "name": "offerExpiry", "type": "uint64" }, { "name": "deliverBy", "type": "uint64" }, { "name": "verifyWindow", "type": "uint64" }, { "name": "nonce", "type": "uint256" }] },
+      "note": "commits at most the price out of a budget the buyer's treasury already deposited and capped in the InterworldEscrow (its mandate); its signer can never move money out. Never asked of a wallet: no page or API of the city hands it to one."
+    },
+    {
+      "primaryType": "Decision",
+      "by": "GRIFT's own Interworld agent keys, server-side (tools/interworld.mjs; js/interworld/door.js, buyer.js): San Verano's testnet mandate agent, and the testnet sellers' ERC-8004 wallets (Lamplight Market's founder, The Dockyard's operator). An outside world that joins signs with its own key, in its own process",
+      "domain": { "name": "GRIFT Interworld Decision", "version": "1", "chainId": "the escrow's chain (46630 on the testnet)", "verifyingContract": "the InterworldEscrow (js/interworld/deployments.json)" },
+      "types": { "Decision": [{ "name": "recordHash", "type": "bytes32" }] },
+      "note": "an agent's signature on its published decision record (the hashes of the prompt it saw and of its model's answer, the decision, the guard's verdict). It moves nothing. Never asked of a wallet."
+    }
+  ],
+  "verifyOnly": [
+    {
+      "primaryType": "Join",
+      "reason": "The /worlds page only recovers the signer of the Join recorded in docs/worlds/trip.json; nothing in the city asks anyone to sign one."
+    }
+  ],
+  "city": "Rows marked city are the city's OWN server-signed business wallets' (api/_longbowsupply.js, docs/longbow.md §13): the USDG working capital the four city businesses keep in Longbow's Core USDG vault, and the USDG → ETH swap that funds their restocks from it. They are published here so the same vet (api/_tosign.js vetTx), the same binding (every leg re-derived from the move's own record) and the same simulate (an eth_call from the wallet before anything is signed) hold them. They are NOT something an agent is ever asked to sign: toSign, toQueue, vetAnswer and GET /api/agents/simulate read only the rows without the mark, and rules.signing (the 7-day notice on widening what a wallet can be asked to sign) governs those rows alone. A city row widens nothing an agent signs."
+}

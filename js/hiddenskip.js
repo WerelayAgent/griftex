@@ -1,0 +1,1 @@
+import*as THREE from"three";const base=THREE.Object3D.prototype.updateMatrixWorld;function updateWhenShown(force){if(!this.visible){if(force)this.matrixWorldNeedsUpdate=true;return}base.call(this,force)}export function skipWhileHidden(o){if(o&&o.updateMatrixWorld===base)o.updateMatrixWorld=updateWhenShown;return o}

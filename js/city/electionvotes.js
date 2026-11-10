@@ -1,0 +1,1 @@
+let votes=null,names={};export function setVotes(v,candidateNames={}){votes=v&&typeof v==="object"?v:null;names=candidateNames||{}}export function voteOf(i){const b=votes&&votes[i];if(!b)return null;const[k,why,agent]=b;return{k,name:String(names[k]||k).toUpperCase(),why:String(why||""),agent:!!agent}}

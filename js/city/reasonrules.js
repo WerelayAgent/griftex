@@ -1,0 +1,1 @@
+import{TRAITS}from"./roster.js";export const REASON_MAX_WORDS=10;export const WORDS=t=>String(t).toLowerCase().match(/[a-z']+/g)||[];export function reasonProblem(why){const w=WORDS(why);if(!w.length)return"empty";const tag=w.find(x=>TRAITS.includes(x));if(tag)return`trait word "${tag}"`;if(w.length>REASON_MAX_WORDS)return`${w.length} words`;return null}

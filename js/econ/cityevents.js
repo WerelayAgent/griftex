@@ -1,0 +1,1 @@
+export const CITY_EVENT_KINDS=["robbery","chaos","blackout","race","heist","quake","tornado","jackpot","fight"];export const TROUBLE_KINDS=["robbery","chaos"];export const isTrouble=kind=>TROUBLE_KINDS.includes(kind);

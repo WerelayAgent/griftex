@@ -1,0 +1,152 @@
+/* ===========================================================================
+   THE PLOTS (/plots and /plot?plot=N) — /crews's clothes: #landing's shell,
+   the pixel face for headline numbers and labels only, one sans for
+   everything else, every colour a var(--gr-*). Words a player's agent wrote —
+   a business's name, an owner's reason, an ad — are quoted in italics and
+   marked ◇, so nobody mistakes them for the city's own voice.
+   ======================================================================== */
+:root {
+  --el-warm: var(--gr-caution); --el-warm-a: rgba(224,163,60,.16); --el-warm-b: rgba(224,163,60,.30);
+  --el-up: #7fb069; --el-down: #e06a5a; --el-own: #f2d24a;
+}
+#landing { background: var(--gr-void); }
+#landing::after { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(224,163,60,.05) 0%, rgba(224,163,60,0) 46%), radial-gradient(130% 100% at 50% 50%, rgba(6,7,9,0) 42%, rgba(6,7,9,.42) 100%); }
+#landing > * { position: relative; z-index: 1; }
+.el-shell { width: min(100% - 32px, 1240px); margin-inline: auto; }
+@media (min-width: 720px) { .el-shell { width: min(100% - 8vw, 1240px); } }
+.el-band { border-top: 1px solid var(--el-warm-a); padding-block: clamp(26px, 3.2vw, 48px); }
+.el-lab { margin: 0 0 16px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.el-lab h2 { margin: 0; font-family: var(--gr-display); font-weight: 700; font-size: clamp(20px, 2.2vw, 28px); line-height: 1.05; letter-spacing: -.02em; color: var(--gr-ink); }
+.el-lab p { margin: 0; font-family: var(--gr-body); font-size: 12.5px; line-height: 1.55; color: var(--gr-ink-3); max-width: 70ch; }
+.el-k { font-family: var(--gr-display); font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--el-warm); }
+.el-muted { color: var(--gr-ink-3); }
+
+.el-top { position: relative; overflow: hidden; min-height: 46vh; min-height: 46svh; display: flex; flex-direction: column; justify-content: flex-end; }
+.el-plate { position: absolute; inset: -3%; background: #05060a center / cover no-repeat; filter: blur(2px) saturate(.95) brightness(.66); transform: scale(1.04); }
+.el-hero { position: relative; z-index: 2; padding: 104px 0 34px; }
+.el-h1 { margin: 0; font-family: var(--gr-display); font-weight: 700; font-size: clamp(36px, 6vw, 80px); line-height: .98; letter-spacing: -.03em; color: var(--gr-ink); overflow-wrap: anywhere; }
+.el-sub { margin: 12px 0 0; font-family: var(--gr-body); font-size: clamp(13px, 1.3vw, 15.5px); line-height: 1.55; color: var(--gr-ink-2); max-width: 66ch; }
+.el-sub b { color: var(--gr-ink); font-weight: 600; }
+.el-sub a { color: inherit; }
+.el-clock { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
+.el-chip { font-family: var(--gr-data); font-size: 12px; padding: 7px 12px; border: 1px solid var(--gr-line-2); border-radius: 999px; color: var(--gr-ink-2); background: var(--gr-panel-a6); }
+.el-chip b { color: var(--gr-ink); font-weight: 600; }
+.el-chip.now { border-color: var(--el-warm-b); color: var(--el-warm); }
+.el-chip.warn { border-color: rgba(224,106,90,.45); color: var(--el-down); }
+
+.el-self { display: inline-block; white-space: nowrap; font-family: var(--gr-display); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--el-warm); border: 1px solid currentColor; border-radius: 999px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; opacity: .8; }
+.el-nums { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 8px; margin: 0; }
+.el-num { background: var(--gr-panel-hi); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+.el-num dt { font-family: var(--gr-display); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-3); }
+.el-num dd { margin: 2px 0 0; font-family: var(--gr-data); font-size: 15px; color: var(--gr-ink); overflow-wrap: anywhere; }
+.el-num dd small { color: var(--gr-ink-3); font-size: 11px; }
+
+.el-table { width: 100%; border-collapse: collapse; font-family: var(--gr-data); font-size: 13px; }
+.el-table th, .el-table td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--gr-line); white-space: nowrap; }
+.el-table th:first-child, .el-table td:first-child { text-align: left; }
+.el-table th.l, .el-table td.l { text-align: left; }
+.el-table td.w { white-space: normal; min-width: 180px; }
+.el-table th { font-family: var(--gr-display); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-3); font-weight: 400; }
+.el-table td { color: var(--gr-ink); }
+.el-table td a { color: inherit; }
+.el-table tr.off td { opacity: .5; }
+.el-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+.el-sums { display: flex; flex-wrap: wrap; gap: 18px 36px; align-items: baseline; margin-bottom: 16px; }
+.el-sum { font-family: var(--gr-data); font-size: 13px; color: var(--gr-ink-2); }
+.el-sum b { color: var(--gr-ink); font-size: 18px; }
+.el-hash { font-family: var(--gr-data); font-size: 11.5px; color: var(--el-warm); text-decoration: none; }
+.el-st { font-family: var(--gr-display); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 7px; border-radius: 999px; border: 1px solid var(--gr-line-2); color: var(--gr-ink-3); white-space: nowrap; }
+.el-st.settled { color: var(--el-up); border-color: rgba(127,176,105,.4); } .el-st.held { color: var(--el-warm); border-color: var(--el-warm-b); }
+.el-st.refused, .el-st.failed, .el-st.void, .el-st.missed { color: var(--el-down); border-color: rgba(224,106,90,.4); }
+
+.el-list { margin: 0; padding-left: 18px; font-family: var(--gr-body); font-size: 13.5px; line-height: 1.6; color: var(--gr-ink-2); }
+.el-list b { color: var(--gr-ink); }
+.el-code { font-family: var(--gr-data); font-size: 12px; line-height: 1.55; color: var(--gr-ink-2); background: var(--gr-panel); border: 1px solid var(--gr-line); border-radius: 10px; padding: 14px; overflow-x: auto; white-space: pre; }
+.el-note { font-family: var(--gr-body); font-size: 13px; line-height: 1.55; color: var(--gr-ink-3); margin: 10px 0 0; max-width: 80ch; }
+.el-note a { color: var(--el-warm); }
+.el-empty { font-family: var(--gr-body); font-size: 14px; color: var(--gr-ink-3); padding: 18px; border: 1px dashed var(--gr-line-2); border-radius: 12px; }
+.el-two { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); }
+.el-two > * { min-width: 0; }
+
+/* THE PLOTS' OWN: counts, a player's own words, the sparkline */
+.pl-counts { margin-top: 22px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; max-width: 760px; }
+.pl-count { background: var(--gr-panel-a6); border: 1px solid var(--gr-line); border-radius: 10px; padding: 10px 12px; text-decoration: none; color: inherit; }
+.pl-count b { display: block; font-family: var(--gr-display); font-weight: 700; font-size: clamp(26px, 3.4vw, 42px); line-height: 1; color: var(--gr-ink); }
+.pl-count span { font-family: var(--gr-display); font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-3); }
+@media (max-width: 560px) { .pl-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pl-own { font-style: italic; color: var(--el-own); }
+.pl-own::before { content: '\201C'; } .pl-own::after { content: '\201D'; }
+.pl-key { font-family: var(--gr-body); font-size: 12px; color: var(--gr-ink-3); margin: -6px 0 14px; }
+.pl-key .pl-own { font-size: 12px; }
+.pl-why { display: grid; gap: 8px; }
+.pl-why > div { background: var(--gr-panel-a); border: 1px solid var(--gr-line); border-radius: 10px; padding: 10px 14px; font-family: var(--gr-body); font-size: 13.5px; line-height: 1.5; color: var(--gr-ink-2); }
+.pl-why .n { font-family: var(--gr-data); font-size: 11px; color: var(--gr-ink-3); margin-right: 8px; }
+.pl-spark { display: block; width: 100%; height: 72px; background: var(--gr-panel-a6); border-radius: 10px; margin-bottom: 12px; }
+.pl-spark path.l { fill: none; stroke: var(--el-warm); stroke-width: 1.6; }
+.pl-spark path.f { fill: var(--el-warm-a); stroke: none; }
+.pl-spark circle { fill: var(--gr-ink); }
+.pl-h3 { margin: 18px 0 10px; font-family: var(--gr-display); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--el-warm); font-weight: 400; }
+.pl-staff { display: flex; flex-wrap: wrap; gap: 6px 14px; font-family: var(--gr-body); font-size: 13px; color: var(--gr-ink-2); }
+.pl-staff a { color: inherit; }
+
+/* ---- the wallet, the mint, your plots ---- */
+.pl-wallet { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-family: var(--gr-body); font-size: 13.5px; color: var(--gr-ink-2); margin-bottom: 14px; }
+.pl-wallet b { color: var(--gr-ink); }
+.pl-btn { font-family: var(--gr-display); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--el-warm-b); background: transparent; color: var(--el-warm); cursor: pointer; }
+.pl-btn.pri { background: var(--el-warm); color: #15121f; border-color: var(--el-warm); font-weight: 700; }
+.pl-btn:disabled { opacity: .45; cursor: default; }
+.pl-mint { font-family: var(--gr-display); font-size: 10.5px; letter-spacing: .14em; padding: 5px 12px; border-radius: 6px; border: 0; background: var(--el-warm); color: #15121f; font-weight: 700; cursor: pointer; }
+.pl-mint:disabled { opacity: .4; cursor: default; }
+.pl-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+.pl-card { background: var(--gr-panel-hi); border: 1px solid var(--gr-line); border-radius: 10px; padding: 14px 16px; font-family: var(--gr-body); font-size: 13.5px; color: var(--gr-ink-2); min-width: 0; }
+.pl-card h3 { margin: 0 0 6px; font-family: var(--gr-display); font-size: 17px; color: var(--gr-ink); font-weight: 700; }
+.pl-card label { display: block; margin: 8px 0 0; font-size: 12.5px; }
+.pl-card select, .pl-card input { width: 100%; box-sizing: border-box; margin-top: 4px; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--gr-line-2); background: rgba(0,0,0,.35); color: var(--gr-ink); font: inherit; }
+.pl-card .el-nums { margin-top: 8px; }
+.pl-status { margin: 8px 0 0; font-size: 12.5px; color: var(--el-warm); min-height: 1em; }
+.pl-status.bad { color: var(--el-down); }
+.pl-dialog { position: fixed; inset: 0; z-index: 90; background: rgba(4,5,8,.72); display: flex; align-items: center; justify-content: center; padding: 16px; }
+.pl-dialog[hidden] { display: none; }
+.pl-dialog-in { width: min(520px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: #121016; border: 1px solid var(--el-warm-b); border-radius: 12px; padding: 16px 18px 18px; }
+.pl-dialog-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.pl-dialog-head h2 { margin: 0; font-family: var(--gr-display); font-size: 20px; color: var(--gr-ink); }
+.pl-x { background: transparent; border: 0; color: var(--gr-ink-2); font-size: 26px; line-height: 1; cursor: pointer; }
+.pl-game { font-family: var(--gr-display); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--el-warm) !important; text-decoration: none; white-space: nowrap; }
+.pl-game:hover { text-decoration: underline; }
+
+/* ---- build on your plot: the panel at the top ---- */
+.pl-buildband { border-top-color: var(--el-warm-b); background: rgba(224,163,60,.05); }
+.pl-build { border-color: var(--el-warm-b); }
+.pl-build h2 { margin: 0 0 6px; font-family: var(--gr-display); font-size: clamp(20px, 2.2vw, 28px); color: var(--gr-ink); }
+.pl-next { margin: 0 0 12px; font-size: 14px; color: var(--gr-ink-2); max-width: 80ch; }
+.pl-venues { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 8px; }
+.pl-card .pl-venue { display: flex; flex-direction: column; gap: 2px; margin: 0 !important; padding: 10px 12px 10px 34px; position: relative; border: 1px solid var(--gr-line-2); border-radius: 8px; cursor: pointer; background: rgba(0,0,0,.2); }
+.pl-card .pl-venue input { position: absolute; left: 11px; top: 12px; width: auto !important; margin: 0 !important; accent-color: var(--el-warm); }
+.pl-venue b { color: var(--gr-ink); font-size: 14px; }
+.pl-venue span { font-size: 12px; color: var(--gr-ink-3); }
+.pl-venue:has(input:checked) { border-color: var(--el-warm); background: var(--el-warm-a); }
+.pl-buildrow { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-top: 12px; }
+.pl-card .pl-buildrow label { flex: 1 1 240px; margin: 0 !important; }
+
+/* THE OWNER'S DECISIONS (js/plotpage.js reasons) and CONNECT YOUR AGENT (js/plots/connect.js) */
+.pl-why .pl-what { font-family: var(--gr-data); font-size: 12.5px; color: var(--gr-ink-1, var(--gr-ink-2)); margin: 3px 0; }
+.pl-why .pl-said { font-family: var(--gr-display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--el-warm); margin-right: 4px; }
+.pl-add { border-top: 1px solid var(--gr-line); padding: 10px 0; }
+.pl-addh { font-size: 13px; margin-bottom: 6px; }
+.pl-addl { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.pl-addl code { flex: 1 1 280px; min-width: 0; overflow-wrap: anywhere; font-family: var(--gr-data); font-size: 12px; background: var(--gr-panel-a); border: 1px solid var(--gr-line); border-radius: 6px; padding: 7px 10px; color: var(--gr-ink-2); user-select: all; }
+.pl-addl a.pl-btn { text-decoration: none; }
+.pl-runby { white-space: nowrap; }
+
+/* SUPPLY DEALS (js/plotsui.js dealCard): a business's page and the deals board on /plots */
+.pl-deals { display: grid; gap: 10px; }
+.pl-deal { background: var(--gr-panel-a); border: 1px solid var(--gr-line); border-radius: 10px; padding: 12px 14px; font-family: var(--gr-body); font-size: 13.5px; color: var(--gr-ink-2); min-width: 0; }
+.pl-deal .pl-dh { font-size: 14px; margin-bottom: 4px; }
+.pl-deal .pl-dt { font-family: var(--gr-data); font-size: 12.5px; margin-bottom: 6px; }
+.pl-deal .pl-dr { margin: 3px 0; line-height: 1.5; }
+.pl-deal .pl-dr .n { font-family: var(--gr-data); font-size: 11px; color: var(--gr-ink-3); margin-right: 6px; }
+.pl-deal .pl-said { font-family: var(--gr-display); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--el-warm); margin-right: 4px; }
+.pl-deal .el-scroll { margin-top: 8px; }
+.pl-subh { margin: 18px 0 8px; font-family: var(--gr-display); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--gr-ink-2); }

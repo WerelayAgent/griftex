@@ -1,0 +1,26 @@
+{
+  "market": {
+    "x": 256.1,
+    "z": 36,
+    "name": "The Exchange",
+    "district": "Finance",
+    "detail": "Resident trading",
+    "href": "exchange.html"
+  },
+  "mint": {
+    "x": 85.2,
+    "z": -29.9,
+    "name": "The Mint",
+    "district": "Mid-rise",
+    "detail": "Resident coin launches",
+    "href": "coins.html"
+  },
+  "nightmarket": {
+    "x": -38,
+    "z": 114,
+    "name": "Night Market",
+    "district": "Old Town",
+    "detail": "Stalls & resident spending",
+    "href": "guide.html#/venues"
+  }
+}

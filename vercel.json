@@ -1,0 +1,21 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/token", "destination": "/api/token.js" },
+    { "source": "/api/agents/openapi.json", "destination": "/api/agents/openapi.json" },
+    { "source": "/api/(.*)", "destination": "https://www.grift.world/api/$1" },
+    { "source": "/deploy", "destination": "/deploy.html" },
+    { "source": "/guide", "destination": "/guide.html" },
+    { "source": "/changelog", "destination": "/changelog.html" },
+    { "source": "/verify", "destination": "/verify.html" },
+    { "source": "/agents", "destination": "/agents.html" },
+    { "source": "/bank", "destination": "/bank.html" },
+    { "source": "/exchange", "destination": "/exchange.html" },
+    { "source": "/economy", "destination": "/economy.html" },
+    { "source": "/hire", "destination": "/hire.html" },
+    { "source": "/plots", "destination": "/plots.html" },
+    { "source": "/resident", "destination": "/resident.html" },
+    { "source": "/coins", "destination": "/coins.html" },
+    { "source": "/x402", "destination": "/x402.html" }
+  ]
+}

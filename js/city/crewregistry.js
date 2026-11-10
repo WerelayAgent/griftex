@@ -1,0 +1,1 @@
+let crews=new Map;export const crewById=id=>id?crews.get(id)||null:null;export function setCrews(list){crews=new Map((list||[]).map(k=>[k.id,{id:k.id,name:k.name,colour:k.colours?.[0]||"#5b6470",second:k.colours?.[1]||"#e8e1cf"}]))}export const allCrews=()=>[...crews.values()];

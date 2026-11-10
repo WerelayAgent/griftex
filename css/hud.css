@@ -1,0 +1,238 @@
+/* =====================================================================
+   GRIFTEX CITY — THE HUD. The last screen in the game that was still a prototype:
+   every other surface (the venues' terminals, the pages, the case file)
+   speaks one language and the HUD spoke four. This file is that language
+   applied to play.
+
+   THE FACES
+     figures   the pixel face (--gr-display): cash, the clock, heat, speed,
+               a count, a timer. Anything you read as a number.
+     words     the sans (--gr-body): names, verbs, labels, lines.
+   THE COLOURS
+     cream     --gr-ink down to --gr-ink-4. Everything, by default.
+     amber     --hud-amber. Emphasis that is not an action: the key in a
+               prompt, the rule on a mission, a lit heat block.
+     red       --gr-danger. Danger only: heat at four and five, low health.
+     teal      --gr-accent. ONLY what a model decided — an agent's call, a
+               resident's line. A thing the player did is never teal.
+   THE PLATE
+     One style for every block: a dark glass, a lit top edge, a hairline
+     round the rest, a scanline you only notice when you look for it.
+   THE FRAME
+     One safe frame, the same margin on all four edges (and the device's own
+     safe area on top of it). The HUD is a 3 x 3 grid inside it: corners,
+     edges, and the open middle. Grid cells cannot overlap, so no two pieces
+     can sit on each other at any window size — a narrow window squeezes the
+     centre column, it never stacks one plate on another.
+   IDLE
+     A plate that has not changed for a few seconds steps back (.idle). Only
+     what is changing draws the eye. Opacity only: it composites, it never
+     lays out.
+   ===================================================================== */
+
+:root {
+  --hud-amber: #d9963f;
+  --hud-amber-a: rgba(217, 150, 63, .55);
+  --hud-m: clamp(14px, 1.9vw, 28px);        /* the one margin */
+  --hud-gap: 8px;
+  --hud-map: clamp(172px, 17.5vmin, 244px);  /* the minimap's diameter */
+  --hud-glass: linear-gradient(180deg, rgba(21, 22, 25, .80), rgba(10, 11, 12, .80));
+  --hud-line: rgba(237, 230, 214, .09);
+  --hud-lit: rgba(237, 230, 214, .24);
+  --hud-scan: repeating-linear-gradient(180deg, rgba(237, 230, 214, .035) 0 1px, transparent 1px 3px);
+}
+
+#hud { position: fixed; inset: 0; z-index: 7; pointer-events: none; user-select: none; }
+
+/* ---- the frame ------------------------------------------------------ */
+#hud-frame {
+  position: absolute; inset: 0;
+  padding:
+    calc(var(--hud-m) + env(safe-area-inset-top, 0px))
+    calc(var(--hud-m) + env(safe-area-inset-right, 0px))
+    calc(var(--hud-m) + env(safe-area-inset-bottom, 0px))
+    calc(var(--hud-m) + env(safe-area-inset-left, 0px));
+  display: grid;
+  /* the centre track is CAPPED: an auto track grows to its widest nowrap line
+     before the 1fr sides get anything, and a long toast then pushed the cash
+     and the mission plates over it. The cap keeps each side at least the
+     widest corner plate (or the minimap); the centre lines truncate instead. */
+  grid-template-columns: minmax(0, 1fr) fit-content(max(34%, calc(100% - 2 * max(var(--hud-map), 240px) - 2 * var(--hud-m)))) minmax(0, 1fr);
+  /* the top row gives way before the bottom one: three receipts on a short
+     window clip in the corner rather than push the minimap off the screen */
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr) auto;
+  grid-template-areas: "tl tc tr" "mid mid mid" "bl bc br";
+  column-gap: var(--hud-m);
+  row-gap: var(--hud-gap);
+}
+.hc { display: flex; flex-direction: column; gap: var(--hud-gap); min-width: 0; min-height: 0; }
+#hc-tl { grid-area: tl; align-items: flex-start; }
+#hc-tc { grid-area: tc; align-items: center; }
+#hc-tr { grid-area: tr; align-items: flex-end; }
+#hc-mid { grid-area: mid; position: relative; }
+#hc-bl { grid-area: bl; align-items: flex-start; justify-content: flex-end; }
+#hc-bc { grid-area: bc; align-items: center; justify-content: flex-end; }
+#hc-br { grid-area: br; align-items: flex-end; justify-content: flex-end; }
+
+/* ---- the plate ------------------------------------------------------ */
+.hp {
+  position: relative;
+  background: var(--hud-glass);
+  border: 1px solid var(--hud-line);
+  border-top-color: var(--hud-lit);
+  border-radius: 2px;
+  padding: 7px 11px 8px;
+  box-shadow: 0 12px 26px -14px rgba(0, 0, 0, .8);
+  color: var(--gr-ink);
+  font-family: var(--gr-body);
+  max-width: 100%;
+  transition: opacity .7s ease;
+}
+.hp::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: var(--hud-scan); border-radius: inherit;
+}
+.hp.idle { opacity: .4; }
+.hp.rule { border-left: 2px solid var(--hud-amber); }
+.hp-lbl {
+  display: block; font: 600 9px/1 var(--gr-body); letter-spacing: .24em;
+  color: var(--gr-ink-3); text-transform: uppercase; margin-bottom: 4px;
+}
+.hp-fig { font: 400 22px/1 var(--gr-display); letter-spacing: .03em; color: var(--gr-ink); }
+.hp-fig small, .hp-unit { font: 600 9px/1 var(--gr-body); letter-spacing: .18em; color: var(--gr-ink-3); margin-left: 6px; vertical-align: 3px; }
+
+/* ---- top left: the mission line and the crate in hand ---------------- */
+#mission, #carry { display: none; min-width: 210px; max-width: min(340px, 100%); }
+#mtitle { font: 700 13.5px/1.15 var(--gr-body); letter-spacing: .08em; text-transform: uppercase; color: var(--gr-ink); }
+#mtitle::before { content: 'MISSION'; display: block; font: 600 9px/1 var(--gr-body); letter-spacing: .24em; color: var(--hud-amber); margin-bottom: 5px; }
+#mtext { font: 500 11.5px/1.35 var(--gr-body); color: var(--gr-ink-2); margin-top: 4px; }
+#mtimer { font: 400 22px/1 var(--gr-display); color: var(--gr-ink); margin-top: 6px; letter-spacing: .04em; }
+#mtimer.low { color: var(--gr-danger); }
+#mtimer:empty { display: none; }
+#carry .c-lbl { display: block; font: 600 9px/1 var(--gr-body); letter-spacing: .24em; color: var(--hud-amber); margin-bottom: 5px; text-transform: uppercase; }
+#carry .c-what { font: 700 13.5px/1.15 var(--gr-body); letter-spacing: .08em; text-transform: uppercase; color: var(--gr-ink); }
+#carry .c-time { font: 400 22px/1 var(--gr-display); color: var(--gr-ink); margin-top: 6px; letter-spacing: .04em; }
+#carry .c-time.half { color: var(--hud-amber); }
+#carry .c-share { font: 500 11.5px/1.35 var(--gr-body); color: var(--gr-ink-2); margin-top: 4px; }
+
+/* ---- top centre: the city line and the notices under it -------------- */
+#cityline { text-align: center; padding: 6px 14px 7px; max-width: 100%; }
+#cityline .cl-where { font: 700 11px/1.2 var(--gr-body); letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#cityline .cl-where i { font-style: normal; color: var(--hud-amber); }
+#cityline .cl-where s { text-decoration: none; color: var(--gr-ink-4); margin: 0 7px; }
+#levelbadge { font: 600 9px/1.2 var(--gr-body); letter-spacing: .2em; color: var(--gr-ink-3); text-transform: uppercase; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#levelbadge:empty { display: none; }
+#levelbadge .fig { font: 400 11px/1 var(--gr-display); letter-spacing: .06em; color: var(--gr-ink-2); }
+#levelbadge .amb { color: var(--hud-amber); }
+#levelbadge s { text-decoration: none; color: var(--gr-ink-4); margin: 0 7px; }
+#levelbadge .daily { display: block; margin-top: 3px; color: var(--gr-ink-3); }
+#toasts { display: flex; flex-direction: column; align-items: center; gap: 6px; max-width: 100%; }
+.hud-toast {
+  border-left: 2px solid var(--hud-amber);
+  font: 600 11px/1.3 var(--gr-body); letter-spacing: .12em; text-transform: uppercase;
+  padding: 6px 12px 7px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 1; transition: opacity .35s ease;
+}
+.hud-toast.model { border-left-color: var(--gr-accent); }
+.hud-toast.out { opacity: 0; }
+
+/* ---- top right: cash and the clock, heat, the wallet, receipts ------- */
+#cashblk { min-width: 132px; text-align: right; }
+#money { font: 400 26px/1 var(--gr-display); letter-spacing: .03em; color: var(--gr-ink); }
+#clock { font: 400 13px/1 var(--gr-display); letter-spacing: .08em; color: var(--gr-ink-2); margin-top: 5px; }
+#heatblk { min-width: 132px; }
+#heatrow { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+#stars { display: flex; gap: 3px; align-items: center; }
+#stars span { display: block; width: 13px; height: 8px; border: 1px solid rgba(237, 230, 214, .22); background: transparent; transition: background .2s, border-color .2s; }
+#stars span.lit { background: var(--hud-amber); border-color: var(--hud-amber); }
+#stars span.lit.hot { background: var(--gr-danger); border-color: var(--gr-danger); }
+#heatnum { font: 400 13px/1 var(--gr-display); letter-spacing: .06em; color: var(--gr-ink-2); }
+#heatblk.hot #heatnum { color: var(--gr-danger); }
+#wallet { font: 600 9.5px/1.2 var(--gr-body); letter-spacing: .14em; color: var(--gr-ink-3); text-transform: uppercase; padding: 5px 10px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+#wallet:empty { display: none; }
+#wallet b { color: var(--gr-ink); font-weight: 700; font-family: var(--gr-data); letter-spacing: .04em; }
+#wallet .wdot { display: inline-block; width: 6px; height: 6px; border-radius: 1px; background: var(--gr-ink); margin-right: 7px; vertical-align: 1px; }
+/* js/griftui.js's receipts, adopted into the column so they stack under the wallet instead of over it */
+#hc-tr #receipts { position: static !important; right: auto !important; top: auto !important; align-items: flex-end; }
+
+/* ---- the middle: centre titles and the stamp --------------------------- */
+#missionmsg { position: absolute; left: 0; right: 0; top: 18%; text-align: center; opacity: 0; transform: scale(.97); transition: opacity .35s, transform .35s; pointer-events: none; }
+#missionmsg.show { opacity: 1; transform: scale(1); }
+#mm1 { font: 800 clamp(28px, 5.2vw, 52px)/1.05 var(--gr-body); letter-spacing: .06em; text-transform: uppercase; text-shadow: 0 3px 0 rgba(0, 0, 0, .6), 0 0 30px rgba(0, 0, 0, .8); }
+#mm2 { font: 600 12px/1.4 var(--gr-body); color: var(--gr-ink-2); letter-spacing: .2em; text-transform: uppercase; text-shadow: 0 1px 2px #000; margin-top: 10px; }
+#banner {
+  position: absolute; left: 50%; top: 38%;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  font: 800 clamp(40px, 7.5vw, 84px)/1 var(--gr-body); letter-spacing: .08em;
+  color: var(--bn-ink, var(--gr-danger));
+  text-shadow: 0 4px 0 rgba(0, 0, 0, .55), 0 0 44px rgba(0, 0, 0, .9);
+  display: none; text-transform: uppercase;
+  padding: 8px 30px 6px;
+  border: 4px solid var(--bn-ink, var(--gr-danger)); border-radius: 3px;
+  background: rgba(10, 10, 11, .34);
+  -webkit-mask-image: repeating-linear-gradient(112deg, #000 0 16px, rgba(0, 0, 0, .88) 16px 18px);
+  mask-image: repeating-linear-gradient(112deg, #000 0 16px, rgba(0, 0, 0, .88) 16px 18px);
+}
+#crosshair { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: rgba(236, 232, 223, .85); font: 300 20px var(--gr-data); text-shadow: 0 0 3px #000; }
+
+/* ---- bottom left: the stock drop line over the map -------------------- */
+#drophint { display: none; max-width: var(--hud-map); font: 600 10.5px/1.35 var(--gr-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gr-ink-2); }
+#drophint b { color: var(--gr-ink); font-weight: 700; }
+#drophint .fig { font: 400 13px/1 var(--gr-display); color: var(--hud-amber); letter-spacing: .04em; }
+#mapwrap { position: relative; width: var(--hud-map); transition: opacity .7s ease; }
+#mapwrap.idle { opacity: .72; }
+#minimap { display: block; width: var(--hud-map); height: var(--hud-map); border-radius: 50%; background: #0b0c0d; box-shadow: 0 12px 30px -12px rgba(0, 0, 0, .85), inset 0 0 0 1px var(--hud-line); }
+#healthwrap { width: 64%; height: 4px; margin: 8px auto 0; background: rgba(10, 10, 11, .75); border: 1px solid var(--hud-line); overflow: hidden; border-radius: 1px; }
+#health { height: 100%; width: 100%; background: var(--gr-ink-2); transition: width .15s; }
+#health.low { background: var(--gr-danger); }
+
+/* ---- bottom centre: the prompt, the feed ------------------------------- */
+#hint { display: none; align-items: center; gap: 9px; padding: 7px 14px 8px 8px; white-space: nowrap; max-width: 100%; overflow: hidden; }
+#hint .pk { flex: none; display: inline-block; min-width: 22px; height: 22px; padding: 0 5px; text-align: center; font: 400 14px/20px var(--gr-display); color: var(--hud-amber); border: 1px solid var(--hud-amber-a); border-bottom-width: 2px; border-radius: 2px; background: rgba(217, 150, 63, .08); }
+#hint .pv { font: 700 12px/1 var(--gr-body); letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink); }
+#hint .ps { color: var(--gr-ink-4); font: 700 12px/1 var(--gr-body); }
+#hint .pt { font: 600 12px/1 var(--gr-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-2); overflow: hidden; text-overflow: ellipsis; }
+#hint .pl { font: 600 11.5px/1.2 var(--gr-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gr-ink-2); overflow: hidden; text-overflow: ellipsis; }
+#hint .pl b { color: var(--gr-ink); }
+#news { display: none; font: 600 10.5px/1.3 var(--gr-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-2); padding: 6px 12px 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+#news .ns { color: var(--gr-ink-3); margin-right: 12px; }
+#news .ns.model { color: var(--gr-accent); }
+#onboard { display: none; font: 600 12px/1.35 var(--gr-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink); padding: 8px 14px 9px; border-left: 2px solid var(--hud-amber); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity .6s ease; }
+#onboard.show { opacity: 1; }
+#onboard .pk { display: inline-block; font: 400 13px/18px var(--gr-display); color: var(--hud-amber); border: 1px solid var(--hud-amber-a); border-bottom-width: 2px; border-radius: 2px; padding: 0 5px; margin: 0 2px; }
+#keysind { display: none; }
+/* satellites the column adopts (js/dispatch.js) */
+#hc-bc #dispatchui { position: relative !important; left: auto !important; right: auto !important; bottom: auto !important; top: auto !important; transform: none !important; max-width: 100%; }
+
+/* ---- bottom right: loadout on foot, speed at the wheel ---------------- */
+#speed, #weapon { min-width: 132px; text-align: right; }
+#speed { display: none; }
+#speedval { font: 400 26px/1 var(--gr-display); letter-spacing: .03em; color: var(--gr-ink); }
+#speedval .nos { display: block; margin-top: 4px; font: 600 9px/1 var(--gr-body); letter-spacing: .18em; color: var(--gr-ink-3); }
+#speedval .nos .fig { font: 400 11px/1 var(--gr-display); color: var(--gr-ink-2); }
+#weaponval { font: 700 13.5px/1.15 var(--gr-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gr-ink); }
+#weaponval .fig { font: 400 20px/1 var(--gr-display); letter-spacing: .03em; color: var(--gr-ink); margin-left: 8px; vertical-align: -2px; }
+#weaponval .plate { display: block; margin-top: 4px; font: 600 9px/1 var(--gr-body); letter-spacing: .18em; color: var(--gr-ink-3); }
+#weaponval .plate .fig { font-size: 12px; margin-left: 4px; vertical-align: 0; color: var(--gr-ink-2); }
+/* js/vehiclefx.js's second speedo and js/armor.js's plate count are folded
+   into the two blocks above; their own floating nodes stay out of the frame */
+#speedo, #armorval { display: none !important; }
+
+/* ---- hiding: film, F9, photo, the fly-in ------------------------------- */
+body.hud-off #hud, body.hud-off .hud-sat { display: none !important; }
+
+/* ---- touch: the frame clears the on-screen controls ------------------- */
+body.touch #hud-frame { padding-bottom: calc(160px + env(safe-area-inset-bottom, 0px)); }
+body.touch { --hud-map: 132px; }
+body.touch #money { font-size: 20px; }
+body.touch #mission, body.touch #carry { min-width: 0; max-width: 46vw; }
+@media (max-width: 760px) {
+  :root { --hud-map: 150px; }
+  #money, #speedval { font-size: 21px; }
+  #cashblk, #heatblk, #speed, #weapon { min-width: 0; }
+}
+@media (max-height: 520px) {
+  :root { --hud-map: 128px; }
+  #missionmsg { top: 8%; }
+}
+#hc-tr { overflow: hidden; }

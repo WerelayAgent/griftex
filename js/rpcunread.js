@@ -1,0 +1,1 @@
+export const unreachable=e=>/HTTP request failed|Failed to fetch|fetch failed|Load failed|NetworkError|network ?error|timed? ?out|the request took too long/i.test(String(e?.shortMessage||e?.message||e));

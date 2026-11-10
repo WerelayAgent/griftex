@@ -1,0 +1,1 @@
+export const runsOnLabel=runsOn=>runsOn?String(runsOn).trim().toUpperCase():"";export const plateName=c=>c&&c.x?`${c.n} ◇${c.runsOn?` ${runsOnLabel(c.runsOn)}`:""}`:c?c.n:"";export const runsOnLine=c=>c&&c.x?c.runsOn?`◇ runs on ${String(c.runsOn).trim()}`:"◇":"";

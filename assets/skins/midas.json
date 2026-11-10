@@ -1,0 +1,40 @@
+{
+  "id": "midas",
+  "name": "MIDAS",
+  "line": "gold everywhere. the chain is the least of it.",
+  "cost": 5000,
+  "materials": {
+    "midas": {
+      "roughness": 0.28,
+      "metalness": 1.0,
+      "env": 1.3,
+      "tone": {
+        "flatten": 0.9,
+        "lift": 1.0,
+        "base": [
+          222,
+          164,
+          48
+        ],
+        "mix": 0.9
+      }
+    }
+  },
+  "regions": {
+    "head": "midas",
+    "torso": "midas",
+    "arms": "midas",
+    "legs": "midas",
+    "trim": "noir",
+    "acc": "midas"
+  },
+  "accessories": [
+    "chain"
+  ],
+  "silhouette": "crown",
+  "accent": {
+    "kind": "shoestrip",
+    "color": "#ffcc55"
+  },
+  "feature": "earring"
+}

@@ -1,0 +1,133 @@
+/* =====================================================================
+   GRIFTEX CITY — THE PALETTE. One file. One accent. Every screen reads it.
+
+   The lime green is gone. It was four different greens (#4ee06e in the
+   game, #58ef9a on the site, #7cf78c on world markers, #5fe07a on the
+   health bar), none of them declared in one place, and together they
+   were the single thing that made the product read as a prototype.
+
+   WHAT THE COLOURS MEAN, and the rule that keeps them honest:
+     ground      near-black page, charcoal panels, matte, no gloss
+     ink         warm ivory, three steps down to a quiet meta grey
+     line        hairlines only — a border is the last resort, not the first
+     ACCENT      active and positive state. Nothing else. Not a heading,
+                 not a rule, not a decorative stamp, not a readout. If it
+                 is not "this is on, this is yours, this worked", it is ink.
+     caution     amber, and only for caution and destructive actions
+     danger      the red of a voided stamp and a destructive confirm
+
+   THE PICK. The accent is one value: --gr-accent-rgb, with its dark form
+   beside it. Three candidates ship below; the one on :root is the one in
+   force, and the two [data-accent] blocks override it so the same page
+   can be seen in all three (?accent=dusk, ?accent=jade — index.html
+   stamps the attribute). Choosing is editing the :root pair, and it
+   reaches the front door, the creator, the HUD, the pause sheet, the
+   manual and the dev log together, because they all read from here.
+
+   CANDIDATES
+     signal  111,200,220  a cool instrument cyan. The city is markets,
+                          chain reads and transit: this reads as the
+                          instrumentation it actually is, and it is the
+                          furthest thing from an acid green.
+     dusk    156,140,242  a night violet. The most premium of the three
+                          and the biggest break from every crime-game
+                          palette; louder against ivory.
+     jade     95,184,148  a calm, blue-leaning green. Keeps the "go"
+                          reading a green gives for free, desaturated far
+                          below the lime it replaces.
+   ===================================================================== */
+
+:root {
+  /* ---- THE ACCENT — change these two lines and the product changes ---- */
+  --gr-accent-rgb: 111, 200, 220;   /* signal */
+  --gr-accent-dk:  #2d6b7b;
+
+  /* ---- the ground ---- */
+  --gr-void:      #08090a;
+  --gr-bg:        #0b0c0e;
+  --gr-panel:     #131619;
+  --gr-panel-hi:  #1a1e22;
+  --gr-panel-a:   rgba(19, 22, 25, .88);
+  --gr-panel-a6:  rgba(19, 22, 25, .60);
+
+  /* ---- the line: minimal, and mostly absent ---- */
+  --gr-line:      rgba(237, 230, 214, .10);
+  --gr-line-2:    rgba(237, 230, 214, .18);
+  --gr-line-3:    rgba(237, 230, 214, .30);
+
+  /* ---- the ink: warm ivory, down to meta grey ---- */
+  --gr-ink:       #ede6d6;
+  --gr-ink-2:     #b6b0a3;
+  --gr-ink-3:     #7f7b73;
+  --gr-ink-4:     #5c5954;
+
+  /* ---- derived from the accent: never hand-written ---- */
+  --gr-accent:    rgb(var(--gr-accent-rgb));
+  --gr-accent-a:  rgba(var(--gr-accent-rgb), .14);
+  --gr-accent-a2: rgba(var(--gr-accent-rgb), .26);
+  --gr-accent-a4: rgba(var(--gr-accent-rgb), .45);
+  --gr-on-accent: #06181d;          /* type laid on a filled accent */
+
+  /* ---- THE PRIMARY BUTTON, AND IT IS A TOKEN BECAUSE THERE ARE TWO OF IT.
+     PLAY GRIFT in the manual and CONNECT WALLET on the front door are the
+     same control wearing two class names — .gr-btn-primary in css/guide.css
+     and .fd-btn-primary in css/landing.css, scoped apart because one
+     stylesheet lives under #landing and the other does not. These four values
+     are what stops them drifting into two different buttons.
+
+     THE FILL IS NOT PURE IVORY, AND THAT WAS A CHOICE MADE ON A PICTURE.
+     Three were rendered at this shape against the manual's flat black and
+     against the front page's sunset plates, scrimmed and bare:
+       cream #ede6d6    reads everywhere and is the loudest thing on either
+                        page — a flashbulb on flat black
+       muted  #d8cdb6   sits in the palette; on the brightest plate its fill
+                        comes close to the ochre behind it, which is what the
+                        edge below is for
+       outlined         elegant on black, and on a bright sunset frame the
+                        hairline all but disappears. A primary action that
+                        needs a hover to be seen is not a primary action.
+     The muted one ships. The edge is a step darker than the fill and exists
+     only for the bright-plate case; on black it is invisible. ---- */
+  --gr-btn-fill:   #d8cdb6;
+  --gr-btn-ink:    #0d0c09;
+  --gr-btn-hi:     #e7dfcc;
+  --gr-btn-edge:   #c9bda4;
+  --gr-btn-radius: 999px;
+
+  /* ---- caution and destruction, and nothing else wears these ---- */
+  --gr-caution:   #e0a33c;
+  --gr-danger:    #d8564f;
+
+  /* ---- the faces ---- */
+  /* the pixel display carries the title and key labels ONLY */
+  --gr-display: 'Pixelify Sans', 'Arial Narrow', sans-serif;
+  /* a cleaner face for body and controls */
+  --gr-body: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  /* and a mono for data that has to line up: addresses, ids, figures */
+  --gr-data: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  /* THE NAME THE TERMINALS ASK FOR. css/casefile.css reaches for --gr-mono in
+     fifteen rules — the exchange's tape, its listing symbols, the selected
+     name, the range buttons, the field-grid labels and the footer, and the
+     bar's ledger screen alongside them — and nothing has ever defined it. An
+     undefined custom property is not an error: the declaration is simply
+     invalid at computed-value time and font-family falls back to what the
+     element inherits, which on those screens is --gr-body. So every one of
+     those "mono" readouts has been rendering in the body sans since the day it
+     shipped, and the figures they exist to line up have not been lining up.
+     It is an alias, not a new face: --gr-data is already documented as the
+     mono for data that has to line up, and --cf-mono has pointed at it all
+     along. */
+  --gr-mono: var(--gr-data);
+}
+
+:root[data-accent="dusk"] { --gr-accent-rgb: 156, 140, 242; --gr-accent-dk: #4c4192; --gr-on-accent: #0e0a20; }
+:root[data-accent="jade"] { --gr-accent-rgb:  95, 184, 148; --gr-accent-dk: #2d6a55; --gr-on-accent: #05170f; }
+
+/* the pixel face, declared once for every page that links this file */
+@font-face {
+  font-family: 'Pixelify Sans';
+  src: url('../fonts/pixelifysans.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}

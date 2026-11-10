@@ -1,0 +1,191 @@
+/* Presentation for the credit line and bank only. Data and transaction code stay in their original modules. */
+.gr-finance {
+  --gr-bg:#151714; --gr-void:#151714; --gr-panel:#20251e; --gr-panel-hi:#2b3127;
+  --gr-ink:#e5d8bb; --gr-ink-2:#c0bead; --gr-ink-3:#a8aa98; --gr-ink-4:#9a9e8b;
+  --gr-accent:#d2a369; --gr-burn:#df9a7e; --gr-line:#a2a58126; --gr-line-2:#a2a5814d;
+  --el-warm:#d2a369; --el-warm-a:#a2a58126; --el-warm-b:#a2a58155; --el-own:#c7bea0;
+  margin:0; padding:0; background:#151714; color:var(--gr-ink-2); font-family:var(--gr-body);
+  -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.6;
+}
+.gr-finance * {box-sizing:border-box}
+.gr-finance a {color:inherit;text-decoration:none;text-underline-offset:4px}
+.gr-finance a:hover {color:#f0d6af}
+.gr-finance :focus-visible {outline:2px solid #d2a369;outline-offset:5px}
+.gr-finance [id] {scroll-margin-top:28px}
+.gr-finance [hidden] {display:none!important}
+.gr-finance .finance-header {display:flex;align-items:center;justify-content:space-between;gap:28px;padding:20px 4vw;border-bottom:1px solid var(--gr-line)}
+.gr-finance .finance-brand {display:flex;align-items:center;gap:23px;font:600 30px/1 var(--gr-display);letter-spacing:-1px;color:var(--gr-ink)}
+.gr-finance .finance-brand span {border-left:1px solid #8b907a55;padding-left:23px;font:9px var(--gr-mono);letter-spacing:.16em;color:#a4a58f}
+.gr-finance .finance-header nav {display:flex;align-items:center;gap:30px;font:11px var(--gr-body)}
+.gr-finance .finance-header nav a[aria-current] {color:#e6c294}
+.gr-finance .finance-shell {max-width:1540px;margin:auto;padding:0 4vw}
+.gr-finance .finance-breadcrumb {padding-top:30px;font:9px var(--gr-mono);letter-spacing:.14em;color:#a5a58f}
+.gr-finance .finance-breadcrumb span {margin:0 14px;color:#6f7864}
+.gr-finance h1,.gr-finance h2 {color:var(--gr-ink);font-family:var(--gr-display);font-weight:500;letter-spacing:-.025em}
+.gr-finance h2 {font-size:32px;line-height:1.12;margin:12px 0 20px}
+.gr-finance .credit-hero {display:grid;grid-template-columns:1fr 1fr;gap:7vw;align-items:center;padding:42px 0 44px}
+.gr-finance .testnet {display:inline-block;font:9px var(--gr-mono);letter-spacing:.12em;color:#d2b38c;border:1px solid #9c7e4f66;padding:7px 10px;background:#ac844213}
+.gr-finance .credit-intro h1 {font-size:clamp(46px,5.7vw,86px);line-height:.99;margin:23px 0 20px}
+.gr-finance .credit-intro h1 em {font-style:normal;color:#b9c4a6}
+.gr-finance .credit-deck {font-size:15px;line-height:1.8;max-width:43ch;color:#b4b7a6;margin:0}
+.gr-finance .finance-actions {display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-top:25px}
+.gr-finance .finance-button {background:#d2a369;color:#201d15;padding:13px 18px;min-height:46px;font-size:12px;border:1px solid #d2a369;border-radius:2px;display:flex;gap:28px;align-items:center;transition:background .18s}
+.gr-finance .finance-button:hover {background:#e5b780;color:#201d15}
+.gr-finance .finance-text-link {font-size:11px;color:#c6c8b4}
+.gr-finance .testnet-note {font:8px var(--gr-mono);letter-spacing:.1em;color:#9d9d89;margin:17px 0 0}
+.gr-finance .credit-progression {position:relative;padding:26px 30px 22px;background:radial-gradient(ellipse at 80% 15%,#8b92562b,transparent 65%),linear-gradient(130deg,#353c2b,#21281e);border:1px solid #89937044;border-radius:2px 2px 28px 2px;box-shadow:0 20px 55px #050b0626}
+.gr-finance .finance-section-top {display:flex;align-items:center;justify-content:space-between;gap:24px}
+.gr-finance .finance-label {font:9px/1.6 var(--gr-mono);letter-spacing:.1em;color:#b9ae92}
+.gr-finance .finance-section-top h2 {margin:0 0 14px}
+.gr-finance .finance-section-top>div h2 {margin:8px 0 20px}
+.gr-finance .credit-progression h2 {margin:22px 0 12px;font-size:32px;line-height:1.08}
+.gr-finance .ladder {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:end;min-height:170px;margin:0;padding:12px 0 0;border-bottom:1px solid #bdc8a550}
+.gr-finance .rung {position:relative;display:flex;flex-direction:column;justify-content:space-between;min-width:0;height:150px;padding:14px 9px 12px;background:linear-gradient(145deg,#75816588,#4e5e4144);border:1px solid #abbc8a66;border-bottom:0;transition:background .2s,transform .2s}
+.gr-finance .rung:nth-child(2) {height:132px;background:linear-gradient(145deg,#8a926999,#62744c44)}
+.gr-finance .rung:nth-child(3) {height:114px;background:linear-gradient(145deg,#9c9e7199,#75825055)}
+.gr-finance .rung:nth-child(4) {height:96px;background:linear-gradient(145deg,#acaa7799,#89895a55)}
+.gr-finance .rung:nth-child(5) {height:78px;background:linear-gradient(145deg,#d2b781aa,#a69a6655)}
+.gr-finance .rung .p {font:32px/1 var(--gr-display);color:#efdfb9}
+.gr-finance .rung .n {font:8px/1.5 var(--gr-mono);color:#d4d7bc;text-transform:uppercase;letter-spacing:.02em}
+.gr-finance .rung:hover {background:#a4b38266;transform:translateY(-3px)}
+.gr-finance .rung.now {outline:2px solid #f0ce92;outline-offset:3px;background:#a68c5066}
+.gr-finance .rung.now::before {content:'SELECTED';position:absolute;top:-20px;left:0;font:7px var(--gr-mono);color:#f0ce92;letter-spacing:.06em}
+.gr-finance .ladder-caption {display:flex;justify-content:space-between;font:7px var(--gr-mono);letter-spacing:.12em;color:#bdc4a5;padding-top:12px}
+.gr-finance .credit-progression>p {font-size:11px;line-height:1.65;max-width:48ch;margin:16px 0 0;color:#b0b7a0}
+.gr-finance .credit-pool {border-top:1px solid #a2a58155;padding-top:24px;padding-bottom:30px}
+.gr-finance .credit-pool h2 {font-size:24px;margin:0}
+.gr-finance .bar {display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;font:9px/1.6 var(--gr-mono);color:#a9ad9a;margin:16px 0 22px;border-bottom:1px solid var(--gr-line);padding-bottom:15px}
+.gr-finance .bar b {font-weight:500;color:#e0d8bd}
+.gr-finance .bar .st {margin-left:auto}
+.gr-finance .tiles {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.gr-finance .tile {min-width:0;padding:20px 22px;border-left:1px solid var(--gr-line);border-bottom:1px solid var(--gr-line)}
+.gr-finance .tile:nth-child(4n+1) {border-left:0;padding-left:0}
+.gr-finance .tile:nth-child(n+5) {border-bottom:0;padding-bottom:7px}
+.gr-finance .tile .k {font:8px/1.6 var(--gr-mono);letter-spacing:.09em;text-transform:uppercase;color:#a8ae97}
+.gr-finance .tile .v {font:38px/1.2 var(--gr-display);color:#e5d8bb;margin:9px 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.gr-finance .tile:first-child .v {color:#c6d2b0}
+.gr-finance .tile:nth-child(n+5) .v {font-size:26px}
+.gr-finance .tile .t {font:10px/1.6 var(--gr-mono);color:#a3a692;overflow-wrap:anywhere}
+.gr-finance .credit-lookup {display:grid;grid-template-columns:1fr 1fr;gap:0 40px;align-items:center;padding:30px;background:linear-gradient(100deg,#3f473455,#242b2055);border:1px solid #a2a58144;border-left:3px solid #a4aa7d;scroll-margin-top:20px}
+.gr-finance .lookup-heading h2 {font-size:28px;margin:8px 0}
+.gr-finance .lookup-heading p {font-size:12px;color:#aeb3a0;margin:0}
+.gr-finance .check {margin:0;min-width:0}
+.gr-finance .check label {display:block;font:8px var(--gr-mono);letter-spacing:.1em;margin-bottom:9px;color:#b8baa2}
+.gr-finance .check-field {display:flex;min-width:0;border:1px solid #8f947166;background:#151b14;padding:5px}
+.gr-finance .check input {flex:1;min-width:0;width:100%;color:#eee3c9;background:none;border:0;padding:10px;font:11px var(--gr-mono)}
+.gr-finance .check input::placeholder {color:#949d87}
+.gr-finance .check button {cursor:pointer;white-space:nowrap;border:0;background:#c4ac7c;color:#1c241b;padding:11px 15px;font:11px var(--gr-body);transition:background .2s}
+.gr-finance .check button:hover {background:#e3c38e}
+.gr-finance #agentcard {grid-column:1/-1;min-width:0;overflow-x:auto}
+.gr-finance .agentcard {font:12px/1.9 var(--gr-mono);padding-top:22px;margin-top:22px;border-top:1px solid #a2a58144;overflow-wrap:anywhere}
+.gr-finance .agentcard b {color:#e5d8bb}
+.gr-finance .finance-index {display:flex;gap:35px;align-items:center;border-bottom:1px solid var(--gr-line);padding:24px 0;margin:8px 0 0}
+.gr-finance .finance-index a {font-size:11px;color:#c4c8b4}
+.gr-finance .finance-index span {font:8px var(--gr-mono);color:#8d967d;margin-left:12px}
+.gr-finance .finance-ledger {padding:34px 0;border-bottom:1px solid var(--gr-line)}
+.gr-finance .scroll {overflow:auto;max-width:100%;border:1px solid #8b927833;background:#192017;scrollbar-color:#657057 #192017}
+.gr-finance table {width:100%;border-collapse:collapse;font:11px/1.5 var(--gr-mono);font-variant-numeric:tabular-nums}
+.gr-finance th,.gr-finance td {padding:15px 17px;text-align:left;vertical-align:middle;white-space:nowrap;border-bottom:1px solid #a2a58124}
+.gr-finance th {font-weight:400;font-size:8px;letter-spacing:.07em;text-transform:uppercase;background:#2b3326;color:#bdc3a9;padding-top:13px;padding-bottom:13px}
+.gr-finance tr:last-child td {border-bottom:0}
+.gr-finance tbody tr {transition:background .18s}
+.gr-finance tbody tr:hover {background:#b8bb8620}
+.gr-finance td a {color:#d3bc8c}
+.gr-finance td a:hover {text-decoration:underline}
+.gr-finance .ok {color:#c8d9b5}
+.gr-finance .bad {color:#e5a18a}
+.gr-finance .dim {color:#9ba58e}
+.gr-finance .err {font:12px/1.6 var(--gr-mono);padding:15px;border-left:2px solid #d58d73;background:#b16f5320;margin:16px 0;color:#e3b59b}
+.gr-finance .note {font-size:13px;line-height:1.9;color:#aeb39e;margin:10px 0;overflow-wrap:anywhere}
+.gr-finance .credit-mechanics {display:grid;grid-template-columns:1fr 1.6fr;gap:0 70px;padding:36px 0;border-bottom:1px solid var(--gr-line)}
+.gr-finance .credit-mechanics>.finance-label {grid-column:1/-1}
+.gr-finance .credit-mechanics h2 {font-size:36px;margin-top:15px}
+.gr-finance .credit-developer {display:grid;grid-template-columns:1.3fr 1fr;gap:70px;padding:36px 0}
+.gr-finance .credit-developer h2 {font-size:28px}
+.gr-finance code {font:11px/1.7 var(--gr-mono);color:#d7c69c;overflow-wrap:anywhere}
+.gr-finance .finance-footer {display:flex;align-items:flex-start;gap:40px;padding:26px 0 35px;border-top:1px solid #a2a58144}
+.gr-finance .finance-footer .finance-brand {font-size:23px}
+.gr-finance .finance-footer p {font-size:10px;line-height:1.8;max-width:80ch;margin:0}
+.gr-finance .finance-footer>a:last-child {font-size:11px;white-space:nowrap;margin-left:auto}
+/* Bank: retain the original navigation, data components and entire book. */
+.bank-finance #landing {background:#151714;color:var(--gr-ink-2);font-family:var(--gr-body)}
+.bank-finance #landing::after {display:none}
+.bank-finance #landing .fd-head {position:relative;background:#151714;border-bottom:1px solid #a2a58133;padding:18px 4vw;min-height:70px;backdrop-filter:none}
+.bank-finance #landing .fd-hmark {font-size:30px;color:#e5d8bb}
+.bank-finance .bank-finance-nav {display:flex;gap:32px;padding:22px 4vw 0;font:11px var(--gr-body);flex-wrap:wrap}
+.bank-finance .bank-finance-nav a[aria-current] {color:#e6c294}
+.bank-finance .bank-finance-nav span {font:8px var(--gr-mono);margin-left:8px;color:#b5a27d}
+.bank-finance .el-shell {width:92%;max-width:1416px}
+.bank-finance .el-top {min-height:410px;justify-content:center;max-width:1540px;margin:auto}
+.bank-finance .el-hero {padding:50px 0 40px}
+.bank-finance .el-k {font:9px var(--gr-mono);letter-spacing:.15em;color:#bba982;margin-bottom:24px}
+.bank-finance .el-h1 {font-size:clamp(42px,5vw,74px);max-width:60%;line-height:1.03;color:#e5d8bb;font-weight:500}
+.bank-finance .el-sub {max-width:52%;font-size:14px;line-height:1.8;color:#b1b6a3;margin:20px 0}
+.bank-finance .el-clock {max-width:57%;gap:8px}
+.bank-finance .el-chip {border-radius:2px;font:9px/1.5 var(--gr-mono);padding:7px 10px;background:#293123;border-color:#7c896144;color:#bbc4a7}
+.bank-finance .el-chip.now {background:#3a412a;border-color:#9d9d6655;color:#ddd0a6}
+.bank-finance .bank-atlas {position:absolute;right:0;top:35px;bottom:20px;width:46%;margin:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse,#86916a26,transparent 65%)}
+.bank-finance .bank-atlas img {width:100%;height:90%;object-fit:contain;filter:drop-shadow(0 20px 16px #0006)}
+.bank-finance .bank-atlas figcaption {font:8px var(--gr-mono);letter-spacing:.13em;color:#b9b694}
+.bank-finance .el-band {border-color:#a2a58133;padding:32px 0}
+.bank-finance .el-band:nth-of-type(3n) {background:#29302333}
+.bank-finance .el-lab {align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}
+.bank-finance .el-lab h2 {font-size:30px;font-weight:500;max-width:42%;line-height:1.15}
+.bank-finance .el-lab p {font:12px/1.8 var(--gr-body);max-width:62ch;color:#aab19d}
+.bank-finance .el-scroll {border:1px solid #8b927833;border-radius:0;background:#192017;overflow:auto}
+.bank-finance .el-table {font:11px/1.6 var(--gr-mono)}
+.bank-finance .el-table th {font:8px/1.5 var(--gr-mono);background:#2b3326}
+.bank-finance .el-table td,.bank-finance .el-table th {padding:14px 16px;border-color:#a2a58124}
+.bank-finance .el-nums {gap:0;border-bottom:1px solid var(--gr-line);grid-template-columns:repeat(4,minmax(0,1fr));margin:20px 0}
+.bank-finance .el-num {border:0;border-radius:0;border-bottom:1px solid var(--gr-line);border-right:1px solid var(--gr-line);background:none;padding:22px 24px}
+.bank-finance .el-num dt {font:9px var(--gr-mono);color:#abb29c;text-transform:uppercase;letter-spacing:.08em}
+.bank-finance .el-num dd {font:38px/1.2 var(--gr-display);color:#e5d8bb;margin:8px 0 0}
+.bank-finance .el-num small {font:10px/1.6 var(--gr-mono);color:#a2ac92;margin-top:10px}
+.bank-finance .el-empty {border:1px solid var(--gr-line);border-radius:2px;background:#22291e;padding:24px;color:#b9c1aa}
+.bank-finance .el-st {border-radius:2px;font:9px/1.6 var(--gr-mono);letter-spacing:0}
+.bank-finance .bk-spark {height:160px;max-width:none;background:#29302333;padding:15px;margin-top:25px}
+.bank-finance .pl-why>div {background:#262f2055;border:0;border-left:2px solid #929b7166;border-radius:0;padding:20px}
+.bank-finance .bk-how {columns:2;column-gap:60px;font-size:13px;line-height:1.8}
+.bank-finance .bk-how li {break-inside:avoid;margin-bottom:22px}
+.bank-finance .cr-verify input,.bank-finance .cr-verify button {border-radius:2px}
+.bank-finance .fd-bottom {color:#a8ae97;font:9px/1.8 var(--gr-mono)}
+@media(min-width:1650px) {.gr-finance .credit-hero {gap:110px}}
+@media(max-width:1050px) {
+  .gr-finance .credit-hero {gap:35px}.gr-finance .credit-progression {padding:22px 20px}.gr-finance .rung {padding:12px 6px}.gr-finance .rung .p {font-size:27px}
+  .gr-finance .credit-intro h1 {font-size:58px}.gr-finance .finance-actions {gap:18px}.gr-finance .tile .v {font-size:32px}
+  .gr-finance .credit-lookup {grid-template-columns:1fr;gap:24px}.gr-finance .finance-section-top>.finance-label {max-width:180px;text-align:right}
+  .bank-finance .el-lab p {max-width:52%}.bank-finance .el-num {padding:18px 14px}.bank-finance .el-num dd {font-size:30px}
+}
+@media(max-width:700px) {
+  .gr-finance .finance-header {padding:18px 20px;gap:15px}.gr-finance .finance-brand span {display:none}.gr-finance .finance-header nav {gap:18px;font-size:10px}.gr-finance .finance-header nav a:last-child {display:none}
+  /* seven links on /hedgehood and /longbow since Borro joined: "Credit line" (one tap from /credit) goes too on a phone, never on its own page */
+  .gr-finance .finance-header nav a[href="/credit-line"]:not([aria-current]) {display:none}
+  .gr-finance .finance-shell {padding:0 20px}.gr-finance .finance-breadcrumb {font-size:7px;padding-top:24px}.gr-finance .finance-breadcrumb span {margin:0 8px}
+  .gr-finance .credit-hero {grid-template-columns:1fr;padding:30px 0;gap:32px}.gr-finance .credit-intro h1 {font-size:58px}.gr-finance .credit-deck {font-size:14px}
+  .gr-finance .credit-progression {padding:22px}.gr-finance .credit-progression h2 {font-size:30px}.gr-finance .ladder {gap:8px}.gr-finance .rung .p {font-size:clamp(14px,4vw,18px);letter-spacing:-.04em}.gr-finance .rung .n {font-size:7px}
+  .gr-finance .tiles {grid-template-columns:repeat(2,minmax(0,1fr))}.gr-finance .tile {padding:18px 14px}.gr-finance .tile:nth-child(2n+1) {border-left:0;padding-left:0}.gr-finance .tile:nth-child(n+5) {border-bottom:1px solid var(--gr-line);padding-bottom:18px}.gr-finance .tile .v {font-size:31px}.gr-finance .tile:nth-child(n+5) .v {font-size:24px}
+  .gr-finance .finance-section-top {align-items:flex-start;gap:14px}.gr-finance .credit-pool .finance-label {font-size:7px;max-width:130px}.gr-finance .bar .st {margin-left:0}
+  .gr-finance .credit-lookup {padding:22px 18px}.gr-finance .lookup-heading h2 {font-size:28px}.gr-finance .check-field {flex-wrap:wrap;gap:5px}.gr-finance .check input {flex-basis:100%;padding:12px 8px}.gr-finance .check button {width:100%;min-height:44px}
+  .gr-finance .finance-index {gap:18px;flex-wrap:wrap;padding:20px 0}.gr-finance .finance-index span {display:none}.gr-finance .finance-index a {font-size:10px}
+  .gr-finance .finance-ledger .finance-section-top {display:block}.gr-finance .finance-ledger .finance-section-top>.finance-label {display:block;max-width:none;text-align:left;margin:0 0 15px;font-size:7px}.gr-finance h2 {font-size:29px}
+  .gr-finance .credit-mechanics,.gr-finance .credit-developer {grid-template-columns:1fr;gap:12px}.gr-finance .credit-mechanics h2 {margin-bottom:0}.gr-finance .credit-developer {gap:32px}
+  .gr-finance .finance-footer {flex-wrap:wrap;gap:20px}.gr-finance .finance-footer p {order:3}.gr-finance .finance-footer>a:last-child {white-space:normal}
+  .bank-finance .bank-finance-nav {gap:16px;padding:20px 20px 0;font-size:10px}.bank-finance .bank-finance-nav a:last-child {display:none}
+  .bank-finance .el-shell {width:calc(100% - 40px)}.bank-finance .el-top {overflow:visible}.bank-finance .el-hero {padding-top:35px}.bank-finance .el-h1 {max-width:none;font-size:48px}.bank-finance .el-sub,.bank-finance .el-clock {max-width:none}
+  .bank-finance .bank-atlas {position:relative;order:2;top:auto;right:auto;width:100%;height:260px;margin-top:-25px;margin-bottom:24px}
+  .bank-finance .el-lab {display:block}.bank-finance .el-lab h2 {max-width:none;margin-bottom:14px}.bank-finance .el-lab p {max-width:none}
+  .bank-finance .el-nums {grid-template-columns:repeat(2,minmax(0,1fr))}.bank-finance .el-num {padding:18px 12px}.bank-finance .el-num dd {font-size:30px}.bank-finance .bk-how {columns:1}
+}
+@media(prefers-reduced-motion:reduce) {.gr-finance * {scroll-behavior:auto!important;transition:none!important}}
+
+/* Long default outcomes wrap; explorer links remain reachable without losing the other columns. */
+.credit-finance #loans td:nth-child(4) {white-space:normal;min-width:130px}
+.credit-finance #loans td:nth-child(8) {white-space:normal;min-width:175px;max-width:220px}
+.credit-finance #loans td,.credit-finance #loans th {padding-left:12px;padding-right:12px}
+
+/* The credit bureau (/credit): best and worst side by side; quoted words wrap. */
+.bureau-finance .bureau-pair {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.bureau-finance .bureau-pair>div {min-width:0}
+.bureau-finance .bureau-pair .finance-label {display:block;margin-bottom:10px}
+.bureau-finance td.wrap {white-space:normal;min-width:180px;max-width:300px}
+@media(max-width:1050px) {.bureau-finance .bureau-pair {grid-template-columns:minmax(0,1fr)}}

@@ -1,0 +1,691 @@
+/* =====================================================================
+   GRIFTEX CITY — THE FRONT DOOR.
+
+   The screen: the hero, the two ways in, the status strip, over a
+   rotation of frames from the running city. Under it, the page: what
+   the city runs, in its own frames, and the manual.
+
+   Two things this file got wrong when the door was one still screen,
+   both fixed here and both worth naming:
+
+   THE PLATE WAS INVISIBLE. brightness(.66) and a six-pixel blur under
+   a scrim at .92 is not a dark city, it is a black page with grain on
+   it — the best frame the game has, on the screen, unreadable. The
+   grade opens up and the scrim became a wipe across the frame: held
+   down under the copy, let go over the far side.
+
+   THE PAGE ENDED AT THE FOLD. A reader not ready to press a door had
+   nowhere to go and nothing to read. The sections are back under it.
+
+   Every colour and face comes from css/palette.css. The accent appears
+   on this screen in the alpha dot, a door under the pointer, a link
+   under the pointer, and the section kickers. Everything else is ink.
+
+   The layer sits over the game canvas at z 80; js/landing.js takes it
+   away when a door is used, and owns the rotation.
+   ===================================================================== */
+
+#landing {
+  position: fixed; inset: 0; z-index: 80;
+  display: block;
+  overflow-y: auto; overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  background: var(--gr-void);
+  color: var(--gr-ink);
+  font-family: var(--gr-body);
+  -webkit-font-smoothing: antialiased;
+  font-synthesis: none;
+  opacity: 1; transition: opacity .38s ease;
+}
+#landing.gone { opacity: 0; pointer-events: none; }
+#landing a { color: inherit; text-decoration: none; }
+#landing :focus-visible { outline: 2px solid var(--gr-accent); outline-offset: 3px; }
+
+/* ---- the header: pills over the art, never a bar across it ----------
+   A solid strip along the top edge would put a band of panel over the frame,
+   and the frame is the product. Three floating pieces instead, with a
+   translucent fill and a blur so the city reads through them.
+
+   FIXED, AND OVER THE HERO RATHER THAN ABOVE IT. The hero is not pushed
+   down — .fd-hero's own top padding is what leaves the room, so the copy
+   stays centred in the screen. z 10 clears the hero's z 2 and stays well
+   under the wallet chooser's z 120.
+
+   THE FILL FIRMS UP ONCE SCROLLED, and that is not decoration: over the
+   hero the plate is graded down under the copy, so links read at .42; over
+   the sections below, and over the bright side of a sunset frame, they do
+   not. js/landing.js puts .is-scrolled on #landing past the fold.
+
+   POINTER-EVENTS: NONE ON THE BAR, AUTO ON THE PIECES. The header spans the
+   full width and is fixed over the hero; without this, the empty air either
+   side of the pill would swallow every click meant for the page under it —
+   including, at the top of the screen, the hero itself. */
+.fd-head {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 18px 7vw; pointer-events: none;
+}
+.fd-head > * { pointer-events: auto; }
+#landing .fd-hmark {
+  justify-self: start;
+  font-family: var(--gr-display); font-weight: 700; font-size: 17px; letter-spacing: .04em;
+  color: var(--gr-ink-2); transition: color .16s ease;
+}
+#landing .fd-hmark:hover, #landing .fd-hmark:focus-visible { color: var(--gr-ink); }
+.fd-hpill {
+  justify-self: center;
+  display: flex; align-items: center; gap: 22px;
+  height: 42px; padding: 0 22px;
+  border: 1px solid var(--gr-line-2); border-radius: 999px;
+  /* .42 AND INK-3 WAS NOT ENOUGH, AND THE PICTURE SAID SO. Over the dark
+     plates it read; over the sunset frame, where the sky behind the pill is
+     the brightest thing on the screen, four grey capitals at .42 opacity were
+     barely there. The plate rotation means the pill is over a bright sky some
+     of the time whatever the scroll position, so the base fill carries it and
+     the scrolled state is still a step firmer on top. */
+  background: rgba(8, 9, 10, .56);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: background .2s ease, border-color .2s ease;
+}
+#landing.is-scrolled .fd-hpill { background: rgba(8, 9, 10, .8); border-color: var(--gr-line-3); }
+#landing .fd-hpill a {
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gr-ink-2); transition: color .16s ease;
+}
+#landing .fd-hpill a:hover, #landing .fd-hpill a:focus-visible { color: var(--gr-ink); }
+/* THE SEARCH CONTROL, RENDERED ONLY WHEN THERE IS A SEARCH TO OPEN. It opens
+   the guide's own search rather than a second box that filters a different
+   list; js/guidenav.js holds the route and holds null until that exists. An
+   icon that opens nothing is decoration, and decoration shaped like a control
+   is worse than a gap. */
+.fd-hsearch {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; margin: 0 -8px 0 -6px; padding: 0;
+  border: 0; border-radius: 999px; background: none; cursor: pointer;
+  color: var(--gr-ink-3); transition: color .16s ease, background .16s ease;
+}
+.fd-hsearch { color: var(--gr-ink-2); }
+.fd-hsearch:hover, .fd-hsearch:focus-visible { color: var(--gr-ink); background: rgba(237, 230, 214, .09); }
+.fd-hsearch svg { width: 14px; height: 14px; display: block; }
+/* ---- the header's right side -----------------------------------------
+   IT WAS EMPTY BY DESIGN AND IT STILL REPORTS NOTHING. No presence count, no
+   viewers, no live dot: this page shows what the world produced, and none of
+   those are. One glyph is the exception, and it shares the column with the
+   menu button rather than starting a second row — above 900px the burger is
+   display:none and the glyph stands alone; below it they sit side by side,
+   which is why this is a flex box and not a bare grid cell. */
+.fd-hright { grid-column: 3; justify-self: end; display: inline-flex; align-items: center; gap: 8px; }
+.fd-hx { width: 34px; height: 34px; }
+.fd-hx svg { width: 14px; height: 14px; }
+/* nothing at all until the pill will not fit */
+.fd-hburger, .fd-hsheet { display: none; }
+
+@media (max-width: 900px) {
+  .fd-head { grid-template-columns: auto 1fr auto; padding: 14px 22px; }
+  .fd-hpill { display: none; }
+  .fd-hburger {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 42px; height: 42px; padding: 0 11px;
+    border: 1px solid var(--gr-line-2); border-radius: 999px;
+    background: rgba(8, 9, 10, .55);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    cursor: pointer;
+  }
+  .fd-hburger span { display: block; height: 1px; background: var(--gr-ink-2); transition: transform .2s ease; }
+  .fd-hburger[aria-expanded="true"] span:first-child { transform: translateY(3px) rotate(45deg); }
+  .fd-hburger[aria-expanded="true"] span:last-child { transform: translateY(-3px) rotate(-45deg); }
+  /* A SHEET, NOT A TAKEOVER. It drops under the header and covers what it
+     needs to; the plate stays visible under and beside it, which is the whole
+     reason the header floats in the first place. */
+  .fd-hsheet {
+    grid-column: 1 / -1; margin-top: 12px; padding: 8px;
+    display: flex; flex-direction: column; gap: 2px;
+    border: 1px solid var(--gr-line-2); border-radius: 14px;
+    background: rgba(8, 9, 10, .93);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .fd-hsheet[hidden] { display: none; }
+  #landing .fd-hsheet a {
+    padding: 13px 14px; border-radius: 9px;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-2);
+  }
+  #landing .fd-hsheet a:hover, #landing .fd-hsheet a:focus-visible { color: var(--gr-ink); background: rgba(237, 230, 214, .08); }
+}
+
+/* ---- the screen: one viewport, the door on it ----------------------- */
+.fd-top {
+  position: relative; overflow: hidden;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+/* ---- the plates: nine frames, one at a time ------------------------- */
+.fd-plates { position: absolute; inset: 0; overflow: hidden; }
+.fd-plate {
+  position: absolute; inset: -3%;
+  background: #05060a center / cover no-repeat;
+  /* THE IMAGE IS NAMED INLINE, TWICE — see index.html's .fd-plate elements.
+     A browser without image-set() keeps the plain url(); everything since
+     ~2021 takes the webp from the image-set() that follows it. No
+     User-Agent sniff, no server rewrite, no script.
+
+     IT IS WRITTEN OUT RATHER THAN BUILT FROM CUSTOM PROPERTIES, and that is
+     not a style preference. image-set(var(--w) ...) parses, computes, and
+     shows up correctly in getComputedStyle — and never loads the image.
+     The hero came out plain black. Measured, not assumed: the first cut of
+     this change shipped var() and the landing lost its photograph.
+
+     Both bakes are 1280x720 (tools/bake-landing-art.mjs). The box is wider
+     than that at large viewports, but the blur below throws away everything
+     finer than about 5 px, so those extra pixels never reached the glass. */
+  /* a city, legibly. The blur is enough to keep type off texture and no
+     more; the brightness is the frame's own. */
+  filter: blur(2.5px) saturate(.92) brightness(.94) contrast(1.03);
+  transform: scale(1.04);
+  opacity: 0; transition: opacity 1.5s ease;
+  will-change: opacity;
+}
+.fd-plate.is-on { opacity: 1; }
+
+/* the copy side goes down so ivory reads without a panel behind it; the
+   far side is let go, so the frame behind the doors is a place */
+.fd-vignette {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(100deg, rgba(6,7,9,.90) 0%, rgba(6,7,9,.68) 32%, rgba(6,7,9,.18) 64%, rgba(6,7,9,.34) 100%),
+    linear-gradient(to top, rgba(6,7,9,.74) 0%, rgba(6,7,9,0) 30%),
+    radial-gradient(130% 100% at 46% 46%, rgba(6,7,9,0) 48%, rgba(6,7,9,.46) 100%);
+}
+/* a fine grain, so the blur reads as film rather than as a blurred JPEG */
+.fd-grain {
+  position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+}
+
+/* ---- the hero ------------------------------------------------------- */
+/* THE BOTTOM PADDING PAID FOR THE METADATA BLOCK. 150px of air under the
+   links was sized for a hero that ended at a link row; the block is 100px of
+   real content in the same place now, and leaving both put .fd-top 78px
+   taller than the viewport at 1440x900 — which pushed THE CITY BELOW and the
+   status strip off the bottom of the screen. Neither of those was asked to
+   move, and a scroll cue you have to scroll to find is not a cue. */
+/* AND THE TOP PADDING IS WHAT THE FLOATING HEADER SITS IN. The header is
+   fixed and takes no space in the flow, so this is the only thing keeping
+   OPEN ALPHA out from under the nav pill: 18px of offset plus a 42px pill
+   is 60, and the rest is air the eyebrow wanted anyway. */
+.fd-hero {
+  position: relative; z-index: 2;
+  width: min(100% - 12vw, 700px);
+  margin: 0 0 0 7vw;
+  /* 76 rather than 88: the header took 14px of the hero at the top and the
+     status strip sits at the bottom of .fd-top, so the difference came
+     straight off the bottom of the screen. 953 before this pass, 953 now. */
+  padding: 118px 0 76px;
+}
+.fd-eyebrow {
+  margin: 0 0 26px; display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--gr-ink-3);
+}
+.fd-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gr-accent); box-shadow: 0 0 0 3px var(--gr-accent-a);
+}
+.fd-title {
+  margin: 0; font-family: var(--gr-display); font-weight: 700;
+  font-size: clamp(64px, 9.4vw, 132px); line-height: .84; letter-spacing: -.04em;
+  color: var(--gr-ink);
+}
+.fd-enter {
+  margin: 18px 0 0; font-size: clamp(17px, 1.5vw, 21px); font-weight: 400;
+  letter-spacing: .01em; color: var(--gr-ink-2);
+}
+.fd-lede {
+  margin: 20px 0 0; max-width: 56ch;
+  font-size: 14.5px; line-height: 1.66; color: var(--gr-ink-2);
+}
+
+/* ---- the row: one door, one document, both sized to their labels -----
+   `flex: 1 1 0` is what used to be here, and it was right when the row held
+   two doors: CONNECT WALLET is shorter than PLAY AS DEFAULT was, so sizing to
+   text made the wallet visibly the smaller of two choices the product refused
+   to rank. There is one door now and the other button opens a page, so there
+   is no ranking left to avoid — and half of a 700px column is not a button,
+   it is a bar. They size to what is written on them.
+
+   EQUAL HEIGHT IS STRUCTURAL, NOT A COINCIDENCE OF PADDING. The row stretches
+   its children (flex default), the slot is itself a flex box so it passes the
+   stretch through to the button inside it, and .fd-doorname carries an
+   explicit line-height so the text box is the same in both whatever else is
+   in the button — CONTINUE also carries an address and an arrow. */
+.fd-doors { margin-top: 32px; display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; }
+#landing .fd-doorslot { display: flex; min-width: 0; flex: 0 0 auto; }
+#landing .fd-doorslot[hidden] { display: none; }
+.fd-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: auto;
+  box-sizing: border-box; padding: 18px 26px;
+  border-radius: var(--gr-btn-radius); border: 1px solid transparent;
+  font: inherit; cursor: pointer; white-space: nowrap;
+  /* position + overflow so the busy sweep below has a box to travel inside.
+     transform is on its own short curve: the press has to answer faster than
+     a colour fade, and .18s of ease is already a beat too slow for it. */
+  position: relative; overflow: hidden;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .07s ease-out, filter .07s ease-out;
+}
+.fd-btn .fd-doorname { font-size: 12.5px; line-height: 1; letter-spacing: .13em; text-transform: uppercase; }
+.fd-btnarrow { font-size: 12px; line-height: 1; opacity: .75; }
+.fd-btn b { font-family: var(--gr-data); font-size: 12px; font-weight: 400; letter-spacing: .04em; opacity: .8; }
+/* the filled one: ivory on the plate, the darkest ink on it.
+   SCOPED UNDER #landing, AND THAT IS THE WHOLE POINT OF THIS LINE. Line 41 of
+   this file says `#landing a { color: inherit; }`, which is (1,0,1) against
+   this rule's (0,1,0) — so the moment a .fd-btn-primary was an <a> rather than
+   a <button>, the id selector won and the label inherited the page's ivory. On
+   an ivory button that is an empty cream box.
+   It shipped that way: INSTALL METAMASK on the no-wallet gate is the one
+   action the one-door front page owes a visitor without an extension, and it
+   was a blank rectangle. connectgesture passed it, because it read the href.
+   Nobody reads an href. */
+/* AND THE FILL IS A TOKEN, NOT A COLOUR. It was var(--gr-ink) — the page's own
+   ivory, which made the button the brightest thing on the screen by a wide
+   margin. The four --gr-btn-* values in css/palette.css carry the reasoning
+   and are read by the manual's PLAY GRIFT as well, so the two cannot drift. */
+/* AND .fd-walletpick IS IN THE LIST BECAUSE THE SHEET IS NOT IN #landing.
+   js/landing.js appends the wallet sheet to document.body, so every rule
+   scoped to #landing misses it. Measured, with the install state open:
+   INSTALL METAMASK rendered rgb(0,0,238) on transparent — the browser's
+   default link blue — and the two buttons beside it rendered as grey OS
+   chrome. The shape came through because .fd-btn is unscoped; only the
+   colour was scoped away. This is the same bug as the ivory-on-ivory one
+   wearing different clothes: a rule that cannot reach the element it names. */
+#landing .fd-btn-primary, .fd-walletpick .fd-btn-primary { background: var(--gr-btn-fill); color: var(--gr-btn-ink); border-color: var(--gr-btn-edge); }
+#landing .fd-btn-primary:hover, #landing .fd-btn-primary:focus-visible,
+.fd-walletpick .fd-btn-primary:hover, .fd-walletpick .fd-btn-primary:focus-visible {
+  background: var(--gr-btn-hi); border-color: var(--gr-btn-hi); transform: translateY(-1px);
+}
+/* the outlined one: the same button, wearing the plate instead of covering it */
+/* A DOOR THAT IS NOT OPEN HERE: SPECTATE while SPECTATE_ENABLED has it shut
+   (COMING SOON), greyed and not pressable, but still in the row where it will be */
+#landing .fd-btn.fd-off { opacity: .42; pointer-events: none; cursor: default; filter: saturate(.4); }
+#landing .fd-btn-secondary, .fd-walletpick .fd-btn-secondary {
+  background: rgba(10, 11, 13, .34); color: var(--gr-ink); border-color: var(--gr-line-2);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+#landing .fd-btn-secondary:hover, #landing .fd-btn-secondary:focus-visible,
+.fd-walletpick .fd-btn-secondary:hover, .fd-walletpick .fd-btn-secondary:focus-visible {
+  border-color: var(--gr-ink-2); background: rgba(10, 11, 13, .56); transform: translateY(-1px);
+}
+/* A PRESS HAS TO LOOK PRESSED, AND IT HAS TO KEEP LOOKING IT.
+//
+// Two rounds of this now. It was opacity alone, which on a filled ivory button
+// over a moving plate is not a state change anybody can see. Then it was
+// opacity plus a 12px spinner, and the report came back the same: "it
+// eventually works but nothing visibly acknowledges the click."
+//
+// Three things were wrong with that.
+//
+// OPACITY IS A SHADE, NOT A STATE. .78 moves every pixel of the button a
+// little and none of them much. It also reads as DISABLED rather than as
+// working, which is the opposite of the message.
+//
+// THE ACKNOWLEDGEMENT WAITED FOR click. pointerdown fires first — a whole
+// input phase earlier, and on a main thread this busy that is a real gap. The
+// tactile half of the answer is now on pointerdown (.pressed) and the working
+// half on click (.busy), so the button moves under the finger before anything
+// has been decided about wallets.
+//
+// AND IT FROZE. A spinner whose animation is main-thread stops dead while the
+// world builds, so the one thing saying "still working" stops saying it
+// exactly when it is needed. transform and opacity animate on the COMPOSITOR:
+// the sweep below keeps travelling while the main thread is gone, which is the
+// state this page spends its first ten seconds in.
+*/
+.fd-btn.pressed { transform: translateY(1px) scale(.994); filter: brightness(.94); }
+.fd-btn.busy { pointer-events: none; cursor: progress; }
+.fd-btn.busy .fd-btnarrow { display: none; }
+/* the sweep: a band of the button's own ink crossing it, end to end */
+.fd-btn.busy::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 100%;
+  background: linear-gradient(90deg, transparent, currentColor 45%, currentColor 55%, transparent);
+  opacity: .26; pointer-events: none;
+  transform: translateX(-100%);
+  animation: fd-sweep 1.15s cubic-bezier(.45, 0, .2, 1) infinite;
+}
+@keyframes fd-sweep { to { transform: translateX(100%); } }
+.fd-btn.busy::after {
+  content: ''; width: 14px; height: 14px; flex: none;
+  border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%;
+  animation: fd-spin .7s linear infinite;
+}
+@keyframes fd-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  /* no travel and no spin, but the band still sits across the button so the
+     press is as legible as it is for everyone else — the state must not be
+     carried by the motion alone */
+  .fd-btn.busy::before { animation: none; transform: none; opacity: .18; }
+  .fd-btn.busy::after { animation: none; border-top-color: currentColor; opacity: .5; }
+  .fd-btn.pressed { transform: none; }
+}
+
+/* ONE LINE UNDER THE BUTTONS, AND IT USED TO BE TWO. .fd-terms sat under
+   this at 11px in a dimmer ink carrying the disclaimer, and two stacked
+   paragraphs of small print under a button is a terms panel however true each
+   of them is. Both sentences are in this one now; the rule and the class are
+   gone rather than left behind empty. */
+.fd-doorsline { margin: 16px 0 0; max-width: 64ch; font-size: 11.5px; line-height: 1.65; letter-spacing: .01em; color: var(--gr-ink-3); }
+.fd-doornote { margin: 8px 0 0; font-size: 11px; color: var(--gr-caution); }
+.fd-doornote:empty { display: none; }
+/* "no wallet found on this browser. install MetaMask" — the one note that
+   carries a link, and the link has to look like one or it is another dead end */
+.fd-doornote a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.fd-doornote a:hover, .fd-doornote a:focus-visible { color: var(--gr-ink, #ece5d5); }
+
+/* ---- the quiet links: pages to read, never a way in -----------------
+   NO RULE UNDER THEM ANY MORE. Each carried a 1px border-bottom, which is an
+   underline, and a row of underlined capitals sitting directly beneath a pair
+   of buttons reads as a third and fourth thing to press. They are a text row
+   now, separated by a middot the way the status strip separates its chips.
+   The hover accent and the focus ring are the whole of the affordance, which
+   is the right amount for a link that is deliberately not a door. */
+.fd-links { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.fd-links .fd-sep { font-size: 10.5px; color: var(--gr-ink-4); opacity: .55; }
+#landing .fd-links a {
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-3);
+  transition: color .16s ease;
+}
+#landing .fd-links a:hover, #landing .fd-links a:focus-visible { color: var(--gr-accent); }
+
+/* ---- what the page knows about itself -------------------------------
+   The hairline is the join: above it the hero makes its case, below it are
+   two plain facts about this document. A grid rather than a flex row so the
+   two labels sit on one baseline and the two values on another however long
+   either value runs — a value that wraps must not drag its neighbour's label
+   down with it. Labels are smaller than the values on purpose: the label is
+   the thing you read once. */
+.fd-meta {
+  margin: 26px 0 0; padding-top: 18px; max-width: 660px;
+  border-top: 1px solid var(--gr-line);
+  /* THREE COLUMNS SINCE THE CHAIN JOINED THEM, and auto-fit rather than a
+     fixed three: at 700px they sit in a row, and on a phone the third wraps
+     under the first two instead of squeezing all three into 100px each. */
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px 34px;
+}
+.fd-metacell { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.fd-meta dt { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--gr-ink-4); }
+.fd-meta dd {
+  margin: 0; display: flex; align-items: center; gap: 9px;
+  font-size: 13px; line-height: 1.4; color: var(--gr-ink-2);
+}
+/* the dot is the alpha dot from the eyebrow, at the size it is there */
+.fd-meta dd .fd-dot { flex: none; }
+
+/* ---- the status strip ----------------------------------------------- */
+.fd-status {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 16px 7vw 18px;
+  font-size: 10px; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--gr-ink-4);
+  border-top: 1px solid var(--gr-line);
+  background: linear-gradient(to top, rgba(6,7,9,.72), rgba(6,7,9,0));
+}
+.fd-status .fd-sep { opacity: .5; }
+.fd-mono { font-family: var(--gr-data); letter-spacing: .06em; text-transform: none; }
+#landing .fd-status a:hover { color: var(--gr-accent); }
+.fd-status .fd-on { color: var(--gr-accent); }
+
+/* ---- the cue: a page that scrolls has to say so ---------------------- */
+.fd-scroll {
+  position: absolute; right: 7vw; bottom: 62px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gr-ink-3);
+  transition: color .18s ease;
+}
+#landing .fd-scroll:hover { color: var(--gr-accent); }
+.fd-scrollarrow {
+  display: inline-block; font-size: 13px; line-height: 1;
+  animation: fd-nudge 2.4s ease-in-out infinite;
+}
+@keyframes fd-nudge { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+
+/* ---- the page under the door ---------------------------------------- */
+.fd-sec {
+  position: relative;
+  background: var(--gr-bg);
+  border-top: 1px solid var(--gr-line);
+  padding-block: clamp(64px, 8vw, 118px);
+}
+.fd-secshell { position: relative; z-index: 2; width: min(100% - 14vw, 1180px); margin-inline: auto; }
+.fd-kicker {
+  margin: 0 0 20px; display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--gr-ink-3);
+}
+.fd-h2 {
+  margin: 0; font-family: var(--gr-display); font-weight: 700;
+  font-size: clamp(30px, 4.1vw, 52px); line-height: 1.02; letter-spacing: -.02em;
+  color: var(--gr-ink); text-wrap: balance;
+}
+.fd-seclede { margin: 18px 0 0; max-width: 62ch; font-size: 14.5px; line-height: 1.68; color: var(--gr-ink-2); }
+
+/* four systems, one object repeated: same edges, same baselines */
+.fd-cards {
+  margin-top: clamp(34px, 4vw, 54px);
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+}
+.fd-card {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 14px 14px 20px;
+  background: var(--gr-panel-a6); border: 1px solid var(--gr-line); border-radius: 3px;
+  transition: border-color .18s ease, transform .18s ease;
+}
+.fd-card:hover { border-color: var(--gr-line-3); transform: translateY(-2px); }
+/* the card art is a <picture> now, so the flex item is the wrapper rather
+   than the image. Blockified by flex anyway; said out loud so a later change
+   to .fd-card's display does not quietly reflow the grid. */
+.fd-card picture { display: block; min-width: 0; }
+.fd-cardimg {
+  display: block; width: 100%; height: auto; max-width: 100%;
+  aspect-ratio: 16 / 9; object-fit: cover;
+  background: var(--gr-void); border-radius: 2px;
+}
+.fd-cardtitle { margin: 4px 0 0; font-size: 15px; font-weight: 500; letter-spacing: .01em; color: var(--gr-ink); }
+.fd-cardcopy { margin: 0; font-size: 12.5px; line-height: 1.62; color: var(--gr-ink-3); flex: 1; }
+#landing .fd-cardlink {
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-2);
+  transition: color .16s ease;
+}
+#landing .fd-card:hover .fd-cardlink, #landing .fd-cardlink:hover { color: var(--gr-accent); }
+
+/* ---- the manual, over the night plate -------------------------------- */
+.fd-manualsec { overflow: hidden; background: var(--gr-void); }
+.fd-manualbg {
+  position: absolute; inset: 0;
+  /* the same two-declaration fallback the hero plates use, and the same
+     reason for the small source: 3 px of blur at half brightness. This one
+     is below the fold, so it is the browser's lazy background handling that
+     keeps it off the first paint, not a timer. */
+  background: #05060a center / cover no-repeat;
+  background-image: url('../assets/landing/alley-night.jpg');
+  background-image: image-set(url('../assets/landing/alley-night.webp') type('image/webp'),
+                              url('../assets/landing/alley-night.jpg') type('image/jpeg'));
+  filter: blur(3px) saturate(.8) brightness(.5) contrast(1.02);
+  transform: scale(1.05);
+}
+.fd-manualsec::after {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(90deg, rgba(6,7,9,.94) 0%, rgba(6,7,9,.8) 46%, rgba(6,7,9,.62) 100%);
+}
+.fd-manualshell {
+  display: grid; gap: clamp(34px, 5vw, 72px);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start;
+}
+.fd-manualcopy { min-width: 0; }
+#landing .fd-guide {
+  margin-top: 26px; display: inline-block;
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink);
+  padding-bottom: 4px; border-bottom: 1px solid var(--gr-line-3);
+  transition: color .16s ease, border-color .16s ease;
+}
+#landing .fd-guide:hover { color: var(--gr-accent); border-bottom-color: var(--gr-accent); }
+.fd-guidelinks { display: flex; flex-direction: column; gap: 1px; background: var(--gr-line); border: 1px solid var(--gr-line); }
+.fd-guidelink {
+  display: flex; align-items: center; justify-content: space-between; gap: 18px;
+  padding: 18px 20px; background: var(--gr-panel-a6);
+  transition: background .16s ease;
+}
+#landing .fd-guidelink:hover { background: var(--gr-panel-hi); }
+.fd-guidetext { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.fd-guidetext b { font-size: 13.5px; font-weight: 500; color: var(--gr-ink); }
+.fd-guidetext i { font-style: normal; font-size: 11.5px; line-height: 1.5; color: var(--gr-ink-4); }
+.fd-arrow { font-size: 13px; color: var(--gr-ink-4); transition: color .16s ease; }
+#landing .fd-guidelink:hover .fd-arrow { color: var(--gr-accent); }
+.fd-bottom {
+  position: relative; z-index: 2;
+  width: min(100% - 14vw, 1180px); margin: clamp(44px, 5vw, 72px) auto 0;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  padding-top: 20px; border-top: 1px solid var(--gr-line);
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-4);
+}
+#landing .fd-bottom a:hover { color: var(--gr-accent); }
+
+@media (max-width: 820px) {
+  .fd-hero { width: calc(100% - 44px); margin: 0 22px; padding: 96px 0 92px; }
+  /* on a phone they stack and each takes the width, so neither is a target
+     you have to aim at */
+  .fd-doors { flex-direction: column; align-items: stretch; }
+  #landing .fd-doorslot { flex: 0 0 auto; }
+  #landing .fd-btn { width: 100%; justify-content: center; }
+  /* the two columns stay two columns — that pairing IS the block — but at
+     346px they need the gap back and the value can afford to be smaller */
+  .fd-meta { gap: 18px 20px; padding-top: 18px; margin-top: 26px; }
+  .fd-meta dd { font-size: 12px; }
+  .fd-lede { font-size: 13.5px; }
+  .fd-status { padding: 14px 22px 16px; gap: 8px; font-size: 9px; }
+  .fd-links { gap: 16px; }
+  .fd-scroll { right: 22px; bottom: 58px; font-size: 9px; }
+  .fd-secshell, .fd-bottom { width: calc(100% - 44px); }
+  .fd-manualshell { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #landing, .fd-btn, .fd-card, .fd-plate { transition: none; }
+  #landing { scroll-behavior: auto; }
+  #landing .fd-btn:hover, #landing .fd-card:hover { transform: none; }
+  /* the rotation is stopped in js/landing.js as well — this is the
+     belt: whatever is showing stays showing */
+  .fd-scrollarrow { animation: none; }
+}
+
+/* THE WALLET CHOOSER'S CSS LIVES WITH THE CHOOSER NOW — js/walletmodal.js
+   carries its own, because it opens over the game as well as over this page
+   and css/landing.css is not loaded there. The .fd-walletpick rules that were
+   here styled the front door's own sheet, which has been deleted along with
+   js/locker.js's: one implementation, both hosts, nothing left behind to
+   style. */
+
+/* THE GATE — the screen for a visitor who has no wallet, or whose wallet is on
+   another network, or who used the guest door that no longer exists. With one
+   way in this is the product for those people, so it is a panel with a heading
+   and a way forward, not a line of red text under a button. Inline rather than
+   a modal: a wall is exactly what it must not be. */
+.fd-gate {
+  margin: 20px 0 0; max-width: 62ch;
+  border: 1px solid var(--gr-line-2, #2c261c); border-left: 2px solid var(--gr-accent, #e0a44a);
+  border-radius: 3px; padding: 18px 20px; background: rgba(10, 11, 13, .5);
+}
+.fd-gate[hidden] { display: none; }
+.fd-gate-h { font-family: var(--gr-display); font-size: 15px; letter-spacing: .01em; color: var(--gr-ink); }
+.fd-gate-b { margin: 8px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--gr-ink-2); }
+.fd-gate-chain {
+  margin: 10px 0 0; font-family: var(--gr-data, ui-monospace, monospace);
+  font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-3);
+}
+.fd-gate-acts { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.fd-gate-btn { width: auto; padding: 12px 18px; }
+
+/* ---- a note under a row of cards -------------------------------------
+   THE ONE LINE ON A SECTION THAT MUST NOT BE OPTIONAL. The $GRIFTEX section's
+   not-live disclosure used to be the fourth card, which made it a peer of the
+   three claims beside it; as a line under the row it reads as the caveat over
+   all of them, which is what it is. Muted, but not so muted that it reads as
+   decoration — it is the most load-bearing sentence on that section. */
+.fd-secnote {
+  margin: 20px 0 0; max-width: 76ch;
+  font-size: 12px; line-height: 1.6; letter-spacing: .01em; color: var(--gr-ink-3);
+}
+
+/* the chain the install state wants, inside the wallet sheet. It was a line in
+   the hero panel that state used to be; the panel is gone and the chain is a
+   labelled column in .fd-meta, so this is the one place it still needs saying
+   in context: you are being asked to point a wallet at a network. */
+.fd-wp-chain {
+  margin-top: 4px; text-align: center;
+  font-family: var(--gr-data, ui-monospace, monospace);
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-4);
+}
+
+/* the sheet is outside #landing, so it inherits none of the page's type */
+.fd-walletpick { color: var(--gr-ink); font-family: var(--gr-body); }
+.fd-walletpick a { text-decoration: none; }
+
+/* ---- the X account, on both of this page's surfaces -------------------
+   QUIET, AND THE SAME QUIET IN BOTH PLACES: the glyph takes the muted ink the
+   status chips and the quiet links take, and lifts to full ink under the
+   pointer rather than to the accent. The accent means "this is on, this is
+   yours, this worked" (css/palette.css) and a link to an account is none of
+   those, so it is deliberately the one hover on this page that does not use
+   it — which also needs the override below, because #landing .fd-status a and
+   #landing a:hover would otherwise hand it the accent for free.
+
+   No count, no embed, no brand colour. The mark is currentColor. */
+.fd-x {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  transition: color .16s ease;
+}
+.fd-x svg { width: 11px; height: 11px; display: block; flex: none; }
+/* AND THE COLOUR IS SCOPED UNDER #landing, WHICH IS NOT OPTIONAL. Line 41 is
+   `#landing a { color: inherit }` at (1,0,1); an unscoped `.fd-x { color }` at
+   (0,1,0) loses to it, and the glyph inherits the page's ivory. Measured
+   before this line existed: the header mark rendered rgb(237,230,214) — the
+   brightest ink on the bar, on the one element that was asked to be quiet.
+   Third time this selector has caught something on this page. */
+#landing .fd-x { color: var(--gr-ink-3); }
+/* in the strip it takes the strip's own tone, so it sits level with the chips
+   beside it rather than one step brighter than its neighbours */
+#landing .fd-status .fd-x { color: inherit; }
+#landing .fd-x:hover, #landing .fd-x:focus-visible,
+#landing .fd-status .fd-x:hover, #landing .fd-status .fd-x:focus-visible { color: var(--gr-ink); }
+
+
+/* ---- the contract address, in the metadata block ----------------------
+   FORTY-TWO CHARACTERS IN A COLUMN SIZED FOR "Desktop Chrome, Safari,
+   mobile". The three original cells are an auto-fit grid of 150px-minimum
+   tracks; an address does not fit one and must not be allowed to force the
+   track wider, because that reflows the other three. So the cell spans the
+   whole row under them and breaks anywhere — it is a string to copy, not a
+   phrase to read, and a mid-address line break costs nothing. */
+/* AND [hidden] HAS TO BE SAID OUT LOUD, because `.fd-metacell { display:
+   flex }` is an author rule and the browser's own `[hidden] { display: none }`
+   is a user-agent one — author wins, whatever the specificity, so the
+   attribute alone hides nothing. Measured before this line existed: with the
+   cell marked hidden and no address configured, the COPY button still laid
+   out at [113,759,53,21] beside an empty CONTRACT label. Fourth time a rule
+   on this page has quietly outranked the thing meant to silence an element. */
+#landing .fd-metacell[hidden] { display: none; }
+.fd-metawide { grid-column: 1 / -1; }
+.fd-metawide dd { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+/* user-select: all makes one click take the whole address, for the people who
+   never find a copy button; the button is for everyone else */
+.fd-addr { font-size: 12px; line-height: 1.5; word-break: break-all; user-select: all; }
+#landing .fd-copy {
+  flex: none; font-family: var(--gr-mono); font-size: 9.5px; letter-spacing: .16em;
+  padding: 4px 9px; border-radius: 999px; cursor: pointer;
+  background: rgba(10, 11, 13, .34); color: var(--gr-ink-3);
+  border: 1px solid var(--gr-line-2); transition: color .16s ease, border-color .16s ease;
+}
+#landing .fd-copy:hover, #landing .fd-copy:focus-visible { color: var(--gr-ink); border-color: var(--gr-line-3); }
+
+/* PERFORMANCE MODE at the door (index.html #lp-perfwrap) */
+.fd-perf{display:flex;align-items:center;gap:10px;margin:14px 0 0;cursor:pointer;user-select:none;max-width:560px}
+.fd-perf input{width:16px;height:16px;margin:0;accent-color:var(--gr-accent,#6fc8dc);flex:none}
+.fd-perfk{font-family:var(--gr-mono,ui-monospace,monospace);font-size:11px;letter-spacing:.16em;color:var(--gr-ink,#ede6d6);white-space:nowrap}
+.fd-perfl{font-size:12px;line-height:1.35;color:var(--gr-ink-3,#8f8a80)}

@@ -1,0 +1,58 @@
+{
+  "id": "toxic",
+  "name": "TOXIC",
+  "line": "something in the water. the collar glows.",
+  "cost": 2200,
+  "tier": "holder",
+  "materials": {
+    "toxic": {
+      "roughness": 0.8,
+      "metalness": 0.0,
+      "env": 0.2,
+      "emissive": "#39ff14",
+      "emissiveIntensity": 0.03,
+      "tone": {
+        "flatten": 0.6,
+        "lift": 0.4,
+        "base": [
+          24,
+          50,
+          20
+        ],
+        "mix": 0.85
+      }
+    },
+    "slime": {
+      "roughness": 0.35,
+      "metalness": 0.0,
+      "env": 0.6,
+      "emissive": "#8cff3a",
+      "emissiveIntensity": 1.2,
+      "tone": {
+        "base": [
+          120,
+          220,
+          70
+        ],
+        "mix": 0.95
+      }
+    }
+  },
+  "regions": {
+    "head": "toxic",
+    "torso": "toxic",
+    "arms": "toxic",
+    "legs": "toxic",
+    "trim": "slime",
+    "acc": "toxic"
+  },
+  "accessories": [
+    "bandana"
+  ],
+  "silhouette": "tank",
+  "accent": {
+    "kind": "shoestrip",
+    "color": "#8cff3a"
+  },
+  "feature": "spots"
+}

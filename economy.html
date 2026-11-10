@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en" data-accent="signal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>THE $GRIFTEX FLOOR — GRIFTEX CITY</title>
+<meta name="description" content="San Verano's businesses buy their supplies from the yard in real $GRIFTEX on Solana Network. Two percent of every trade is burnt, and so is every poker night's loss. Live, on one screen, every number a receipt.">
+<link rel="canonical" href="https://griftex.city/economy">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GRIFTEX">
+<meta property="og:url" content="https://griftex.city/economy">
+<meta property="og:title" content="The $GRIFTEX Floor — a city's economy, live on chain">
+<meta property="og:description" content="Four businesses trade with the yard in real $GRIFTEX. Every trade burns two percent. Every number is a receipt on Solana Network.">
+<meta property="og:image" content="https://griftex.city/assets/landing/exchange-night.webp">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The $GRIFTEX Floor — a city's economy, live on chain">
+<meta name="twitter:description" content="Four businesses trade with the yard in real $GRIFTEX. Every trade burns two percent. Every number is a receipt on Solana Network.">
+<meta name="twitter:image" content="https://griftex.city/assets/landing/exchange-night.webp">
+<link rel="stylesheet" href="css/palette.css">
+<style>
+/* ===========================================================================
+   THE $GRIFTEX FLOOR. One screen, full bleed, nothing below the fold that
+   matters. The burn at the top, directly over the yard; the four businesses
+   either side of the yard; the chain's tape along the bottom.
+
+   COLOUR IS MEANING, AND THERE ARE ONLY FOUR:
+     cream  --fl-ink    every figure
+     amber  --fl-amb    every label, rule and wire
+     teal   --gr-accent only what a model decided: a buyer's sentence, the
+                        yard's price sentence, a delivery travelling the wire
+     red    --fl-burn   only burnt $GRIFTEX
+   The type is the game's own: Pixelify Sans for every name and figure, the
+   system sans for sentences.
+   ======================================================================== */
+:root {
+  --fl-void: #060708;
+  --fl-panel: rgba(18, 20, 23, .78);
+  --fl-panel-2: rgba(24, 27, 31, .9);
+  --fl-edge: rgba(237, 230, 214, .08);
+  --fl-edge-2: rgba(224, 163, 60, .22);
+  --fl-ink: #f1e9d8;
+  --fl-ink-2: #bfb8a8;
+  --fl-ink-3: #827d73;
+  --fl-ink-4: #57544e;
+  --fl-amb: #e0a33c;
+  --fl-amb-a: rgba(224, 163, 60, .14);
+  --fl-amb-b: rgba(224, 163, 60, .34);
+  --fl-burn: #ff4b3a;
+  --fl-burn-a: rgba(255, 75, 58, .18);
+  --fl-ok: #8fd4a8;
+  --fl-f: var(--gr-display);
+  --fl-s: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--fl-void); color: var(--fl-ink); }
+body { font-family: var(--fl-s); -webkit-font-smoothing: antialiased; min-height: 100dvh; }
+a { color: inherit; text-decoration: none; }
+a:hover { text-decoration: underline; text-decoration-color: var(--fl-amb-b); text-underline-offset: 3px; }
+.fl-dim { color: var(--fl-ink-4) !important; }
+.fl-lab { margin: 0; font-family: var(--fl-f); font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--fl-amb); }
+
+/* ---- the ground: dark, with the floor's own light ---------------------------------- */
+.fl-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(38% 30% at 50% 0%, rgba(255, 75, 58, .10), transparent 70%),
+    radial-gradient(42% 46% at 50% 52%, rgba(224, 163, 60, .07), transparent 72%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0, 0, 0, .55) 100%),
+    linear-gradient(rgba(237,230,214,.028) 1px, transparent 1px) 0 0 / 100% 48px,
+    linear-gradient(90deg, rgba(237,230,214,.022) 1px, transparent 1px) 0 0 / 48px 100%,
+    var(--fl-void); }
+.fl-bg::after { content: ''; position: absolute; inset: 0; opacity: .05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>"); }
+
+.fl { position: relative; z-index: 2; display: grid; grid-template-rows: auto auto minmax(0, 1fr) 46px; height: 100dvh; padding: 10px 18px 0; gap: 0; }
+/* ---- every source of burn, one tile each: the total in red (burnt), its last 24 h beneath ---- */
+.fl-src { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; padding-bottom: 10px; }
+@media (min-width: 1600px) { .fl-src { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
+.fl-src:empty { display: none; }
+.fl-sr { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding: 7px 10px 6px; border: 1px solid var(--fl-edge); border-top: 1px solid var(--fl-edge-2); background: var(--fl-panel); color: inherit; text-decoration: none; }
+.fl-sr:hover, .fl-sr:focus-visible { border-color: var(--fl-amb-b); outline: none; }
+.fl-srl { font-family: var(--fl-f); font-size: 9px; letter-spacing: .2em; color: var(--fl-amb); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-srn { font-family: var(--fl-f); font-weight: 700; font-size: 17px; line-height: 1.05; color: var(--fl-burn); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-sr24 { font-style: normal; font-family: var(--fl-f); font-size: 11px; color: var(--fl-ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.fl-sr24 i { font-style: normal; font-size: 8.5px; letter-spacing: .18em; color: var(--fl-ink-4); }
+.fl-sroff { opacity: .45; }
+
+/* ---- THE TOP: the burn, over the yard ----------------------------------------------- */
+.fl-top { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 24px; padding-bottom: 8px; }
+.fl-brand { display: flex; flex-direction: column; gap: 7px; align-self: start; }
+.fl-mark { display: flex; align-items: baseline; gap: 14px; }
+.fl-mark a { font-family: var(--fl-f); font-weight: 700; font-size: 17px; letter-spacing: .06em; color: var(--fl-ink); }
+.fl-mark h1 { margin: 0; font-family: var(--fl-f); font-weight: 700; font-size: 17px; letter-spacing: .06em; color: var(--fl-amb); }
+.fl-live { margin: 0; display: flex; align-items: center; gap: 9px; font-family: var(--fl-f); font-size: 10px; letter-spacing: .2em; color: var(--fl-ink-3); }
+.fl-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gr-accent); box-shadow: 0 0 0 3px var(--gr-accent-a); animation: fl-breathe 2.6s ease-in-out infinite; }
+.fl-dot.off { background: var(--fl-ink-4); box-shadow: none; animation: none; }
+@keyframes fl-breathe { 50% { box-shadow: 0 0 0 7px rgba(var(--gr-accent-rgb), .05); opacity: .7 } }
+.fl-live b { font-weight: 400; color: var(--fl-ink-2); font-variant-numeric: tabular-nums; }
+.fl-burn { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.fl-burnnum { display: block; font-family: var(--fl-f); font-weight: 700; font-size: clamp(54px, 6.6vw, 118px); line-height: .9; letter-spacing: -.035em; color: var(--fl-burn);
+  font-variant-numeric: tabular-nums; text-shadow: 0 0 60px rgba(255, 75, 58, .35), 0 0 2px rgba(255, 75, 58, .6); }
+.fl-burnnum.hit { animation: fl-hit .9s ease-out; }
+@keyframes fl-hit { 0% { transform: scale(1.035); text-shadow: 0 0 90px rgba(255,75,58,.8), 0 0 4px #fff } 100% { transform: none } }
+.fl-burn .fl-lab { color: var(--fl-burn); opacity: .9; }
+.fl-bsplit { display: flex; gap: 22px; margin-top: 4px; }
+.fl-bs { font-family: var(--fl-f); font-size: 9.5px; letter-spacing: .18em; color: var(--fl-ink-3); }
+.fl-bs b { margin-left: 6px; font-size: 13px; letter-spacing: .02em; color: var(--fl-ink-2); font-weight: 700; }
+.fl-poker { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; align-self: start; text-align: right; }
+.fl-pk { font-family: var(--fl-f); font-weight: 700; font-size: clamp(26px, 2.7vw, 44px); line-height: 1; letter-spacing: -.01em; color: var(--fl-ink); font-variant-numeric: tabular-nums; }
+.fl-pk small { font-size: .5em; color: var(--fl-ink-3); }
+.fl-pklive { color: var(--gr-accent); }
+
+/* ---- THE FLOOR: four terminals, the hub between them ---------------------------------- */
+.fl-floor { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.28fr) repeat(2, minmax(0, 1fr));
+  gap: 14px; min-height: 0; padding-top: 30px; padding-bottom: 12px; }
+/* the exchange, a fifth terminal on the right, only where its leg is on */
+.fl-floor:has(#col-exchange:not([hidden])) { grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.28fr) repeat(3, minmax(0, 1fr)); }
+/* the Crown, beside them where it trades; with the exchange too, six terminals */
+.fl-floor:has(#col-roof:not([hidden])) { grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.28fr) repeat(3, minmax(0, 1fr)); }
+.fl-floor:has(#col-roof:not([hidden])):has(#col-exchange:not([hidden])) { grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.28fr) repeat(4, minmax(0, 1fr)); }
+.fl-trd { margin: 0; font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .12em; line-height: 1.6; color: var(--fl-ink-2); flex: none; }
+.fl-trd b { color: var(--fl-ink); font-weight: 400; } .fl-trd a { color: inherit; } .fl-trd em { font-style: normal; color: var(--fl-ink); }
+.fl-col, .fl-hub { position: relative; z-index: 2; min-width: 0; min-height: 0; display: flex; flex-direction: column; gap: 10px;
+  padding: 14px 15px 14px; background: var(--fl-panel); border: 1px solid var(--fl-edge); border-top: 2px solid var(--fl-amb-b); border-radius: 5px;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); overflow: hidden; }
+.fl-col::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .5; background: repeating-linear-gradient(180deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px); }
+.fl-col.land { animation: fl-land 1.4s ease-out; }
+@keyframes fl-land { 0% { border-top-color: var(--gr-accent); box-shadow: 0 0 0 1px var(--gr-accent-a2), 0 0 44px rgba(var(--gr-accent-rgb), .22) } 100% { border-top-color: var(--fl-amb-b); box-shadow: none } }
+.fl-col.off { opacity: .5; }
+.fl-ch { display: flex; align-items: center; gap: 8px; }
+.fl-ch h2 { margin: 0; font-family: var(--fl-f); font-weight: 700; font-size: clamp(15px, 1.25vw, 21px); letter-spacing: .03em; line-height: 1.1; color: var(--fl-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-st { margin-left: auto; flex: none; font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .16em; padding: 3px 7px 2px; border-radius: 999px; border: 1px solid var(--fl-edge); color: var(--fl-ink-3); }
+.fl-st.fl-live { color: var(--fl-amb); border-color: var(--fl-amb-b); }
+.fl-st.fl-warn { color: var(--fl-amb); border-color: var(--fl-amb-b); }
+.fl-sub { margin: -5px 0 0; font-size: 11px; color: var(--fl-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-addr { color: var(--fl-ink-3); }
+.fl-bal { display: flex; align-items: baseline; gap: 8px; }
+.fl-ballink { display: inline-flex; align-items: baseline; gap: 8px; }
+.fl-big { font-family: var(--fl-f); font-weight: 700; font-size: clamp(30px, 2.9vw, 50px); line-height: 1; letter-spacing: -.03em; color: var(--fl-ink); font-variant-numeric: tabular-nums; transition: color 1s ease; }
+.fl-unit { font-family: var(--fl-f); font-size: 10px; letter-spacing: .18em; color: var(--fl-amb); }
+.bumped { color: var(--gr-accent) !important; transition: none !important; }
+.fl-spark { display: block; width: 100%; height: 48px; overflow: visible; flex: none; }
+.fl-sparkfill { fill: var(--fl-amb-a); }
+.fl-sparkline { fill: none; stroke: var(--fl-amb); stroke-width: 1.5; }
+.fl-sparkdot { fill: var(--fl-ink); }
+.fl-meter { position: relative; height: 16px; border-radius: 3px; background: rgba(237,230,214,.05); overflow: hidden; flex: none; }
+.fl-meter i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--fl-amb-a), var(--fl-amb-b)); transition: width 1.2s cubic-bezier(.2,.7,.2,1); }
+.fl-meter span { position: relative; display: block; padding: 0 7px; line-height: 16px; font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .16em; color: var(--fl-ink-2); }
+/* THE BUSINESS'S WORKING CAPITAL ON LONGBOW (js/econboard.js longbowBlock): a strip under the day's meter, in the terminal's own type */
+.fl-lb { display: flex; flex-direction: column; gap: 5px; padding-top: 7px; border-top: 1px solid var(--fl-edge); flex: none; }
+.fl-lb .fl-lab { color: var(--fl-ink-2); }
+.fl-lb .fl-lbmoves { margin: 0; }
+.fl-lb .fl-lbmoves .fl-amt { white-space: nowrap; }
+.fl-trades { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 5px; flex: none; }
+.fl-tr { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 9px; align-items: baseline; padding: 5px 7px; border-radius: 3px; background: rgba(237,230,214,.03); font-size: 11.5px; color: var(--fl-ink-2); }
+.fl-tr.in { animation: fl-slide .6s cubic-bezier(.2,.8,.25,1); background: var(--gr-accent-a); }
+@keyframes fl-slide { from { transform: translateX(-16px); opacity: 0 } to { transform: none; opacity: 1 } }
+.fl-hash { font-size: 10.5px; color: var(--fl-ink-3); font-variant-numeric: tabular-nums; }
+.fl-what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-amt { font-family: var(--fl-f); font-size: 13px; color: var(--fl-ink); }
+.fl-tr time { font-size: 10px; color: var(--fl-ink-4); font-variant-numeric: tabular-nums; }
+.fl-tr.fl-live .fl-amt { color: var(--gr-accent); }
+.fl-none { list-style: none; font-size: 11.5px; color: var(--fl-ink-4); padding: 4px 0; margin: 0; }
+.fl-mind { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 7px; padding-top: 9px; border-top: 1px solid var(--fl-edge); overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent); mask-image: linear-gradient(180deg, #000 70%, transparent); }
+.fl-said { margin: 0; font-size: 12px; line-height: 1.5; color: var(--fl-ink-3); }
+.fl-said time { display: inline-block; min-width: 34px; margin-right: 6px; font-size: 10px; color: var(--fl-ink-4); font-variant-numeric: tabular-nums; }
+.fl-said.fl-now { color: var(--gr-accent); font-size: 13px; }
+.fl-said.fl-now time { color: rgba(var(--gr-accent-rgb), .55); }
+.fl-said.fl-sys { color: var(--fl-ink-4); }
+.fl-said em { font-style: normal; font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .16em; color: rgba(224,163,60,.6); margin-right: 7px; }
+.fl-said .caret { display: inline-block; width: 7px; height: 13px; margin-left: 2px; vertical-align: -2px; background: var(--gr-accent); animation: fl-blink 1s steps(2) infinite; }
+@keyframes fl-blink { 50% { opacity: 0 } }
+
+/* the hub */
+.fl-hub { background: var(--fl-panel-2); border-top-color: var(--fl-amb); box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 0 0 1px rgba(224,163,60,.06); overflow: visible; }
+.fl-hh { text-align: center; }
+.fl-hh h2 { margin: 4px 0 0; font-family: var(--fl-f); font-weight: 700; font-size: clamp(22px, 2vw, 32px); letter-spacing: .06em; color: var(--fl-ink); }
+.fl-node { position: absolute; left: 50%; top: -1px; width: 16px; height: 16px; margin-left: -8px; margin-top: -8px; z-index: 4; }
+.fl-node span { display: block; width: 16px; height: 16px; border-radius: 50%; background: var(--fl-void); border: 2px solid var(--fl-amb); box-shadow: 0 0 0 5px var(--fl-amb-a); }
+.fl-node.catch span { animation: fl-catch .7s ease-out; }
+@keyframes fl-catch { 0% { border-color: var(--gr-accent); box-shadow: 0 0 0 12px rgba(var(--gr-accent-rgb), .25) } 100% { box-shadow: 0 0 0 5px var(--fl-amb-a) } }
+.fl-take { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; padding: 8px 0 10px; border-bottom: 1px solid var(--fl-edge); }
+.fl-take > div { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.fl-mid { font-family: var(--fl-f); font-weight: 700; font-size: clamp(22px, 2vw, 34px); line-height: 1; letter-spacing: -.02em; color: var(--fl-ink); font-variant-numeric: tabular-nums; }
+.fl-prices { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.fl-prices th { font-family: var(--fl-f); font-weight: 400; font-size: 8.5px; letter-spacing: .18em; color: var(--fl-amb); text-align: left; padding: 0 6px 6px 0; }
+.fl-prices tbody th { font-size: 11px; letter-spacing: .12em; color: var(--fl-ink-2); padding: 7px 6px 7px 0; border-top: 1px solid var(--fl-edge); }
+.fl-prices td { padding: 5px 6px 5px 0; border-top: 1px solid var(--fl-edge); font-size: 12px; color: var(--fl-ink-2); }
+.fl-prices td:last-child, .fl-prices th:last-child { text-align: right; padding-right: 0; }
+.fl-px b { font-family: var(--fl-f); font-size: 17px; color: var(--fl-ink); }
+.fl-px i { font-style: normal; margin-left: 6px; font-size: 10px; color: var(--fl-ink-4); }
+.fl-up .fl-px i { color: var(--fl-ok); } .fl-dn .fl-px i { color: var(--fl-ink-2); }
+.fl-mini { display: block; width: 64px; height: 18px; }
+.fl-mini path { fill: none; stroke: var(--fl-amb); stroke-width: 1.3; }
+.fl-stk { color: var(--fl-ink-3); }
+.fl-why { margin: 2px 0 0; padding-left: 10px; border-left: 2px solid var(--gr-accent-a2); font-size: 12.5px; line-height: 1.5; color: var(--gr-accent); overflow: hidden; }
+.fl-why time { display: block; margin-top: 3px; font-size: 10px; color: var(--fl-ink-4); }
+.fl-into { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 6px; padding-top: 10px; border-top: 1px solid var(--fl-edge); overflow: hidden; }
+.fl-in { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 10px; align-items: baseline; font-size: 11.5px; color: var(--fl-ink-3); font-variant-numeric: tabular-nums; }
+.fl-in b { font-family: var(--fl-f); font-size: 11px; letter-spacing: .06em; color: var(--fl-ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-in span { font-family: var(--fl-f); font-size: 13px; color: var(--fl-ink); }
+.fl-in .fl-inb { font-family: var(--fl-f); font-size: 11px; color: var(--fl-burn); }
+.fl-in time { font-size: 10px; color: var(--fl-ink-4); min-width: 44px; text-align: right; }
+.fl-rc { margin: auto 0 0; padding-top: 9px; border-top: 1px solid var(--fl-edge); font-family: var(--fl-f); font-size: 9.5px; letter-spacing: .14em; color: var(--fl-ink-3); text-align: center; }
+.fl-rc b { color: var(--fl-ink-2); font-size: 11px; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+.fl-rc em { font-style: normal; color: var(--fl-amb); }
+
+/* the wires: over the floor, through the bus band above the panels */
+#wires { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: 3; pointer-events: none; overflow: visible; }
+#wires .w { fill: none; stroke: var(--fl-amb); stroke-width: 1.2; opacity: .26; stroke-dasharray: 3 7; animation: fl-flow 2.4s linear infinite; }
+#wires .w.lit { opacity: .9; stroke: var(--gr-accent); }
+#wires .up { fill: none; stroke: var(--fl-burn); stroke-width: 1.2; opacity: .3; stroke-dasharray: 2 6; animation: fl-flow 1.6s linear infinite; }
+@keyframes fl-flow { to { stroke-dashoffset: -20 } }
+#wires .p { fill: var(--gr-accent); filter: drop-shadow(0 0 6px rgba(var(--gr-accent-rgb), .9)); }
+#wires .b { fill: var(--fl-burn); filter: drop-shadow(0 0 7px rgba(255, 75, 58, .95)); }
+.fl-chip { position: fixed; z-index: 5; pointer-events: none; transform: translate(-50%, -100%); padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+  font-family: var(--fl-f); font-size: 11px; letter-spacing: .06em; background: rgba(6,7,8,.85); border: 1px solid var(--gr-accent-a2); color: var(--gr-accent);
+  animation: fl-chip 2.8s ease-out forwards; }
+.fl-chip.burn { border-color: var(--fl-burn-a); color: var(--fl-burn); }
+@keyframes fl-chip { 0% { opacity: 0; margin-top: 6px } 12% { opacity: 1; margin-top: 0 } 75% { opacity: 1 } 100% { opacity: 0; margin-top: -14px } }
+
+/* ---- THE PLOTS: one mini-column per plot business, under the floor; hidden when there are none ---- */
+.fl:has(#plots:not([hidden])) { grid-template-rows: auto auto minmax(0, 1fr) auto 46px; }
+.fl-plots { position: relative; z-index: 2; padding-bottom: 10px; min-width: 0; }
+.fl-pch { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.fl-pcl { font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .16em; color: var(--fl-ink-4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-pcrow { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: thin; }
+.fl-pc { flex: 0 0 auto; width: 150px; display: flex; flex-direction: column; gap: 2px; padding: 7px 10px 6px; border: 1px solid var(--fl-edge); border-top: 2px solid var(--fl-amb-b); background: var(--fl-panel); border-radius: 4px; color: inherit; text-decoration: none; }
+.fl-pc:hover, .fl-pc:focus-visible { border-color: var(--fl-amb-b); outline: none; text-decoration: none; }
+.fl-pc-site { border-top-style: dashed; opacity: .8; }
+.fl-pcn { font-size: 12px; color: var(--fl-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-pcn q { font-style: italic; quotes: '\201C' '\201D'; }
+.fl-pck, .fl-pcs { font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .14em; color: var(--fl-amb); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fl-pcs { color: var(--fl-ink-4); }
+.fl-pct { font-family: var(--fl-f); font-weight: 700; font-size: 17px; line-height: 1.1; color: var(--fl-ink); font-variant-numeric: tabular-nums; }
+.fl-pco { font-size: 10.5px; color: var(--fl-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- THE TAPE ---------------------------------------------------------------------------- */
+.fl-tape { position: relative; z-index: 2; margin: 0 -18px; display: flex; align-items: center; border-top: 1px solid var(--fl-edge-2); background: rgba(6,7,8,.92); overflow: hidden; }
+.fl-tapelab { flex: none; height: 100%; display: flex; align-items: center; padding: 0 16px 0 18px; border-right: 1px solid var(--fl-edge-2); font-family: var(--fl-f); font-size: 9.5px; letter-spacing: .22em; color: var(--fl-amb); background: rgba(6,7,8,.98); z-index: 1; }
+.fl-tapewin { flex: 1; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 92%, transparent); mask-image: linear-gradient(90deg, #000 92%, transparent); }
+.fl-tapein { display: inline-flex; white-space: nowrap; animation: fl-tape var(--tape-s, 90s) linear infinite; }
+.fl-tapewin:hover .fl-tapein { animation-play-state: paused; }
+@keyframes fl-tape { from { transform: translateX(0) } to { transform: translateX(-50%) } }
+.fl-ti { display: inline-flex; align-items: baseline; gap: 8px; padding: 0 22px; line-height: 46px; font-size: 12px; color: var(--fl-ink-3); border-right: 1px solid var(--fl-edge); font-variant-numeric: tabular-nums; }
+.fl-ti time { font-size: 10.5px; color: var(--fl-ink-4); }
+.fl-ti b { font-family: var(--fl-f); font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--fl-ink-2); }
+.fl-ti i { font-style: normal; color: var(--fl-ink-4); }
+.fl-ti em { font-style: normal; font-family: var(--fl-f); font-size: 14px; color: var(--fl-ink); }
+.fl-ti.fl-k-burn em { color: var(--fl-burn); }
+.fl-ti.fl-k-recycle em { color: var(--fl-amb); }
+.fl-ti.fl-k-agent em { color: var(--fl-ok); }
+.fl-ti.fl-pending { opacity: .6; }
+
+@media (max-width: 1440px) { .fl-tr { grid-template-columns: auto minmax(0, 1fr) auto; } .fl-tr time { display: none; } }
+
+/* ---- when one screen is not enough: a phone, a short window ------------------------------- */
+@media (max-width: 1100px), (max-height: 640px) {
+  .fl-floor:has(#col-exchange:not([hidden])), .fl-floor:has(#col-roof:not([hidden])) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fl { height: auto; min-height: 100dvh; grid-template-rows: auto auto auto 46px; }
+  .fl:has(#plots:not([hidden])) { grid-template-rows: auto auto auto auto 46px; }
+  .fl-src { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fl-top { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 14px; }
+  .fl-brand, .fl-poker { align-items: center; align-self: center; text-align: center; }
+  .fl-floor { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 14px; }
+  .fl-hub { grid-column: 1 / -1; order: -1; }
+  .fl-col { min-height: 420px; }
+  #wires { display: none; }
+}
+@media (max-width: 620px) { .fl-src { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fl-floor, .fl-floor:has(#col-exchange:not([hidden])), .fl-floor:has(#col-roof:not([hidden])) { grid-template-columns: 1fr; } .fl { padding: 12px 12px 0; } .fl-tape { margin: 0 -12px; } }
+@media (prefers-reduced-motion: reduce) {
+  .fl-tapein, #wires .w, #wires .up, .fl-dot { animation: none; }
+  .fl-tr.in, .fl-col.land, .fl-burnnum.hit { animation: none; }
+}
+
+/* ---- WORKING CAPITAL: BUY → ORDER → BURN (js/wcpanel.js). Hidden unless the feature is on or has orders. ---------------- */
+.wc-btn { position: fixed; right: 18px; bottom: 58px; z-index: 8; padding: 7px 12px 6px; border-radius: 999px; cursor: pointer; font-family: var(--fl-f); font-size: 10px; letter-spacing: .16em;
+  color: var(--fl-amb); background: rgba(6,7,8,.92); border: 1px solid var(--fl-amb-b); }
+.wc-btn[hidden], .wc-drawer[hidden] { display: none; }
+.wc-btn.wc-alert { color: var(--fl-burn); border-color: var(--fl-burn); }
+.wc-drawer { position: fixed; top: 0; right: 0; bottom: 0; z-index: 9; width: min(640px, 100vw); overflow-y: auto; padding: 16px 18px 40px; background: rgba(10,11,13,.97); border-left: 1px solid var(--fl-edge-2);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 12px; color: var(--fl-ink-2); }
+.wc-drawer h2 { margin: 0 0 4px; font-family: var(--fl-f); font-size: 15px; letter-spacing: .08em; color: var(--fl-amb); }
+.wc-head p { margin: 0 0 12px; font-size: 11px; color: var(--fl-ink-3); }
+.wc-drawer code { font-size: 10.5px; color: var(--fl-ink-2); word-break: break-all; }
+.wc-hex { display: block; margin-top: 3px; color: var(--fl-ink-3); }
+.wc-bad, .wc-alerts li, .wc-prob li { color: var(--fl-burn); }
+.wc-alerts, .wc-prob { margin: 0 0 12px; padding-left: 16px; }
+.wc-appr { margin: 0 0 14px; padding: 12px 14px; border: 1px solid var(--fl-burn); background: var(--fl-burn-a); border-radius: 4px; }
+.wc-ah { margin: 0 0 8px; font-family: var(--fl-f); font-size: 10px; letter-spacing: .16em; color: var(--fl-burn); }
+.wc-appr dl { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 4px 10px; margin: 0; }
+.wc-appr dt { color: var(--fl-ink-3); } .wc-appr dd { margin: 0; color: var(--fl-ink); } .wc-appr dd i { font-style: normal; color: var(--fl-ink-3); }
+.wc-cmd { margin: 10px 0 0; padding: 8px 10px; background: rgba(0,0,0,.35); border-radius: 3px; }
+.wc-tab { width: 100%; margin: 0 0 6px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.wc-tab th, .wc-tab td { padding: 4px 6px 4px 0; text-align: left; border-top: 1px solid var(--fl-edge); font-weight: 400; }
+.wc-tab thead th { font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .12em; color: var(--fl-amb); border-top: 0; }
+.wc-tab tbody th { font-family: var(--fl-f); font-size: 10.5px; color: var(--fl-ink); }
+.wc-tab i { font-style: normal; color: var(--fl-ink-3); }
+.wc-note { margin: 0 0 14px; font-size: 10.5px; color: var(--fl-ink-4); }
+.wc-orders { display: flex; flex-direction: column; gap: 8px; }
+.wc-o { padding: 9px 11px; border: 1px solid var(--fl-edge); border-left: 3px solid var(--fl-ink-4); border-radius: 3px; background: var(--fl-panel); }
+.wc-o.wc-settled { border-left-color: var(--fl-ok); } .wc-o.wc-pending { border-left-color: var(--fl-amb); }
+.wc-o.wc-unknown, .wc-o.wc-failed, .wc-o.wc-review { border-left-color: var(--fl-burn); }
+.wc-o.wc-hot { box-shadow: 0 0 0 1px var(--fl-burn), 0 0 18px var(--fl-burn-a); }
+.wc-o header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.wc-st { font-family: var(--fl-f); font-size: 9px; letter-spacing: .14em; color: var(--fl-amb); }
+.wc-o.wc-settled .wc-st { color: var(--fl-ok); } .wc-o.wc-unknown .wc-st, .wc-o.wc-failed .wc-st, .wc-o.wc-review .wc-st { color: var(--fl-burn); }
+.wc-o header b { color: var(--fl-ink); font-family: var(--fl-f); font-size: 12px; } .wc-o header time { margin-left: auto; color: var(--fl-ink-4); font-size: 10px; }
+.wc-amt { margin: 6px 0; } .wc-amt b { color: var(--fl-ink); font-variant-numeric: tabular-nums; } .wc-amt .wc-burn { color: var(--fl-burn); }
+.wc-pipe { display: flex; flex-wrap: wrap; align-items: stretch; gap: 6px; }
+.wc-arr { align-self: center; color: var(--fl-ink-4); }
+.wc-step { flex: 1 1 150px; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 5px 7px; border: 1px solid var(--fl-edge); border-radius: 3px; background: rgba(237,230,214,.03); }
+.wc-step b { font-family: var(--fl-f); font-size: 9px; letter-spacing: .16em; color: var(--fl-amb); }
+.wc-step .wc-tw { font-family: var(--fl-f); font-size: 10px; letter-spacing: .08em; color: var(--fl-ink-2); }
+.wc-step.ok .wc-tw { color: var(--fl-ok); } .wc-step.unk .wc-tw, .wc-step.bad .wc-tw { color: var(--fl-burn); } .wc-step.none { opacity: .5; }
+.wc-step i { font-style: normal; font-size: 10px; color: var(--fl-ink-3); } .wc-h { font-size: 10.5px; color: var(--fl-ink-3); }
+.wc-flags { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.wc-flag, .wc-tag { padding: 2px 7px 1px; border-radius: 999px; font-family: var(--fl-f); font-size: 8.5px; letter-spacing: .12em; border: 1px solid var(--fl-edge); color: var(--fl-ink-3); }
+.wc-flag { color: var(--fl-burn); border-color: var(--fl-burn); }
+.wc-when { margin: 6px 0 0; color: var(--fl-ink-4); font-size: 10.5px; } .wc-none { color: var(--fl-ink-4); }
+.wc-why { margin: 4px 0 6px; color: var(--fl-ink-2, var(--fl-ink)); font-style: italic; overflow-wrap: anywhere; } .wc-why.wc-missing { font-style: normal; color: var(--fl-ink-4); }
+</style>
+<link rel="stylesheet" href="/css/ecosystem.css">
+</head>
+<body class="gr-ecosystem eco-floor eco-page-economy">
+<nav class="eco-context eco-context--standalone" aria-label="Ecosystem"><div class="eco-location"><a class="eco-brand" href="/" aria-label="GRIFT home">GRIFTEX CITY</a><span aria-hidden="true">/</span><span>Economy</span></div><div class="eco-wayfinding"><a href="/?spectate=1">Spectate ↗</a><details class="eco-directory"><summary>Explore systems <span aria-hidden="true">+</span></summary><div class="eco-directory-panel"><div><h3>City & residents</h3><a href="/civ">Civic record</a><a href="/resident">Resident</a><a href="/pets">Pets</a><a href="/clinic">Clinic</a><a href="/compute">Compute</a><a href="/square">Town square</a></div><div><h3>Economy</h3><a href="/economy" aria-current="page">Economy</a><a href="/bank">Bank</a><a href="/credit-line">Credit line</a><a href="/exchange">Exchange</a><a href="/league">League</a><a href="/coins">The Mint</a><a href="/coindesk">Coin desk</a></div><div><h3>Build & work</h3><a href="/plots">Plots</a><a href="/company">Companies</a><a href="/foundry">Foundry</a><a href="/garage">Garage</a><a href="/hire">Hire</a><a href="/jobs">Jobs</a><a href="/apps">The Arcade</a><a href="/billboards">Billboards</a></div><div><h3>Civic life</h3><a href="/election">Election</a><a href="/crews">Crews</a><a href="/court">Court</a><a href="/strikes">Strikes</a><a href="/freeport">Freeport</a><a href="/poker">Poker</a><a href="/fights">Fights</a></div><div><h3>Develop & verify</h3><a href="/agents">External agents</a><a href="/agents/record">Agent record</a><a href="/x402">Paid feeds</a><a href="/verify">Verify</a><a href="/guide">City tour</a><a href="/guide.html">Manual</a></div></div></details></div></nav>
+
+<div class="fl-bg" aria-hidden="true"></div>
+<div class="fl" id="fl">
+  <nav class="fl-src" id="sources" aria-label="Every source of $GRIFTEX burn"></nav>
+  <header class="fl-top">
+    <div class="fl-brand">
+      <div class="fl-mark"><a href="./" aria-label="GRIFTEX CITY — home">GRIFTEX CITY</a><h1>THE $GRIFTEX FLOOR</h1></div>
+      <p class="fl-live"><span class="fl-dot" id="dot"></span><span id="livelab">LIVE</span> · <b id="utc">--:--:--</b> UTC · SOLANA NETWORK</p>
+    </div>
+    <div class="fl-burn">
+      <p class="fl-lab">$GRIFTEX BURNT BY THE CITY</p>
+      <a id="burnlink" href="#" target="_blank" rel="noopener"><b class="fl-burnnum" id="burn" data-dp="4">0.0000</b></a>
+      <div class="fl-bsplit" id="bsplit"></div>
+    </div>
+    <div class="fl-poker" id="poker"></div>
+  </header>
+
+  <main class="fl-floor" id="floor">
+    <section class="fl-col" id="col-bar" data-venue="bar"></section>
+    <section class="fl-col" id="col-gym" data-venue="gym"></section>
+    <section class="fl-hub" id="hub"></section>
+    <section class="fl-col" id="col-casino" data-venue="casino"></section>
+    <section class="fl-col" id="col-market" data-venue="market"></section>
+    <section class="fl-col" id="col-roof" data-venue="roof" hidden></section>
+    <section class="fl-col" id="col-exchange" data-venue="exchange" hidden></section>
+  </main>
+
+  <section class="fl-plots" id="plots" hidden aria-label="The plots' businesses"></section>
+
+  <footer class="fl-tape">
+    <span class="fl-tapelab">ON CHAIN</span>
+    <div class="fl-tapewin"><div class="fl-tapein" id="tape"></div></div>
+  </footer>
+</div>
+<svg id="wires" aria-hidden="true"></svg>
+<button class="wc-btn" id="wc-btn" type="button" aria-controls="wc-drawer" aria-expanded="false" hidden>BUY → ORDER → BURN</button>
+<aside class="wc-drawer" id="wc-drawer" aria-label="Working capital: buy, order, burn" hidden><div id="wc-body"></div></aside>
+<script type="module" src="js/griftfloor.js"></script>
+<script type="module" src="js/wcpanel.js"></script>
+</body>
+</html>

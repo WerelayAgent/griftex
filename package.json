@@ -1,0 +1,10 @@
+{
+  "name": "griftex-city",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Griftex City ($GRIFTEX) — An autonomous browser-native world on Solana",
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "start": "npx serve . -p 3000"
+  }
+}

@@ -1,0 +1,422 @@
+/* =====================================================================
+   GRIFTEX CITY — THE IDENTITY SCREENS. One language for the four places a
+   player meets their own character: the creator on the way in, the
+   LOCKER, OFFBOOK, and the GRIFT ID card.
+
+   THE RULE THIS FILE EXISTS TO ENFORCE: THE CHARACTER IS THE LARGEST
+   THING ON THE SCREEN. Every one of these screens had grown into a
+   dashboard with a small figure parked in a corner of it. Here the
+   stage takes the height and the controls are a quiet rail beside it —
+   chips on a line, not a grid of boxes, not a dev menu.
+
+   COLOUR, and where each one is allowed to appear:
+     ground    --gr-void / --gr-panel      charcoal, matte, no gloss
+     ink       --gr-ink down to --gr-ink-3 warm ivory to a meta grey
+     ACCENT    --gr-accent (steel blue)    selected / active / yours.
+                                           Nothing else wears it.
+     amber     --gr-amber                  the warm secondary: step
+                                           marks, the rule under a
+                                           title, the stage floor. NEVER
+                                           interactive — an amber thing
+                                           is never a thing you press.
+     burgundy and violet                   LIGHT ON THE CHARACTER ONLY.
+                                           They live in the three-point
+                                           rig in js/charselect.js, not
+                                           in this file. No UI chrome is
+                                           ever burgundy or violet.
+   No green anywhere: the accent is never the jade candidate here.
+   ===================================================================== */
+
+/* the warm secondary. --gr-caution is amber too but it MEANS caution, and
+   a step number is not a warning; giving them the same token is how a
+   palette starts lying. Declared here because the identity screens are
+   the only place it is used. */
+:root { --gr-amber: #d9963f; --gr-amber-a: rgba(217, 150, 63, .16); }
+
+/* ---- the screen ------------------------------------------------------ */
+.id-screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  background: var(--gr-void);
+  color: var(--gr-ink);
+  font-family: var(--gr-body);
+  overflow: hidden;
+  /* #start still carries the old creator's centring. Without this the title
+     sits centred over a left-aligned lede and the whole screen reads
+     accidental. The identity screens are left-aligned, deliberately. */
+  text-align: left;
+}
+
+/* THE CITY IS BEHIND THE FIGURE, not a black void. A real frame from the
+   game (assets/landing — the same stills the front door uses), blurred and
+   stopped well down so it reads as the place you are about to walk into
+   while the figure still carries the screen. The warm pool stays on top of
+   it, which is where the burgundy and amber in these screens come from. */
+.id-screen {
+  background-image:
+    linear-gradient(180deg,
+      rgba(8,9,10,.82) 0%,
+      rgba(8,9,10,.64) 22%,
+      rgba(8,9,10,.54) 50%,
+      rgba(8,9,10,.74) 80%,
+      rgba(8,9,10,.92) 100%),
+    url('../assets/landing/skyline-dusk.jpg');
+  /* Zoomed and panned onto the BUILDINGS. At `cover` the frame's skyline sits
+     in the top 45% of the image, which is exactly the band the grid covers —
+     so the only backdrop a player could see was sky above it and rooftop
+     below, and the screen read as brown haze. At 220% height, panned to 30%,
+     the towers and their lit windows fill the gutters, and they are large
+     enough that a 12px blur softens them instead of dissolving them. */
+  background-size: cover, auto 220%;
+  background-position: center, 50% 30%;
+}
+/* The first cut of this scrim was flat and heavy — .90/.72/.94 — and the
+   city came out a brown fog with no buildings in it. Two things were wrong.
+   The scrim is now a band, not a sheet: dark where type sits (the head, the
+   footer bar) and open across the middle, where the panels carry their own
+   ground. And the still was downtown-sunset, a low-contrast warm frame with
+   nothing in it that survives a blur; skyline-dusk has a hard building
+   silhouette and lit windows, which is what still reads as a city at 15px.
+   The blur softens the city; it is not supposed to erase it. */
+.id-screen::before {
+  content: ''; position: absolute; inset: 0;
+  backdrop-filter: blur(12px) saturate(1.06);
+  -webkit-backdrop-filter: blur(12px) saturate(1.06);
+  pointer-events: none;
+}
+/* the warm pool, over the blur */
+.id-screen::after {
+  content: ''; position: absolute; left: 50%; top: 52%;
+  width: min(110vw, 1500px); height: min(78vh, 760px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at 50% 58%,
+    rgba(217, 150, 63, .12) 0%,
+    rgba(140, 53, 80, .09) 34%,
+    rgba(8, 9, 10, 0) 70%);
+  pointer-events: none;
+}
+
+/* ---- the head: mark, step, and the way out --------------------------- */
+.id-head {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 26px 0;
+  flex: 0 0 auto;
+}
+.id-mark {
+  font-family: var(--gr-display); font-size: 19px; letter-spacing: .10em;
+  color: var(--gr-ink);
+}
+.id-steps { display: flex; align-items: center; gap: 0; margin-left: 6px; }
+.id-step {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gr-ink-4); padding: 0 12px;
+}
+.id-step .id-stepn { font-family: var(--gr-data); font-size: 10px; }
+.id-step.is-done { color: var(--gr-ink-3); }
+.id-step.is-done .id-stepn { color: var(--gr-amber); }
+.id-step.is-on { color: var(--gr-ink); }
+.id-step.is-on .id-stepn { color: var(--gr-amber); }
+.id-step + .id-step::before {
+  content: ''; width: 16px; height: 1px; background: var(--gr-line-2);
+  margin-right: 12px; margin-left: -12px;
+}
+.id-head .id-spacer { flex: 1; }
+.id-quiet {
+  font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gr-ink-4); text-decoration: none; padding: 6px 2px;
+}
+.id-quiet:hover { color: var(--gr-ink-2); }
+
+/* ---- the title ------------------------------------------------------- */
+.id-title {
+  position: relative; z-index: 2;
+  padding: 14px 26px 0; flex: 0 0 auto;
+}
+.id-title h1 {
+  margin: 0; font-family: var(--gr-display); font-weight: 400;
+  font-size: clamp(22px, 3.4vw, 38px); letter-spacing: .05em;
+  text-wrap: balance;
+}
+.id-title .id-lede {
+  margin: 6px 0 0; font-size: 12px; color: var(--gr-ink-3);
+  letter-spacing: .02em; max-width: 58ch;
+}
+.id-title::after {
+  content: ''; display: block; width: 46px; height: 2px;
+  background: var(--gr-amber); margin-top: 12px; opacity: .85;
+}
+
+/* ---- the body: stage first, rail second ------------------------------ */
+.id-body {
+  position: relative; z-index: 2;
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: 1fr minmax(260px, 340px);
+  gap: 22px; padding: 12px 26px 0;
+}
+.id-body.id-solo { grid-template-columns: 1fr; }
+
+/* THE STAGE. It gets the height; that is the whole point of this file. */
+.id-stage {
+  position: relative; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.id-stage canvas {
+  display: block; height: 100%; width: auto; max-width: 100%;
+  image-rendering: auto;
+}
+/* THE CONTACT SHADOW MOVED INTO THE CANVAS. It used to be a CSS ellipse
+   pinned 4% off the bottom of .id-stage, which is the COLUMN, not the
+   picture — the canvas is letterboxed inside it, so the shadow sat wherever
+   the column happened to end rather than under the feet, and it went wrong
+   again every time the framing changed. js/charselect.js works out where the
+   ground plane lands from the lens and draws it there. */
+
+/* the turn / zoom controls: under the figure, small, never competing */
+/* clear of the figure's feet and of each other: the first build put these at
+   bottom:-6px with a fixed 30px width, so FRONT and BACK ran together as
+   "FRONTBACK" and the row was clipped by the stage's edge */
+.id-stagectl {
+  position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 3;
+  background: rgba(8, 9, 10, .62); padding: 5px 7px; border-radius: 3px;
+  backdrop-filter: blur(2px);
+}
+.id-icon {
+  min-width: 30px; height: 26px; padding: 0 9px;
+  display: grid; place-items: center;
+  background: transparent; border: 1px solid var(--gr-line);
+  color: var(--gr-ink-3); font-size: 10px; letter-spacing: .10em;
+  cursor: pointer; border-radius: 2px; font-family: var(--gr-data);
+  white-space: nowrap;
+}
+.id-icon:hover { border-color: var(--gr-line-3); color: var(--gr-ink); }
+
+/* ---- the rail: rows of chips, never a grid of boxes ------------------ */
+.id-rail {
+  min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding-right: 6px; padding-bottom: 8px;
+  scrollbar-width: thin; scrollbar-color: var(--gr-line-3) transparent;
+}
+.id-rail::-webkit-scrollbar { width: 6px; }
+.id-rail::-webkit-scrollbar-thumb { background: var(--gr-line-2); border-radius: 3px; }
+
+.id-row { margin-bottom: 16px; }
+.id-rowhead {
+  display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px;
+}
+.id-rowhead .id-rowl {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gr-ink-3);
+}
+.id-rowhead .id-rowv {
+  font-size: 10px; letter-spacing: .04em; color: var(--gr-ink-4);
+  margin-left: auto; font-family: var(--gr-data);
+}
+.id-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* a text chip: a piece, a face, a hair style */
+.id-chip {
+  appearance: none; cursor: pointer;
+  background: var(--gr-panel); border: 1px solid transparent;
+  color: var(--gr-ink-2);
+  font-family: var(--gr-body); font-size: 11px; letter-spacing: .04em;
+  padding: 6px 10px; border-radius: 2px;
+  transition: color .12s, background .12s, border-color .12s;
+}
+.id-chip:hover { background: var(--gr-panel-hi); color: var(--gr-ink); }
+.id-chip.is-on {
+  color: var(--gr-ink); border-color: var(--gr-accent);
+  background: var(--gr-accent-a);
+}
+.id-chip.is-none { color: var(--gr-ink-4); }
+
+/* a colour chip: the swatch IS the control, so it carries no text */
+.id-sw {
+  appearance: none; cursor: pointer; padding: 0;
+  width: 26px; height: 26px; border-radius: 2px;
+  border: 1px solid var(--gr-line-2);
+  position: relative;
+}
+.id-sw:hover { border-color: var(--gr-line-3); }
+.id-sw.is-on { border-color: var(--gr-accent); box-shadow: 0 0 0 2px var(--gr-accent-a); }
+.id-sw.is-on::after {
+  content: ''; position: absolute; inset: auto 0 -6px 0; height: 2px;
+  background: var(--gr-accent);
+}
+
+/* ---- the preset strip: portraits, marked by a line, not a box -------- */
+/* FOUR ACROSS, TWO DOWN — the mockup's picker. It was a horizontal strip of
+   small tiles under a large stage; the mockup makes the eight figures the
+   screen itself, each on its own dark panel, numbered, the chosen one
+   outlined. They are all characters, so the character is still what fills
+   the screen — just eight of them rather than one. */
+.id-grid {
+  position: relative; z-index: 2;
+  flex: 1 1 auto; min-height: 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr;
+  /* wider gutters than the rest of the screen: the grid is the one full-bleed
+     block here, and without margin it seals the backdrop off completely */
+  gap: 14px; padding: 12px 44px 0;
+  align-content: start;
+}
+.id-tile {
+  appearance: none; cursor: pointer; padding: 10px 8px 12px;
+  background: linear-gradient(180deg, rgba(26,30,34,.88), rgba(19,22,25,.93));
+  border: 1px solid var(--gr-line);
+  border-radius: 3px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  gap: 8px; min-height: 0;
+  transition: border-color .14s, background .14s, transform .14s;
+}
+.id-tile:hover { border-color: var(--gr-line-3); transform: translateY(-2px); }
+.id-tile.is-on {
+  border-color: var(--gr-ink); background: linear-gradient(180deg, rgba(34,39,44,.92), rgba(24,28,32,.94));
+}
+.id-tile canvas, .id-tile .id-plate {
+  display: block; flex: 1 1 auto; min-height: 0;
+  width: auto; max-width: 100%; height: 100%;
+  object-fit: contain; border-radius: 2px;
+}
+.id-tile .id-plate { width: 74px; background: linear-gradient(180deg, var(--gr-panel-hi), var(--gr-panel)); }
+.id-tile .id-tl {
+  font-family: var(--gr-data); font-size: 10px; letter-spacing: .16em;
+  color: var(--gr-ink-4); flex: 0 0 auto;
+}
+.id-tile.is-on .id-tl { color: var(--gr-ink); }
+
+/* ---- the foot: one dominant action, and a quiet way back ------------- */
+.id-foot {
+  position: relative; z-index: 2; flex: 0 0 auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 26px 18px;
+}
+.id-foot .id-spacer { flex: 1; }
+.id-act {
+  appearance: none; cursor: pointer;
+  font-family: var(--gr-display); font-size: 15px; letter-spacing: .08em;
+  padding: 12px 26px; border-radius: 2px;
+  background: transparent; border: 1px solid var(--gr-line-2);
+  color: var(--gr-ink-2);
+  transition: background .14s, border-color .14s, color .14s;
+}
+.id-act:hover { border-color: var(--gr-line-3); color: var(--gr-ink); }
+/* IVORY, NOT ACCENT. The mockup fills the one dominant action with warm
+   ivory and dark type. That leaves the steel-blue accent to do the single
+   job the palette gives it — SELECTED — instead of competing with it: a
+   filled blue button beside a blue-outlined chip made "this is on" and
+   "press this" the same colour. */
+.id-act.id-pri {
+  background: var(--gr-ink); border-color: var(--gr-ink);
+  color: var(--gr-void);
+  font-weight: 500;
+}
+.id-act.id-pri:hover { background: #fff; border-color: #fff; }
+.id-act.id-ghost { border-color: transparent; color: var(--gr-ink-4); }
+.id-act.id-ghost:hover { color: var(--gr-ink-2); }
+
+/* ---- phone: the stage still wins, the rail goes under it ------------- */
+@media (max-width: 860px) {
+  .id-head, .id-title, .id-body, .id-strip, .id-foot { padding-left: 16px; padding-right: 16px; }
+  .id-body { grid-template-columns: 1fr; gap: 10px; }
+  .id-stage { min-height: 42vh; }
+  .id-rail { max-height: 30vh; }
+  .id-steps .id-step { padding: 0 8px; }
+  .id-foot { flex-wrap: wrap; }
+  .id-act { flex: 1 1 auto; text-align: center; }
+}
+@media (max-width: 480px) {
+  .id-step:not(.is-on) span:not(.id-stepn) { display: none; }
+}
+
+/* ---- the player's own name, on the SAVE LOOK beat --------------------- */
+/* The presets are numbered and stay numbered. This is the one name in the
+   whole flow, and it is the player's. Optional: blank is a valid answer. */
+.id-name {
+  position: relative; z-index: 2; flex: 0 0 auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 4px 26px 0;
+}
+.id-namel {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gr-ink-3);
+}
+.id-nameinput {
+  background: var(--gr-panel); border: 1px solid var(--gr-line-2);
+  border-radius: 2px; color: var(--gr-ink);
+  font-family: var(--gr-body); font-size: 13px; letter-spacing: .03em;
+  padding: 8px 10px; width: 230px; max-width: 60vw;
+}
+.id-nameinput:focus {
+  outline: none; border-color: var(--gr-accent);
+  box-shadow: 0 0 0 2px var(--gr-accent-a);
+}
+.id-nameinput::placeholder { color: var(--gr-ink-4); }
+@media (max-width: 860px) { .id-name { padding-left: 16px; padding-right: 16px; } }
+
+/* ---- the category rail: one open at a time --------------------------- */
+/*
+   THE MOCKUP REVEALS ONE CATEGORY AT A TIME. Every row of every slot was
+   stacked open at once — 137 chips and 22 swatches down a single scroller,
+   which is a dev menu with a nice font on it. Here the categories are a
+   vertical list with an icon each, the chosen one filled light, and only
+   that category's options underneath.
+
+   The icons are drawn in CSS from one glyph per category rather than an
+   icon font: nine shapes is not worth a network request, and a missing
+   font would leave nine blank squares in the most important list on the
+   screen.
+*/
+.id-cats { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
+.id-cat {
+  appearance: none; cursor: pointer; text-align: left;
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 3px;
+  background: rgba(19, 22, 25, .72); border: 1px solid transparent;
+  color: var(--gr-ink-2);
+  font-family: var(--gr-body); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: background .12s, color .12s;
+}
+.id-cat:hover { background: var(--gr-panel-hi); color: var(--gr-ink); }
+/* THE OPEN CATEGORY IS IVORY, like the mockup — and deliberately not the
+   accent, which means "this piece is equipped" two inches below it. */
+.id-cat.is-open {
+  background: var(--gr-ink); color: var(--gr-void); font-weight: 500;
+}
+.id-cat .id-cati {
+  width: 18px; height: 18px; flex: 0 0 auto;
+  display: grid; place-items: center;
+  font-size: 12px; line-height: 1; opacity: .9;
+}
+.id-cat .id-catv {
+  margin-left: auto; font-family: var(--gr-data); font-size: 9px;
+  letter-spacing: .06em; opacity: .7; text-transform: none;
+}
+/* the open category's options, indented under it */
+.id-catbody { padding: 10px 2px 4px; }
+
+/* ---- the wordmark and the four verbs --------------------------------- */
+.id-markwrap { display: flex; flex-direction: column; gap: 1px; }
+.id-marksub {
+  font-family: var(--gr-data); font-size: 8px; letter-spacing: .34em;
+  color: var(--gr-ink-4);
+}
+/* Four stacked lines against a single-line link, both hard against the
+   right edge, read as one crowded column. The rule gives the verbs an edge
+   of their own so HOW TO PLAY is plainly a different thing you can press. */
+.id-verbs {
+  display: flex; flex-direction: column; gap: 1px; align-items: flex-end;
+  margin-left: auto; margin-right: 20px;
+  padding-right: 20px; border-right: 1px solid var(--gr-line-2);
+}
+.id-verbs span {
+  font-family: var(--gr-data); font-size: 8px; letter-spacing: .22em;
+  color: var(--gr-ink-4); line-height: 1.5;
+}
+.id-verbs span:last-child { color: var(--gr-ink-3); }
+@media (max-width: 860px) {
+  .id-verbs { display: none; }
+  .id-grid { grid-template-columns: repeat(2, 1fr); }
+}

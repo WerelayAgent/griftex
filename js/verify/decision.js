@@ -1,0 +1,1 @@
+export function decisionWords(traceText,reason){const whole=String(reason||"");let e=null;try{e=JSON.parse(traceText||"null")?.entry||null}catch{}const r=e?.returned;if(!e||e.refused||!r?.whyNight||!whole.includes(r.whyNight))return{night:whole,aft:null};return{night:String(r.whyNight),aft:r.whyAft&&whole.includes(r.whyAft)?String(r.whyAft):null}}

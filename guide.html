@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0c0e">
+<meta name="description" content="The GRIFTEX guide: how to get in, how to read San Verano, how the economy works and what to do once you are in it.">
+<title>The GRIFTEX guide — San Verano</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/pixelifysans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/palette.css">
+<link rel="stylesheet" href="css/guide.css">
+<link rel="stylesheet" href="/css/ecosystem.css">
+</head>
+<body class="gr-ecosystem eco-manual eco-page-guide">
+
+<!-- THE MANUAL IS A SITE NOW, NOT A SCROLL.
+     It was four chapters on one page with anchor links: readable top to
+     bottom and useless for anything else — no way to link anybody to a
+     section, nothing for a sidebar to be a sidebar of, and "search" would
+     have meant Ctrl+F.
+
+     THREE FILES DO THE WORK AND NONE OF THEM IS THIS ONE.
+       js/guidenav.js      the chapters and their pages — the SAME array the
+                           front page's nav pill reads, so the two cannot
+                           drift apart
+       js/guidecontent.js  the prose, one entry per page
+       js/guide.js         the sidebar, the hash router and the search
+     This document is the shell they fill. -->
+
+<header class="gd-top">
+  <button class="gd-burger" id="gd-burger" type="button" aria-expanded="false" aria-controls="gd-side" aria-label="Contents">
+    <span aria-hidden="true"></span><span aria-hidden="true"></span>
+  </button>
+  <a class="gd-mark" href="./">GRIFTEX CITY</a>
+  <a class="gd-back" href="./">&larr; Back to grift</a>
+  <form class="gd-search" role="search" onsubmit="return false">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/></svg>
+    <input id="gd-q" type="search" placeholder="Search the guide" autocomplete="off" spellcheck="false" aria-label="Search the guide">
+  </form>
+  <a class="gd-x" href="https://x.com/GriftexCity" target="_blank" rel="noopener noreferrer" aria-label="GRIFTEX on X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+  <a class="gr-btn gr-btn-primary gd-play" href="./#play">Play grift <span aria-hidden="true">&#8599;</span></a>
+</header>
+
+<div class="gd-shell">
+  <aside class="gd-side" id="gd-side">
+    <nav id="gd-nav" aria-label="the guide"></nav>
+  </aside>
+  <main class="gd-main" id="gd-main">
+    <!-- js/guide.js renders the contents, a page, or the search into here.
+         It is empty in the document on purpose: two copies of the contents,
+         one static and one rendered, is two things to keep in step. -->
+  </main>
+</div>
+
+<footer class="gd-foot">
+  <span>SAN VERANO, ALWAYS ON <span class="gd-on">///</span></span>
+  <span><a href="privacy.html">PRIVACY</a> &middot; GRIFT</span>
+</footer>
+
+<script type="module" src="js/guide.js"></script>
+<noscript>
+  <div class="gd-main">
+    <h1 class="gd-h1">The GRIFTEX guide.</h1>
+    <p class="gd-lead">The manual needs JavaScript to page through itself.
+      The game does too, so this is not the wall it looks like &mdash; but if
+      you want the text without it, every page of it is in
+      <code>js/guidecontent.js</code> in the source.</p>
+  </div>
+</noscript>
+</body>
+</html>

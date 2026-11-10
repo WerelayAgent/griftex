@@ -1,0 +1,1 @@
+import{lotRect}from"../lots.js";export const HALL=58;export function nightMarketGate(){const lot=lotRect("nightmarket");return{x:lot.cx,z:lot.cz+HALL/2+3.2}}export function nightMarketDoorway(){const lot=lotRect("nightmarket");return{x:lot.cx,z:lot.cz+HALL/2+.3}}

@@ -1,0 +1,1 @@
+export const JOB_HUE={docker:"#d98a5a",barback:"#c9a227",trainer:"#7fb069",dealer:"#b07fc9",clerk:"#8fa3b8",driver:"#c97f7f",cook:"#d4a05a",nurse:"#7fc9bd",mechanic:"#a08f7f",busker:"#c97fae",waiter:"#d9c27a",security:"#7fa8d4",cleaner:"#8fbf8f",delivery:"#d4a07f",newcomer:"#f0e3b4"};

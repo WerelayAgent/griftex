@@ -1,0 +1,248 @@
+/* =====================================================================
+   THE GRIFT GUIDE — a manual with a shape.
+
+   It was four chapters on one scrolling page with anchor links, all of its
+   CSS inline in guide.html. Two things forced this file: the page is a site
+   now (a persistent sidebar, a router, a search) and the front page's nav
+   pill reads the same chapter list, so the two had to agree about what a
+   chapter is. js/guidenav.js holds the list; js/guidecontent.js holds the
+   prose; js/guide.js renders; this styles.
+
+   Every colour and face comes from css/palette.css. The manual, the dev log,
+   the front door, the creator, the HUD and the pause sheet change together
+   when the accent changes, because they all read from there.
+   ===================================================================== */
+
+:root {
+  --gd-top-h: 68px;
+  --gd-side-w: 268px;
+}
+* { box-sizing: border-box; }
+html { background: var(--gr-bg); }
+body {
+  margin: 0; background: var(--gr-bg); color: var(--gr-ink);
+  font: 14px/1.65 var(--gr-body);
+  -webkit-font-smoothing: antialiased; font-synthesis: none;
+}
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--gr-accent); outline-offset: 3px; }
+
+/* ---- the top bar ---------------------------------------------------- */
+.gd-top {
+  position: sticky; top: 0; z-index: 20;
+  height: var(--gd-top-h);
+  display: flex; align-items: center; gap: 18px;
+  padding: 0 clamp(18px, 3vw, 34px);
+  border-bottom: 1px solid var(--gr-line);
+  background: rgba(11, 12, 14, .92);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.gd-mark { font-family: var(--gr-display); font-weight: 700; font-size: 19px; letter-spacing: .04em; }
+.gd-back { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--gr-ink-3); transition: color .16s ease; }
+.gd-back:hover, .gd-back:focus-visible { color: var(--gr-ink); }
+
+/* the search: one field, and it looks inside every page rather than
+   filtering eleven titles — see the note in js/guide.js */
+.gd-search {
+  margin-left: auto; position: relative;
+  display: flex; align-items: center;
+  width: min(300px, 38vw);
+}
+.gd-search svg { position: absolute; left: 12px; width: 13px; height: 13px; color: var(--gr-ink-4); pointer-events: none; }
+#gd-q {
+  width: 100%; height: 38px; padding: 0 14px 0 33px;
+  border: 1px solid var(--gr-line-2); border-radius: 999px;
+  background: rgba(8, 9, 10, .6); color: var(--gr-ink);
+  font: 12px var(--gr-body); letter-spacing: .02em;
+  transition: border-color .16s ease, background .16s ease;
+}
+#gd-q::placeholder { color: var(--gr-ink-4); }
+#gd-q:focus { outline: none; border-color: var(--gr-line-3); background: rgba(8, 9, 10, .86); }
+#gd-q:focus-visible { outline: 2px solid var(--gr-accent); outline-offset: 2px; }
+
+/* ---- the shell: a sidebar that stays, and a column that changes ------ */
+.gd-shell { display: grid; grid-template-columns: var(--gd-side-w) minmax(0, 1fr); align-items: start; }
+.gd-side {
+  position: sticky; top: var(--gd-top-h);
+  height: calc(100vh - var(--gd-top-h)); overflow-y: auto; overscroll-behavior: contain;
+  padding: 26px 18px 40px clamp(18px, 3vw, 34px);
+  border-right: 1px solid var(--gr-line);
+}
+.gd-group {
+  margin: 22px 0 8px; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--gr-ink-4);
+}
+.gd-group:first-child { margin-top: 0; }
+.gd-pages { list-style: none; margin: 0 0 4px; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+.gd-navlink {
+  display: block; padding: 7px 10px; border-radius: 7px;
+  font-size: 13px; color: var(--gr-ink-2);
+  transition: color .14s ease, background .14s ease;
+}
+.gd-navlink:hover { color: var(--gr-ink); background: rgba(237, 230, 214, .05); }
+/* the page you are on, and it has to be unmistakable — a sidebar whose
+   highlight is a shade of grey is a list */
+.gd-navlink.is-on {
+  color: var(--gr-ink); background: rgba(237, 230, 214, .08);
+  box-shadow: inset 2px 0 0 var(--gr-accent);
+}
+
+.gd-main { padding: 40px clamp(18px, 4vw, 56px) 80px; width: min(100%, 860px); }
+.gd-kicker { margin: 0 0 14px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--gr-ink-3); }
+.gd-h1 { margin: 0; font-family: var(--gr-display); font-weight: 700; font-size: clamp(30px, 4vw, 46px); line-height: 1.04; letter-spacing: -.02em; text-wrap: balance; }
+.gd-h2 { margin: 42px 0 16px; font-family: var(--gr-display); font-weight: 700; font-size: 19px; letter-spacing: .01em; color: var(--gr-ink-2); }
+.gd-lead { margin: 18px 0 0; max-width: 64ch; font-size: 14.5px; line-height: 1.7; color: var(--gr-ink-2); }
+.gd-body { margin-top: 22px; max-width: 68ch; }
+.gd-body h3 { margin: 32px 0 10px; font-family: var(--gr-display); font-weight: 700; font-size: 16px; letter-spacing: .01em; }
+.gd-body p, .gd-body ul { margin: 0 0 14px; }
+.gd-body ul { padding-left: 20px; }
+.gd-body li { margin: 0 0 9px; color: var(--gr-ink-2); }
+.gd-body li b, .gd-body p b { color: var(--gr-ink); font-weight: 600; }
+.gd-lede { font-size: 15px; line-height: 1.66; color: var(--gr-ink); }
+.gd-body code { font-family: var(--gr-data); font-size: .92em; color: var(--gr-ink); }
+
+/* the state tags: LOCAL, SOLANA, NOT LIVE. They are the one place this
+   page is allowed to make a claim, so they read as labels, not decoration */
+.gd-tag {
+  display: inline-block; margin-left: 6px; padding: 3px 7px; vertical-align: 2px;
+  border: 1px solid var(--gr-accent-a2); border-radius: 3px;
+  font-family: var(--gr-data); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gr-accent);
+}
+.gd-tag.gd-dim { border-color: var(--gr-line-2); color: var(--gr-ink-3); }
+
+/* THE CALLOUT THAT DOES THE IMPORTANT WORK. Every honest thing this product
+   says about what is simulated and what is local is in one of these, and it
+   is the reason a reader can believe the rest of the page. */
+.gd-honest {
+  margin: 22px 0; padding: 16px 18px; max-width: 68ch;
+  border: 1px solid var(--gr-line-2); border-left: 2px solid var(--gr-caution);
+  border-radius: 3px; background: var(--gr-panel-a6);
+  font-size: 13px; line-height: 1.62; color: var(--gr-ink-2);
+}
+.gd-honest b { color: var(--gr-ink); }
+
+/* ---- the contents: cards, not prose --------------------------------- */
+/* AUTO-FIT, NOT AUTO-FILL, AND THAT IS THE WHOLE DIFFERENCE. auto-fill keeps
+   the empty tracks, and because the gap is a 1px rule showing the background
+   through, an empty track renders as a blank card sitting next to the real
+   ones. A three-page group at 258px min came out two-and-one with a hole in
+   it. auto-fit collapses the empty track and 212px lets a three-page group
+   fill one row. */
+.gd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(212px, 1fr)); gap: 1px; background: var(--gr-line); border: 1px solid var(--gr-line); }
+.gd-card {
+  display: flex; flex-direction: column; gap: 6px; position: relative;
+  padding: 18px 20px; background: var(--gr-panel-a6);
+  transition: background .16s ease;
+}
+.gd-card:hover { background: var(--gr-panel-hi); }
+.gd-card b { font-size: 13.5px; font-weight: 600; color: var(--gr-ink); }
+.gd-card i { font-style: normal; font-size: 11.5px; line-height: 1.55; color: var(--gr-ink-4); }
+.gd-arrow { position: absolute; top: 16px; right: 16px; font-size: 12px; color: var(--gr-ink-4); transition: color .16s ease; }
+.gd-card:hover .gd-arrow { color: var(--gr-accent); }
+.gd-resultgroup { font-family: var(--gr-data); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--gr-ink-4); }
+.gd-results .gd-card i { color: var(--gr-ink-3); }
+
+.gd-tablewrap { overflow-x: auto; border: 1px solid var(--gr-line); border-radius: 3px; background: var(--gr-panel-a6); }
+.gd-body table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+.gd-body th { text-align: left; padding: 11px 14px; font-size: 9.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--gr-ink-4); border-bottom: 1px solid var(--gr-line); }
+.gd-body td { padding: 10px 14px; border-bottom: 1px solid var(--gr-line); color: var(--gr-ink-2); vertical-align: top; }
+.gd-body tr:last-child td { border-bottom: 0; }
+.gd-body td.k { white-space: nowrap; width: 30%; color: var(--gr-ink); font-family: var(--gr-data); font-size: 11.5px; }
+
+.gd-next { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--gr-line); }
+.gd-quiet { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--gr-ink-3); transition: color .16s ease; }
+.gd-quiet:hover, .gd-quiet:focus-visible { color: var(--gr-accent); }
+
+.gd-foot {
+  display: flex; justify-content: space-between; gap: 20px;
+  padding: 24px clamp(18px, 4vw, 56px) 40px;
+  border-top: 1px solid var(--gr-line);
+  color: var(--gr-ink-4); font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+}
+.gd-foot .gd-on { color: var(--gr-accent); }
+
+/* ---- the burger, and the sidebar as a sheet under 900 --------------- */
+.gd-burger { display: none; }
+@media (max-width: 900px) {
+  .gd-back { display: none; }
+  .gd-search { width: auto; flex: 1 1 auto; }
+  /* AT PHONE WIDTH THE BAR HAS FOUR THINGS AND ROOM FOR THREE. The burger,
+     the wordmark and PLAY GRIFT are all fixed width, which left the search
+     about seventy pixels — a magnifier and three letters of its own
+     placeholder. It gets its own row instead, and the bar keeps its height
+     for the three controls that were always going to fit. */
+  .gd-burger {
+    order: -1; display: inline-flex; flex-direction: column; justify-content: center; gap: 4px;
+    width: 34px; height: 34px; padding: 0 8px; margin-left: -6px;
+    border: 1px solid var(--gr-line-2); border-radius: 8px; background: none; cursor: pointer;
+  }
+  .gd-burger span { display: block; height: 1px; background: var(--gr-ink-2); transition: transform .2s ease; }
+  body.gd-open .gd-burger span:first-child { transform: translateY(2.5px) rotate(45deg); }
+  body.gd-open .gd-burger span:last-child { transform: translateY(-2.5px) rotate(-45deg); }
+  .gd-shell { grid-template-columns: minmax(0, 1fr); }
+  /* THE SIDEBAR IS STILL THE SIDEBAR, just folded away. It is not a second
+     nav with a second list: the same element, displayed when asked for. */
+  .gd-side {
+    position: fixed; inset: var(--gd-top-h) 0 auto 0; z-index: 19;
+    height: auto; max-height: calc(100vh - var(--gd-top-h)); display: none;
+    padding: 18px 22px 28px;
+    border-right: 0; border-bottom: 1px solid var(--gr-line-2);
+    background: rgba(11, 12, 14, .97);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  body.gd-open .gd-side { display: block; }
+  .gd-main { padding: 28px 22px 64px; }
+  .gd-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- the primary button ---------------------------------------------
+   ONE SHAPE AND ONE FILL ACROSS BOTH PAGES, AND THE VALUES ARE NOT HERE.
+   PLAY GRIFT on this page and CONNECT WALLET on the front page are the same
+   control wearing two class names, for the historical reason that the front
+   page's stylesheet is scoped to #landing and this one is not. What makes
+   them one system is that both read --gr-btn-* from css/palette.css: change
+   the fill there and both change, and neither can quietly drift off the
+   other. The shape below is three declarations; the colour is none. */
+.gr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 15px 30px; border-radius: var(--gr-btn-radius);
+  border: 1px solid transparent; box-sizing: border-box;
+  font: inherit; font-size: 12.5px; line-height: 1; letter-spacing: .13em; text-transform: uppercase;
+  cursor: pointer; white-space: nowrap;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.gr-btn-primary { background: var(--gr-btn-fill); color: var(--gr-btn-ink); border-color: var(--gr-btn-edge); }
+.gr-btn-primary:hover, .gr-btn-primary:focus-visible { background: var(--gr-btn-hi); border-color: var(--gr-btn-hi); transform: translateY(-1px); }
+.gd-play { margin-left: 14px; }
+@media (prefers-reduced-motion: reduce) { .gr-btn:hover { transform: none; } }
+@media (max-width: 900px) {
+  /* the label goes; the arrow and the shape are enough at this width, and a
+     full PLAY GRIFT next to a search field leaves no room for the field */
+  .gd-play { padding: 12px 16px; margin-left: 8px; }
+}
+
+@media (max-width: 560px) {
+  .gd-top { flex-wrap: wrap; height: auto; padding-top: 12px; padding-bottom: 12px; row-gap: 10px; }
+  .gd-search { order: 3; flex: 1 0 100%; width: 100%; }
+  #gd-q { height: 36px; }
+  /* the sidebar sheet hangs off the bar, and the bar is two rows tall now */
+  .gd-side { position: static; max-height: none; }
+}
+
+/* ---- the X account, on the guide's top bar ----------------------------
+   The same quiet as the front page's: muted ink, lifting to full ink rather
+   than to the accent, no count and no embed. It sits before PLAY GRIFT so the
+   primary action stays the last thing on the bar. */
+.gd-x {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; flex: none;
+  color: var(--gr-ink-3); transition: color .16s ease;
+}
+.gd-x svg { width: 14px; height: 14px; display: block; }
+.gd-x:hover, .gd-x:focus-visible { color: var(--gr-ink); }
+@media (max-width: 560px) {
+  /* the bar is burger, wordmark, glyph and PLAY GRIFT at this width, with the
+     search on its own row under them — the glyph gives up its padding first */
+  .gd-x { width: 26px; }
+}

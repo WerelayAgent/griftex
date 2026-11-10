@@ -1,0 +1,1 @@
+const FILMS=new Set(["fourthousand","nightrun"]);export const cityMirrorQS=(()=>{try{const q=new URLSearchParams(location.search);return FILMS.has(q.get("shot"))&&q.get("from")==="production"?"&from=production":""}catch{return""}})();

@@ -1,0 +1,533 @@
+/* ==========================================================================
+   THE CASE FILE — the shared UI language for every in-game screen.
+   Character select and the pause menu both build from these; anything added
+   later should too, so the game stops accumulating one-off panel styles.
+
+   Charcoal panels, label/value rows, evidence tags, rubber stamps. The
+   accent marks state — selected, active, live, yours — and nothing else:
+   not a heading, not a rule, not a readout. Amber is caution and
+   destruction alone.
+
+   EVERY COLOUR AND FACE HERE COMES FROM css/palette.css. These --cf- names
+   stay because a hundred rules and a dozen modules read them; they are
+   aliases now, not values. Change the accent in one place, in that file,
+   and it reaches this system, the front door, the creator, the HUD, the
+   pause sheet and the manual together.
+   ========================================================================== */
+
+:root {
+  --cf-bg:        var(--gr-bg);
+  --cf-card:      var(--gr-panel);
+  --cf-card-hi:   var(--gr-panel-hi);
+  --cf-edge:      var(--gr-line-2);
+  --cf-edge-lit:  var(--gr-line-3);
+  --cf-ink:       var(--gr-ink);
+  --cf-ink-dim:   var(--gr-ink-2);
+  --cf-ink-faint: var(--gr-ink-3);
+  --cf-accent:    var(--gr-accent);
+  --cf-accent-dk: var(--gr-accent-dk);
+  --cf-warn:      var(--gr-caution);
+  --cf-danger:    var(--gr-danger);
+  --cf-mono:      var(--gr-data);
+  /* the pixel face was three literal 'Anton' stacks that never resolved —
+     anton.woff2 is preloaded and has no @font-face anywhere, so every one
+     of them has been falling back to Arial Narrow. One token, one face. */
+  --cf-display:   var(--gr-display);
+  --cf-body:      var(--gr-body);
+
+  /* translucent forms of the ground. HUD panels sit over a live 3D scene,
+     so they read better letting a little of the city through than they do
+     as opaque plates. */
+  --cf-card-a:  var(--gr-panel-a);
+  --cf-card-a6: var(--gr-panel-a6);
+}
+
+/* ---- the card itself: a file folder, with a tab ---- */
+.cf-card {
+  position: relative;
+  background: var(--cf-card);
+  border: 1px solid var(--cf-edge);
+  border-radius: 2px;
+  font-family: var(--cf-mono);
+}
+/* the punched holes down the left edge of a filed sheet */
+.cf-card.cf-punched::before {
+  content: ''; position: absolute; left: 6px; top: 14px; bottom: 14px; width: 4px;
+  background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,.55) 1.8px, transparent 2px);
+  background-size: 4px 18px; opacity: .8; pointer-events: none;
+}
+.cf-tab {
+  display: inline-block;
+  background: var(--cf-card-hi);
+  border: 1px solid var(--cf-edge);
+  border-bottom: none;
+  color: var(--cf-ink-dim);
+  font: 700 9px var(--cf-mono);
+  letter-spacing: .22em;
+  padding: 4px 10px 3px;
+  border-radius: 2px 2px 0 0;
+}
+.cf-rule { height: 1px; background: var(--cf-edge); margin: 8px 0; }
+.cf-rule.cf-lit { background: linear-gradient(90deg, var(--cf-accent-dk), transparent); }
+
+/* ---- label / value rows: the body of every sheet ---- */
+.cf-row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; padding: 3px 0;
+  border-bottom: 1px dotted rgba(255,255,255,.06);
+}
+.cf-row:last-child { border-bottom: none; }
+.cf-row .cf-l {
+  font: 600 9px var(--cf-mono); letter-spacing: .16em;
+  color: var(--cf-ink-faint); white-space: nowrap;
+}
+.cf-row .cf-v {
+  font: 700 12px var(--cf-mono); letter-spacing: .04em;
+  color: var(--cf-ink); text-align: right;
+}
+
+/* ---- evidence tag: a bar with a value, used for stats and progress ---- */
+.cf-bar { display: block; margin: 5px 0 7px; }
+.cf-bar .cf-bl {
+  display: flex; justify-content: space-between;
+  font: 600 8.5px var(--cf-mono); letter-spacing: .16em;
+  color: var(--cf-ink-faint); margin-bottom: 3px;
+}
+.cf-bar .cf-bt {
+  /* display:block is load-bearing. These are <span>s at the call site, and
+     height, overflow and an abspos child all no-op on an inline box — which
+     is why the bars rendered as nothing at all, whatever colour they were. */
+  display: block;
+  position: relative; height: 9px; background: #080b07;
+  border: 1px solid var(--cf-edge); border-radius: 1px; overflow: hidden;
+}
+.cf-bar .cf-bf {
+  position: absolute; inset: 0 auto 0 0;
+  background: linear-gradient(90deg, var(--cf-accent-dk), var(--cf-accent));
+  box-shadow: 0 0 6px var(--gr-accent-a);
+  /* notches: wide enough to read as a measured tag, not so fine they eat
+     the fill at card width */
+  -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 6px, transparent 6px 7px);
+  mask-image: repeating-linear-gradient(90deg, #000 0 6px, transparent 6px 7px);
+}
+
+/* ---- buttons: bordered panels with a left marker. Never solid fills. ---- */
+.cf-btn {
+  position: relative; display: flex; align-items: center; gap: 9px;
+  width: 100%; cursor: pointer; text-align: left;
+  background: var(--cf-card); color: var(--cf-ink);
+  border: 1px solid var(--cf-edge); border-left: 3px solid var(--cf-edge-lit);
+  border-radius: 2px; padding: 10px 12px;
+  font: 700 12px var(--cf-mono); letter-spacing: .12em;
+  transition: background .13s, border-color .13s, transform .13s;
+}
+.cf-btn:hover { background: var(--cf-card-hi); border-color: var(--cf-edge-lit); transform: translateX(2px); }
+.cf-btn.cf-pri { border-left-color: var(--cf-accent); color: #f2fbf2; }
+.cf-btn.cf-pri:hover { background: var(--gr-accent-a); border-color: var(--cf-accent-dk); }
+.cf-btn.cf-warn { border-left-color: var(--cf-warn); }
+.cf-btn.cf-warn:hover { background: rgba(224,163,60,.09); border-color: var(--cf-warn); }
+
+/* ---- the stamp: rotated, hollow, ink-bled. Marks state, not decoration. --- */
+.cf-stamp {
+  position: absolute; pointer-events: none;
+  border: 2.5px solid var(--cf-accent);
+  color: var(--cf-accent);
+  font: 800 12px var(--cf-mono); letter-spacing: .18em;
+  padding: 3px 9px 2px;
+  transform: rotate(-11deg);
+  opacity: .92;
+  border-radius: 2px;
+  /* a stamp is never crisp — the ink skips */
+  box-shadow: inset 0 0 0 1px var(--gr-accent-a);
+  text-shadow: 0 0 6px var(--gr-accent-a);
+}
+.cf-stamp.cf-void { border-color: var(--cf-danger); color: var(--cf-danger); text-shadow: none; box-shadow: none; }
+
+/* ---- section grouping inside a sheet ---- */
+.cf-sec { margin-top: 12px; }
+.cf-sechead {
+  display: flex; align-items: center; gap: 8px;
+  font: 700 9px var(--cf-mono); letter-spacing: .22em;
+  color: var(--cf-ink-dim); margin-bottom: 6px;
+}
+.cf-sechead::after { content: ''; flex: 1; height: 1px; background: var(--cf-edge); }
+
+@media (max-width: 700px), (max-height: 620px) {
+  .cf-btn { padding: 9px 10px; font-size: 11px; }
+  .cf-row .cf-v { font-size: 11px; }
+  .cf-tab { font-size: 8px; padding: 3px 8px 2px; }
+}
+
+/* ==========================================================================
+   FULL-SCREEN SHEETS — the legend board, the credit roll, the camera booth,
+   the ad break. These used to each carry their own palette (Arial, gold,
+   blue-black, rounded gradient pills), which is why the game read as four
+   different products depending on which key you pressed.
+   ========================================================================== */
+
+/* the ground every full-screen sheet sits on: a dark file room, not a modal */
+.cf-scrim {
+  position: fixed; inset: 0; z-index: 55;
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse at 50% 38%, var(--gr-accent-a), transparent 62%),
+    var(--cf-bg);
+  color: var(--cf-ink);
+  font-family: var(--cf-mono);
+  text-align: center;
+}
+.cf-scrim.cf-open { display: flex; }
+
+/* the display face: the pixel title and key labels only. The mono is for
+   data that has to line up — addresses, ids, figures — and nothing else. */
+.cf-title {
+  font: 400 32px/1 var(--cf-display);
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--cf-ink);
+}
+.cf-title.cf-lit { color: var(--cf-accent); text-shadow: 0 0 18px var(--gr-accent-a); }
+.cf-sub {
+  font: 600 10px var(--cf-mono); letter-spacing: .22em;
+  text-transform: uppercase; color: var(--cf-ink-faint);
+}
+.cf-num {
+  font: 400 46px/1 var(--cf-display);
+  letter-spacing: .04em; color: var(--cf-accent);
+  text-shadow: 0 0 22px var(--gr-accent-a);
+}
+
+/* an inline button — the row form of .cf-btn, for button bars */
+.cf-btn.cf-inline { width: auto; display: inline-flex; justify-content: center; }
+
+/* THE HERO ACTION — the one primary control on a screen (PLAY, and nothing
+   else so far). Same grammar as every other button: a bordered panel with an
+   accent marker. It earns its weight from a THICKER marker, a wash falling
+   away from it, and a lit edge — not from being filled in solid. A solid
+   green slab beside three bordered tabs reads as a different design system,
+   which is exactly why the pause menu lost its RESUME pill. */
+.cf-btn.cf-hero {
+  border-left-width: 6px;
+  border-color: var(--cf-accent-dk);
+  border-left-color: var(--cf-accent);
+  background: linear-gradient(90deg, var(--gr-accent-a), var(--gr-accent-a) 62%, var(--cf-card));
+  color: #f2fbf2;
+  font: 400 21px/1 var(--cf-display);
+  letter-spacing: .14em;
+  padding: 16px 34px 14px 26px;
+  box-shadow:
+    0 0 0 1px var(--gr-accent-a),
+    0 10px 28px rgba(0,0,0,.5),
+    inset 0 0 22px var(--gr-accent-a);
+}
+.cf-btn.cf-hero:hover {
+  background: linear-gradient(90deg, var(--gr-accent-a), var(--gr-accent-a) 62%, var(--cf-card-hi));
+  border-color: var(--cf-accent);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px var(--gr-accent-a),
+    0 14px 34px rgba(0,0,0,.55),
+    inset 0 0 26px var(--gr-accent-a);
+}
+
+/* a scrolling list inside a sheet: the case file's contents page */
+.cf-list {
+  max-height: 55vh; overflow-y: auto; text-align: left;
+  background: var(--cf-card);
+  border: 1px solid var(--cf-edge); border-radius: 2px;
+  padding: 12px 16px;
+  scrollbar-width: thin; scrollbar-color: var(--cf-edge-lit) transparent;
+}
+.cf-list::-webkit-scrollbar { width: 6px; }
+.cf-list::-webkit-scrollbar-thumb { background: var(--cf-edge-lit); border-radius: 3px; }
+
+@media (max-width: 700px), (max-height: 620px) {
+  .cf-title { font-size: 24px; }
+  .cf-num { font-size: 34px; }
+  .cf-list { max-height: 48vh; padding: 10px 12px; }
+}
+
+/* ===================================================================== THE
+   FLOOR TERMINAL — js/floorterminal.js
+   ---------------------------------------------------------------------------
+   A SCREEN IN THE ROOM, NOT A SHEET OVER IT. Every other case-file surface
+   sits on .cf-scrim, which blacks the world out behind it; this one must not,
+   because the whole point is that you are standing on the trading floor with
+   the floor still around you. So: no scrim, a panel inset from the frame, and
+   the room visible past its edges while the camera holds on it.
+
+   Rising and falling are DATA colours and deliberately not the brand accent —
+   the accent means "this is on, this is yours", and a price going up is
+   neither. Caution for up, danger for down, which is the pair the rest of the
+   game already reads as good news and bad. */
+.ft-wrap {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3.5vh 3vw; pointer-events: none;
+  font-family: var(--gr-body);
+}
+.ft-screen {
+  pointer-events: auto; width: min(1080px, 94vw); max-height: 94vh;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px 16px 12px;
+  background: var(--cf-card); border: 1px solid var(--cf-edge-lit);
+  box-shadow: 0 30px 90px rgba(0,0,0,.66);
+}
+/* ---- the tape: the reason the screen exists ---- */
+.ft-strip { display: flex; align-items: center; gap: 12px; min-width: 0; border-bottom: 1px solid var(--cf-edge); padding-bottom: 9px; }
+.ft-striplab { flex: none; font-family: var(--gr-mono); font-size: 9px; letter-spacing: .22em; color: var(--cf-ink-faint); }
+.ft-newswrap { display: flex; align-items: center; gap: 10px; min-width: 0; overflow: hidden; white-space: nowrap; }
+.ft-n { font-family: var(--gr-mono); font-size: 11.5px; letter-spacing: .07em; color: var(--cf-ink-dim); }
+.ft-n-new { color: var(--cf-ink); }
+.ft-nsep { color: var(--cf-ink-faint); opacity: .6; }
+.ft-quiet { color: var(--cf-ink-faint); letter-spacing: .04em; text-transform: none; }
+/* ---- the two columns ---- */
+.ft-body { display: grid; grid-template-columns: 340px 1fr; gap: 16px; min-height: 0; }
+.ft-listwrap { display: flex; flex-direction: column; max-height: 52vh; overflow: auto; }
+.ft-row {
+  display: grid; grid-template-columns: 62px 1fr 58px 58px 60px; align-items: center; gap: 8px;
+  padding: 5px 6px; background: none; border: 0; border-bottom: 1px solid var(--cf-edge);
+  color: var(--cf-ink-dim); text-align: left; cursor: pointer; font: inherit;
+}
+.ft-row:hover { background: var(--cf-card-hi); color: var(--cf-ink); }
+.ft-row.is-sel { background: var(--cf-card-hi); color: var(--cf-ink); box-shadow: inset 2px 0 0 var(--cf-accent); }
+.ft-sym { font-family: var(--gr-mono); font-size: 11.5px; letter-spacing: .08em; color: var(--cf-ink); }
+.ft-hold { font-style: normal; margin-left: 5px; font-size: 9px; padding: 1px 4px; border-radius: 3px; background: var(--cf-edge-lit); color: var(--cf-ink); }
+.ft-nm { font-size: 10.5px; letter-spacing: .05em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ft-px, .ft-chg { font-size: 11px; text-align: right; }
+.ft-spark { width: 60px; height: 16px; }
+.ft-spark polyline, .ft-chart polyline { fill: none; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+polyline.up, .up { color: var(--cf-warn); stroke: var(--cf-warn); }
+polyline.dn, .dn { color: var(--cf-danger); stroke: var(--cf-danger); }
+/* ---- the selected name ---- */
+.ft-selhead { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.ft-selsym { font-family: var(--gr-mono); font-size: 20px; letter-spacing: .1em; color: var(--cf-ink); }
+.ft-selnm { font-size: 11px; letter-spacing: .14em; color: var(--cf-ink-faint); text-transform: uppercase; }
+.ft-selpx { font-size: 20px; margin-left: auto; color: var(--cf-ink); }
+.ft-selchg { font-size: 13px; }
+.ft-selsec { font-family: var(--gr-mono); font-size: 9px; letter-spacing: .2em; color: var(--cf-ink-faint); border: 1px solid var(--cf-edge); padding: 2px 6px; }
+.ft-chart { height: 150px; margin-top: 8px; border-bottom: 1px solid var(--cf-edge); }
+.ft-chart svg { width: 100%; height: 150px; display: block; }
+.ft-nodata { height: 150px; display: flex; align-items: center; justify-content: center; font-family: var(--gr-mono); font-size: 10px; letter-spacing: .16em; color: var(--cf-ink-faint); }
+.ft-ranges { display: flex; gap: 6px; margin-top: 8px; }
+.ft-rg { font-family: var(--gr-mono); font-size: 9.5px; letter-spacing: .16em; padding: 4px 10px; cursor: pointer;
+  background: none; border: 1px solid var(--cf-edge); color: var(--cf-ink-faint); }
+.ft-rg:hover { color: var(--cf-ink); }
+.ft-rg.is-on { color: var(--cf-ink); border-color: var(--cf-edge-lit); background: var(--cf-card-hi); }
+/* ---- position and ticket ---- */
+.ft-pos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 14px; margin: 6px 0 12px; }
+.ft-pos .k { font-family: var(--gr-mono); font-size: 9px; letter-spacing: .2em; color: var(--cf-ink-faint); grid-row: 1; }
+.ft-pos .v { font-size: 14px; color: var(--cf-ink); grid-row: 2; }
+.ft-trade { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+.ft-ticket { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ft-conf { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--gr-mono); font-size: 11px; letter-spacing: .08em; color: var(--cf-ink); }
+.ft-tickhint { font-family: var(--gr-mono); font-size: 9px; letter-spacing: .14em; color: var(--cf-ink-faint); }
+.ft-cashline { font-family: var(--gr-mono); font-size: 10px; letter-spacing: .18em; color: var(--cf-ink-faint); }
+.ft-cashline b { color: var(--cf-ink); font-size: 14px; margin-left: 6px; }
+.ft-foot { font-family: var(--gr-mono); font-size: 9px; letter-spacing: .2em; color: var(--cf-ink-faint); border-top: 1px solid var(--cf-edge); padding-top: 9px; }
+.ft-foot b { color: var(--cf-ink-dim); }
+@media (max-width: 900px) {
+  .ft-body { grid-template-columns: 1fr; }
+  .ft-listwrap { max-height: 26vh; }
+  .ft-pos { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* STOCK DROPS, on the floor terminal. The market above it is a simulation in
+   in-game cash; this section is the only part that ever concerns a real asset,
+   so COMING SOON is styled as INFORMATION and never as a reward waiting to be
+   collected — no accent, no glow, nothing that reads as a balance. */
+.ft-dropnote { font-size: 10px; letter-spacing: .08em; color: var(--cf-ink-faint); margin-left: .5em; }
+.ft-dropnote.on { color: var(--cf-accent); }
+.ft-drops { display: flex; flex-direction: column; gap: 6px; max-height: 190px; overflow-y: auto; }
+.ft-drop { border: 1px solid var(--cf-edge); border-radius: 2px; padding: 6px 8px; background: rgba(255, 255, 255, .015); }
+.ft-dtop { display: flex; align-items: baseline; gap: 8px; }
+.ft-dname { font-weight: 700; letter-spacing: .04em; color: var(--cf-ink); }
+.ft-ddist { font-size: 10px; letter-spacing: .08em; color: var(--cf-ink-faint); }
+.ft-dstat { margin-left: auto; font-size: 10px; letter-spacing: .08em; color: var(--cf-ink-dim); }
+.ft-dstat.complete { color: var(--cf-warn); }
+.ft-dstat.active { color: var(--cf-accent); }
+.ft-dobj { font-size: 11px; color: var(--cf-ink-dim); margin: 3px 0 5px; }
+.ft-drow { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: .08em; }
+.ft-soon { color: var(--cf-ink-faint); }
+.ft-rw { color: var(--cf-ink); }
+.ft-rw.done { color: var(--cf-warn); }
+.ft-dclaim { margin-left: auto; padding: 2px 10px; font-size: 10px; }
+.ft-dfoot { font-size: 10px; letter-spacing: .06em; color: var(--cf-ink-faint); padding-top: 2px; }
+.ft-dfoot.ft-warn { color: var(--cf-warn); }
+.ft-tre { color: var(--cf-ink-dim); border-bottom: 1px solid var(--cf-edge); padding-bottom: 3px; margin-bottom: 2px; }
+
+/* ===================================================================== THE
+   BAR'S LEDGER TERMINAL — js/barterminal.js
+   ---------------------------------------------------------------------------
+   Same contract as the floor terminal above: a screen in the room, not a
+   sheet over it, so .bt-wrap carries no scrim either. Narrower than the
+   exchange's screen — one drink, one balance, two small charts — rather
+   than a wide layout padded out to look busier than the business is. */
+.bt-wrap {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 3.5vh 3vw; pointer-events: none;
+  font-family: var(--gr-body);
+}
+.bt-screen {
+  pointer-events: auto; width: min(760px, 94vw); max-height: 94vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 14px 16px 12px;
+  background: var(--cf-card); border: 1px solid var(--cf-edge-lit);
+  box-shadow: 0 30px 90px rgba(0,0,0,.66);
+}
+/* a ledger longer than the viewport (the market's) scrolls; its sections never shrink into one another */
+#marketterm .bt-screen > * { flex-shrink: 0; }
+#marketterm .bt-stats > .bt-nodata { grid-column: 1 / -1; }
+#marketterm .bt-stats a, #marketterm .bt-ledger a { color: inherit; text-decoration: underline; text-decoration-color: rgba(224,163,60,.4); text-underline-offset: 3px; }   /* the explorer links, as the bar's $GRIFTEX section draws them */   /* a NOT WIRED YET line runs the width of the stats grid, not one column of it */
+.bt-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bt-pill { font: 700 9px var(--cf-mono); letter-spacing: .16em; padding: 3px 9px; border-radius: 2px; border: 1px solid var(--cf-edge); color: var(--cf-ink-faint); }
+.bt-pill.on { color: #0c1410; background: var(--cf-accent); border-color: var(--cf-accent-dk); }
+.bt-pill.warn { color: var(--cf-warn); border-color: var(--cf-warn); }
+.bt-store { margin-left: auto; font-family: var(--cf-mono); font-size: 9px; letter-spacing: .18em; color: var(--cf-ink-faint); text-transform: uppercase; }
+
+.bt-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 14px; }
+.bt-stats .k { font-family: var(--cf-mono); font-size: 9px; letter-spacing: .18em; color: var(--cf-ink-faint); grid-row: 1; }
+.bt-stats .v { font-size: 16px; color: var(--cf-ink); grid-row: 2; }
+
+.bt-stockrow { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding: 6px 0; border-bottom: 1px solid var(--cf-edge); font-size: 11px; }
+.bt-stockrow.low .bt-sstock { color: var(--cf-warn); }
+.bt-sname { font-family: var(--cf-mono); letter-spacing: .06em; color: var(--cf-ink); }
+.bt-sprice { font-size: 14px; color: var(--cf-ink); }
+.bt-sstock { font-size: 14px; color: var(--cf-ink-dim); text-shadow: none; }
+.bt-sband { color: var(--cf-ink-faint); font-size: 9.5px; letter-spacing: .05em; }
+.bt-sorder { margin-left: auto; color: var(--cf-accent); font-size: 9.5px; letter-spacing: .08em; }
+
+.bt-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.bt-charthead { font-family: var(--cf-mono); font-size: 9px; letter-spacing: .16em; color: var(--cf-ink-faint); margin-bottom: 4px; }
+.bt-chart svg { width: 100%; height: 80px; display: block; overflow: visible; }
+.bt-chart polyline { fill: none; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.bt-mark { fill: var(--cf-card); stroke: var(--cf-ink); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.bt-nodata { height: 80px; display: flex; align-items: center; font-family: var(--cf-mono); font-size: 9px; letter-spacing: .1em; color: var(--cf-ink-faint); }
+
+.bt-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-height: 0; }
+/* TONIGHT'S CALL — the agent's number and the rule engine's, side by side.
+   Two columns so the comparison is the layout and not a sentence about it. */
+.bt-shift { display: flex; flex-direction: column; gap: 7px; padding: 2px 0 6px; }
+.bt-shifthead { display: flex; gap: 6px; flex-wrap: wrap; }
+.bt-by { font-size: 9.5px; font-weight: 700; letter-spacing: .08em; padding: 2px 6px; border-radius: 3px; border: 1px solid var(--cf-edge); }
+.bt-by.agent { color: #7dd0ff; border-color: #2d5f7a; background: #0b1b24; }
+.bt-by.rules { color: #9fb3bf; }
+.bt-by.wait  { color: #ffcf8a; border-color: #5a3a20; }
+.bt-by.fail  { color: #ff8a8a; border-color: #6a2a2a; background: #1c0e0e; }
+.bt-by.warn  { color: #ffb050; border-color: #5a3a20; }
+.bt-shiftcols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bt-shiftcol { border: 1px solid var(--cf-edge); border-radius: 4px; padding: 7px 9px; }
+.bt-shiftcol.live { border-color: #2d5f7a; background: #08141b; }
+.bt-sclabel { font-size: 9px; font-weight: 700; letter-spacing: .09em; color: #6a7a80; }
+.bt-scprice { font-size: 26px; font-weight: 900; line-height: 1.15; color: #7dff9a; }
+.bt-scprice.alt { color: #9fb3bf; }
+.bt-scsub { font-size: 10px; color: #8a9aa2; }
+.bt-shiftwhy { font-size: 11.5px; line-height: 1.45; color: #ecece0; font-style: italic; }
+.bt-shiftnote { font-size: 9.5px; line-height: 1.4; color: #6a7a80; }
+/* WHAT THE CITY TOLD THE BAR — the agent's input, beside its output. Trouble
+   is warn-coloured because the rules act on it; a crowd is not, because they
+   don't. See docs/living-bar.md, "The city finally tells the bar". */
+.bt-shiftcity { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 9px; font-weight: 700; letter-spacing: .09em; color: #6a7a80; }
+.bt-shiftcity.quiet { font-weight: 400; letter-spacing: .04em; font-size: 9.5px; color: #55656b; }
+.bt-cityev { font-family: var(--cf-mono); font-size: 8.5px; letter-spacing: .08em; color: #9fb3bf; border: 1px solid var(--cf-edge); border-radius: 3px; padding: 1px 5px; }
+.bt-cityev.warn { color: #ffcf8a; border-color: #6b5228; }
+.bt-shiftcost { font-size: 10px; color: #7a8a92; }
+.bt-shiftcost b { color: #ffcf8a; font-style: normal; }
+@media (max-width: 560px) { .bt-shiftcols { grid-template-columns: 1fr; } }
+
+.bt-decisions, .bt-ledger { display: flex; flex-direction: column; gap: 5px; max-height: 26vh; overflow-y: auto; }
+.bt-quiet { color: var(--cf-ink-faint); font-size: 10.5px; letter-spacing: .04em; }
+.bt-drow, .bt-lrow { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 8px; align-items: baseline; font-size: 10.5px; padding: 4px 0; border-bottom: 1px solid var(--cf-edge); }
+.bt-lrow { grid-template-columns: auto 1fr auto auto; }
+.bt-dkind { font-family: var(--cf-mono); font-size: 9px; letter-spacing: .1em; color: var(--cf-accent); }
+.bt-lactor { font-family: var(--cf-mono); font-size: 9px; letter-spacing: .1em; color: var(--cf-ink-faint); text-transform: uppercase; }
+.bt-dline, .bt-lline { color: var(--cf-ink-dim); }
+.bt-dwhen, .bt-lwhen { grid-column: 3; font-family: var(--cf-mono); font-size: 9px; color: var(--cf-ink-faint); white-space: nowrap; }
+.bt-lwhen { grid-column: 4; }
+.bt-ldelta { font-size: 10.5px; }
+@media (max-width: 700px) {
+  .bt-stats { grid-template-columns: repeat(2, 1fr); }
+  .bt-charts, .bt-cols { grid-template-columns: 1fr; }
+}
+
+/* ---------------------------------------------------------------------------
+   IRON CORNER'S DESK TERMINAL — js/gymterminal.js, on the floor terminal's
+   own chrome (.ft-*); only what the books add is here */
+.gt-stats { grid-template-columns: repeat(6, 1fr); }
+.gt-bout { display: grid; grid-template-columns: 1fr 14px 1fr 110px 80px; align-items: baseline; gap: 8px; padding: 6px 4px; border-bottom: 1px solid var(--cf-edge); font-family: var(--gr-mono); font-size: 12px; letter-spacing: .06em; color: var(--cf-ink); }
+.gt-bout i { color: var(--cf-ink-faint); font-style: normal; text-align: center; }
+.gt-bout b { text-align: right; color: var(--cf-warn); }
+.gt-bout em { font-style: normal; font-size: 9px; letter-spacing: .16em; color: var(--cf-ink-faint); text-align: right; }
+.gt-bout.done { color: var(--cf-ink-faint); }
+.gt-bout.done b { color: var(--cf-ink-dim); }
+.gt-list { display: flex; flex-direction: column; max-height: 34vh; overflow: auto; }
+.gt-line { display: grid; grid-template-columns: 96px 1fr; gap: 10px; padding: 4px 2px; border-bottom: 1px solid var(--cf-edge); font-family: var(--gr-mono); font-size: 10.5px; letter-spacing: .05em; color: var(--cf-ink-dim); }
+.gt-line .cf-num { color: var(--cf-ink); }
+.gt-recon { font-family: var(--gr-mono); font-size: 10px; letter-spacing: .12em; color: var(--cf-ink-dim); padding: 6px 0 2px; border-top: 1px solid var(--cf-edge); }
+
+/* ---------------------------------------------------------------------------
+   THE COMMISSIONS BOARD, IN EVERY VENUE — js/jobsterminal.js's shared kiosk,
+   one per venue (bar/gym/casino).
+
+   A BOARD IN THE ROOM, NOT A FORM OVER IT. The screen wears the kiosk's own
+   build: the black body (#16151a, the prop's BLACK), the venue's accent lit in
+   a band above and below the glass the way the prop's screen faces are lit,
+   and the cream-on-brown sign that hangs over it (the prop's hang() colours).
+   --vjt-acc / --vjt-acc-a are set per venue from the kiosk's own accent.
+
+   ORDER OF SIZE IS ORDER OF MEANING: the business in the game's display face,
+   then its sentence, the largest thing on the glass — it is that business
+   asking — then the particulars as quiet rows, and who wrote it as a mark. */
+.vjt-screen {
+  --vjt-acc: var(--cf-accent); --vjt-acc-a: var(--gr-accent-a);
+  --vjt-cream: #ffe7bf; --vjt-body: #16151a; --vjt-glassc: #0b0a0e;
+  pointer-events: auto; width: min(640px, 94vw); max-height: 94vh;
+  display: flex; flex-direction: column;
+  padding: 12px 14px 12px; background: var(--vjt-body); border-radius: 3px;
+  box-shadow: 0 0 0 1px #2b2931, 0 0 0 4px #0d0c10, 0 34px 90px rgba(0, 0, 0, .72), 0 0 70px -12px var(--vjt-acc-a);
+  font-family: var(--gr-body);
+}
+.vjt-sign {
+  align-self: center; text-align: center; margin: 0 0 12px; padding: 7px 26px 6px;
+  background: #140c08; border: 1px solid #5a3a20; color: var(--vjt-cream);
+}
+.vjt-signname { display: block; font-family: var(--gr-display); font-size: 24px; letter-spacing: .16em; line-height: 1;
+  text-shadow: 0 0 12px rgba(255, 176, 80, .35); }
+.vjt-signsub { display: block; margin-top: 5px; font-family: var(--gr-mono); font-size: 8.5px; letter-spacing: .26em;
+  color: rgba(255, 231, 191, .55); }
+/* the glass: lit bands top and bottom, a faint wash of the venue's light, scanlines */
+.vjt-glass {
+  flex: 1 1 auto; min-height: 120px; max-height: 64vh; overflow-y: auto;
+  padding: 2px 22px; border-top: 3px solid var(--vjt-acc); border-bottom: 3px solid var(--vjt-acc);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .018) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at 50% 0%, var(--vjt-acc-a), transparent 65%),
+    var(--vjt-glassc);
+  background-attachment: local, scroll, scroll;
+  box-shadow: inset 0 0 26px rgba(0, 0, 0, .75);
+  scrollbar-width: thin; scrollbar-color: var(--vjt-acc) transparent;
+}
+.vjt-note { padding: 18px 0 16px; border-bottom: 1px solid rgba(255, 231, 191, .08); }
+.vjt-note:last-child { border-bottom: 0; }
+.vjt-note.here { margin-left: -22px; padding-left: 19px; border-left: 3px solid var(--vjt-acc); }
+.vjt-nhead { display: flex; align-items: baseline; gap: 6px 12px; flex-wrap: wrap; }
+.vjt-biz { font-family: var(--gr-display); font-size: 22px; line-height: 1.05; letter-spacing: .06em; text-transform: uppercase; color: var(--vjt-cream); }
+.vjt-heretag { font-family: var(--gr-mono); font-size: 8.5px; letter-spacing: .24em; color: var(--vjt-acc); }
+.vjt-mark { margin-left: auto; font-family: var(--gr-mono); font-size: 8px; letter-spacing: .16em; color: var(--cf-ink-faint); opacity: .75; }
+.vjt-say { margin: 11px 0 14px; font-size: 26px; line-height: 1.26; font-weight: 500; color: var(--cf-ink); text-wrap: pretty; }
+.vjt-rows { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 0; font-family: var(--gr-mono); }
+.vjt-rows dt { font-size: 8.5px; letter-spacing: .24em; color: var(--cf-ink-faint); padding-top: 2px; }
+.vjt-rows dd { margin: 0; font-size: 11px; letter-spacing: .04em; color: var(--cf-ink-dim); }
+.vjt-quiet { padding: 30px 6px; text-align: center; font-size: 18px; line-height: 1.4; font-style: italic; color: var(--cf-ink-dim); }
+.vjt-out { margin-top: 11px; text-align: center; font-family: var(--gr-mono); font-size: 9px; letter-spacing: .14em; line-height: 1.6; color: var(--cf-ink-faint); }
+.vjt-out b { color: var(--vjt-acc); font-weight: 500; }
+.vjt-foot { margin-top: 6px; text-align: center; font-family: var(--gr-mono); font-size: 8.5px; letter-spacing: .24em; color: var(--cf-ink-faint); opacity: .7; }
+.vjt-foot b { color: var(--vjt-cream); }
+@media (max-width: 700px), (max-height: 620px) {
+  .vjt-signname { font-size: 18px; }
+  .vjt-biz { font-size: 17px; }
+  .vjt-say { font-size: 19px; margin: 8px 0 10px; }
+  .vjt-glass { padding: 2px 14px; max-height: 58vh; }
+  .vjt-note.here { margin-left: -14px; padding-left: 11px; }
+  .vjt-mark { margin-left: 0; flex-basis: 100%; }
+}

@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en" data-accent="signal">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAN VERANO · CITY TERMINAL</title>
+<meta name="description" content="Every resident of San Verano, what they decided tonight, and what it cost to think it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="/css/palette.css">
+<link rel="stylesheet" href="/css/casefile.css">
+<link rel="stylesheet" href="/css/terminal.css">
+<style>
+/* ===========================================================================
+   THE CITY TERMINAL — the same screen as the exchange's floor terminal.
+
+   The chrome (screen, header, tape, field grid, tables, charts, footer) is in
+   css/terminal.css, shared with /civ so the two pages cannot drift apart.
+   What is left here is only what this page has and /civ does not: the venue
+   listings, the model-call panel, and a price move with its evidence.
+   ======================================================================== */
+/* ===========================================================================
+   THE CITY TERMINAL — the same screen as the exchange's floor terminal.
+   
+   NOTHING HERE INVENTS A DESIGN. The frame, the tab, the tape strip, the
+   listings with their selected-row accent, the field grid, the section heads
+   and the footer strip are all js/floorterminal.js's, and every colour, face
+   and hairline is a token out of css/palette.css by way of css/casefile.css.
+   The only rules below are the ones a page in a browser needs that a screen
+   inside the game does not: a document that scrolls, a phone layout, and the
+   tables the exchange has no equivalent of.
+
+   ======================================================================== */
+/* ---- listings ---- */
+.ct-row{display:grid;grid-template-columns:1fr auto 62px;gap:4px 10px;align-items:center;
+  width:100%;text-align:left;cursor:pointer;background:none;color:var(--cf-ink-dim);
+  border:none;border-bottom:1px solid var(--cf-edge);padding:9px 10px}
+.ct-row:hover{background:var(--cf-card-hi);color:var(--cf-ink)}
+.ct-row.is-sel{background:var(--cf-card-hi);color:var(--cf-ink);box-shadow:inset 2px 0 0 var(--cf-accent)}
+.ct-rname{font-family:var(--cf-mono);font-size:12px;letter-spacing:.08em;color:var(--cf-ink)}
+.ct-rpx{font-family:var(--cf-mono);font-size:13px;color:var(--cf-ink);text-align:right}
+.ct-rpx .na{font-size:9px;letter-spacing:.16em;color:var(--cf-ink-faint)}
+.ct-rspark{grid-row:1/3;align-self:center}
+.ct-rmeta{grid-column:1/3;display:flex;gap:12px;flex-wrap:wrap;
+  font-family:var(--cf-mono);font-size:9.5px;letter-spacing:.09em;color:var(--cf-ink-faint)}
+.ct-rmeta b{color:var(--cf-ink-dim);font-weight:700}
+
+/* who set it: the only three answers there are */
+.ct-by{display:inline-block;font-family:var(--cf-mono);font-size:8.5px;letter-spacing:.18em;
+  padding:2px 6px;border:1px solid var(--cf-edge);color:var(--cf-ink-faint);white-space:nowrap}
+.ct-by.model{border-color:var(--cf-accent-dk);color:var(--cf-accent)}
+.ct-by.rules{color:var(--cf-ink-dim)}
+.ct-by.unasked{border-style:dashed}
+
+/* ---- the detail panel ---- */
+.ct-selhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ct-selname{font-family:var(--cf-mono);font-size:19px;letter-spacing:.1em;color:var(--cf-ink)}
+.ct-selpx{font-size:19px;margin-left:auto;font-family:var(--cf-mono);color:var(--cf-ink)}
+.ct-call{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.ct-callbox{border:1px solid var(--cf-edge);padding:9px 11px;background:rgba(255,255,255,.012)}
+.ct-callbox.lit{border-left:3px solid var(--cf-accent)}
+.ct-callbox .k{font-family:var(--cf-mono);font-size:8.5px;letter-spacing:.2em;color:var(--cf-ink-faint);display:block;margin-bottom:5px}
+.ct-callbox .q{font-size:12.5px;line-height:1.45;color:var(--cf-ink)}
+.ct-callbox .q.dim{color:var(--cf-ink-dim)}
+
+/* where everyone planned to be: the one picture of the night */
+.ct-wh{display:flex;height:22px;border:1px solid var(--cf-edge);overflow:hidden}
+.ct-wh span{display:flex;align-items:center;justify-content:center;
+  font-family:var(--cf-mono);font-size:9.5px;letter-spacing:.1em;color:#0b0c0e}
+.ct-whkey{display:flex;gap:14px;flex-wrap:wrap;margin-top:7px;
+  font-family:var(--cf-mono);font-size:9.5px;letter-spacing:.12em;color:var(--cf-ink-faint)}
+.ct-whkey b{color:var(--cf-ink)}
+.ct-whkey i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:-1px}
+
+@media (max-width:1100px){ .ct-call{grid-template-columns:1fr} }
+.ct-t tr.hit td{background:rgba(111,200,220,.12);box-shadow:inset 0 1px 0 var(--cf-accent),inset 0 -1px 0 var(--cf-accent)}
+/* WHO MOVED IN TODAY — one line under the tape */
+.ct-arrive { margin: 8px 0 2px; font-family: var(--cf-mono, ui-monospace, monospace); font-size: 11px; letter-spacing: .06em;
+  line-height: 1.7; color: var(--cf-ink-dim, #9aa3ab); }
+.ct-arrive:empty { display: none; }
+.ct-arrive b { color: #f0e3b4; font-weight: 700; margin-right: 6px; }
+.ct-arrive a { color: var(--cf-ink, #ede6d6); text-decoration: none; }
+.ct-arrive .t { opacity: .7; }
+/* THE MARKET THIS MORNING — one line under the arrivals, only where the city reads it */
+.ct-mood .bad { color: #e0735f; } .ct-mood .good { color: #7fb069; } .ct-mood .flat { color: var(--cf-ink-dim, #9aa3ab); }
+.ct-mood q { color: var(--cf-ink, #ede6d6); }
+</style>
+<link rel="stylesheet" href="/css/ecosystem.css">
+</head>
+<body class="gr-ecosystem eco-terminal eco-page-city">
+<nav class="eco-context eco-context--standalone" aria-label="Ecosystem"><div class="eco-location"><a class="eco-brand" href="/" aria-label="GRIFT home">GRIFTEX CITY</a><span aria-hidden="true">/</span><span>City terminal</span></div><div class="eco-wayfinding"><a href="/?spectate=1">Spectate ↗</a><details class="eco-directory"><summary>Explore systems <span aria-hidden="true">+</span></summary><div class="eco-directory-panel"><div><h3>City & residents</h3><a href="/civ">Civic record</a><a href="/resident">Resident</a><a href="/pets">Pets</a><a href="/clinic">Clinic</a><a href="/compute">Compute</a><a href="/square">Town square</a></div><div><h3>Economy</h3><a href="/economy">Economy</a><a href="/bank">Bank</a><a href="/credit-line">Credit line</a><a href="/exchange">Exchange</a><a href="/league">League</a><a href="/coins">The Mint</a><a href="/coindesk">Coin desk</a></div><div><h3>Build & work</h3><a href="/plots">Plots</a><a href="/company">Companies</a><a href="/foundry">Foundry</a><a href="/garage">Garage</a><a href="/hire">Hire</a><a href="/jobs">Jobs</a><a href="/apps">The Arcade</a><a href="/billboards">Billboards</a></div><div><h3>Civic life</h3><a href="/election">Election</a><a href="/crews">Crews</a><a href="/court">Court</a><a href="/strikes">Strikes</a><a href="/freeport">Freeport</a><a href="/poker">Poker</a><a href="/fights">Fights</a></div><div><h3>Develop & verify</h3><a href="/agents">External agents</a><a href="/agents/record">Agent record</a><a href="/x402">Paid feeds</a><a href="/verify">Verify</a><a href="/guide">City tour</a><a href="/guide.html">Manual</a></div></div></details></div></nav>
+
+<div class="ct-screen">
+  <div class="cf-tab">GRIFT // SAN VERANO · CITY TERMINAL</div>
+
+  <div class="ct-head">
+    <span class="ct-night">NIGHT <b id="night">—</b> &nbsp;·&nbsp; DAY <b id="daynum">—</b> OF THE CITY</span>
+    <span class="ct-live"><span class="ct-dot" id="dot"></span><span id="livelab">LIVE</span></span>
+  </div>
+
+  <div class="ct-tape">
+    <span class="ct-tapelab">THE TAPE</span>
+    <div class="ct-tapeline" id="tape">waiting for the city…</div>
+  </div>
+
+  <div class="ct-arrive" id="arrive"></div>
+  <div class="ct-arrive ct-mood" id="mood"></div>
+
+  <div class="cf-sechead">THE FIELD</div>
+  <div class="ct-fields" id="fields"></div>
+
+  <div class="ct-body">
+    <div class="ct-col">
+      <div class="cf-sechead">LISTINGS</div>
+      <div id="listings"></div>
+      <div class="cf-sechead">WHERE EVERYONE IS TONIGHT</div>
+      <div id="where"></div>
+    </div>
+
+    <div class="ct-col">
+      <div class="ct-selhead" id="selhead"></div>
+      <div id="own"></div>
+      <div class="ct-call" id="call"></div>
+      <div class="ct-chart" id="chart"></div>
+      <div class="ct-key" id="chartkey"></div>
+      <div id="movewrap"></div>
+      <div class="cf-sechead">REACTIONS <span id="reactn" style="color:var(--cf-ink-faint);font-size:9px"></span></div>
+      <div class="ct-react" id="react"></div>
+    </div>
+  </div>
+
+  <div class="cf-sechead">RESIDENTS <span id="resn" style="color:var(--cf-ink-faint);font-size:9px"></span></div>
+  <div class="ct-tablewrap">
+    <table class="ct-t">
+      <thead><tr>
+        <th>NAME</th><th class="hide-s">JOB</th><th class="hide-s">DISTRICT</th>
+        <th style="text-align:right">CASH</th><th id="nowcol">NOW</th><th>TONIGHT</th>
+        <th style="text-align:right">SPEND</th><th>WHY TONIGHT</th>
+      </tr></thead>
+      <tbody id="residents"></tbody>
+    </table>
+  </div>
+
+  <div class="cf-sechead">THE YARD SUPPLIES THE VENUES <span id="supplyn" style="color:var(--cf-ink-faint);font-size:9px"></span></div>
+  <div id="supply"></div>
+
+  <!-- WHAT LAST CALL PAID ITS MODEL, for its commissions: every ask for one and
+       every choice of a winner, as the ledger line it was billed on. /jobs
+       links a commission straight to its line here (#ask-commission-<id>). -->
+  <div class="cf-sechead" id="asks-head">WHAT LAST CALL PAID ITS MODEL TO ASK <span id="asksn" style="color:var(--cf-ink-faint);font-size:9px"></span></div>
+  <div id="asks"></div>
+
+  <div class="ct-foot" id="foot"></div>
+</div>
+
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = (n) => n == null ? '—' : '$' + Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 });
+const film = new URLSearchParams(location.search).has('film');
+if (film) document.body.classList.add('film');
+
+let V = null, REC = null, sel = 'bar', tapeI = 0;
+
+// WHO SET TONIGHT'S CALL — three answers, never two. A venue whose night has
+// not been claimed yet has not been decided by the rules; it has not been
+// decided at all, and saying "RULE ENGINE" there credits an engine with a call
+// nobody has made.
+function byBadge(d) {
+  if (!d) return '';
+  // THE NIGHT MARKET HAS NO HOUSE MANAGER AND NO MODEL: its stalls are
+  // residents pricing their own goods, and the badge says so.
+  if (d.stalls) return '<span class="ct-by rules">RUN BY RESIDENTS</span>';
+  if (d.setBy === 'agent') return '<span class="ct-by model">MODEL SET THIS</span>';
+  if (d.setBy === 'rules') return '<span class="ct-by rules">RULE ENGINE</span>';
+  return '<span class="ct-by unasked">NIGHT NOT YET ASKED</span>';
+}
+
+// FIVE TERMINALS: the four businesses the yard supplies and the yard itself
+// — the hall is the fifth, with its stalls listed under it and their nights.
+const VENUES = [['bar', 'LAST CALL'], ['gym', 'IRON CORNER'], ['casino', 'THE PALM'], ['yard', 'THE YARD'], ['market', 'NIGHT MARKET']];
+
+function spark(series, w = 56, h = 18) {
+  const pts = series.filter((n) => typeof n === 'number');
+  if (pts.length < 2) return `<svg class="ct-rspark" width="${w}" height="${h}"></svg>`;
+  const lo = Math.min(...pts), hi = Math.max(...pts), span = hi - lo || 1;
+  const d = pts.map((n, i) => `${(i / (pts.length - 1)) * w},${h - ((n - lo) / span) * (h - 2) - 1}`).join(' ');
+  return `<svg class="ct-rspark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <polyline points="${d}" fill="none" stroke="var(--cf-accent)" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg>`;
+}
+
+function turnoutSeries(key) {
+  return ((V?.priceLog) || []).map((r) => r[key]).filter((n) => typeof n === 'number');
+}
+
+// THE HOUR THE COUNT WAS READ AT. Every door count on this page carries it,
+// because "through the door" without a time is a number that looks final and
+// is not — at three in the afternoon it is a fifth of the night to come.
+const clock = () => {
+  const h = V?.doors?.asOfHour;
+  if (h == null) return '';
+  const hh = String(Math.floor(h) % 24).padStart(2, '0');
+  const mm = String(Math.round((h % 1) * 60)).padStart(2, '0');
+  return `${hh}:${mm}`;
+};
+
+function paintListings() {
+  $('listings').innerHTML = VENUES.map(([k, name]) => {
+    const d = (V?.venues || {})[k] || {};
+    const price = k === 'yard' ? (d.price != null ? `<span class="na">PRODUCE ${money(d.price)} A CRATE</span>` : '<span class="na">—</span>')
+      : k === 'casino' ? `<span class="na">${d.balance != null ? 'FLOAT ' + money(d.balance) : '—'}</span>`
+      : k === 'market' ? (d.stalls ? `<span class="na">${d.stalls.length} STALLS · ${d.between != null ? money(d.between) + ' BETWEEN RESIDENTS' : (d.open ? 'OPEN' : 'OPENS AT SIX')}${d.produce ? ` · CASES ${money(d.produce.price)}` : ''}</span>` : '<span class="na">—</span>')
+      : d.price != null ? money(d.price) : (k === 'gym' && d.mode === 'training'
+      ? `<span class="na">TRAINING NIGHT · DAY PASS ${money(d.passPrice)}</span>` : '<span class="na">—</span>');
+    return `<button class="ct-row${sel === k ? ' is-sel' : ''}" data-v="${k}">
+      <span class="ct-rname">${esc(d.name || name)}</span>
+      <span class="ct-rpx">${price}</span>
+      ${spark(turnoutSeries(k))}
+      <span class="ct-rmeta">
+        ${POLICED[k] ? `<span class="ct-by" style="color:#ffb27a;white-space:normal" title="${esc(POLICED[k].reason)} · no supply orders or buys today; it opens again by itself">CLOSED BY POLICE · <a href="/court/${encodeURIComponent(POLICED[k].case)}">CASE ${esc(String(POLICED[k].case).toUpperCase())}</a></span>` : ''}
+        ${byBadge(d)}
+        <span>planned by the city <b>${d.cityFootfall ?? 'not pushed yet'}</b></span>
+        <span>through the door so far <b>${V?.doors?.[k] ?? '—'}</b> ${clock()}</span>
+        <span>sold <b>${d.soldToday ?? '—'}</b></span>
+      </span>
+    </button>`;
+  }).join('');
+}
+
+// THE CALL, WITH THE RULES' ANSWER BESIDE IT. A model decision only means
+// anything next to what the rules would have done, so both are always shown and
+// the one that was actually applied carries the accent.
+function paintDetail() {
+  const k = sel, d = (V?.venues || {})[k] || {};
+  const training = k === 'gym' && d.mode === 'training';
+  $('selhead').innerHTML = `<span class="ct-selname">${esc(d.name || k.toUpperCase())}</span>
+    ${byBadge(d)}
+    <span class="ct-selpx">${d.price != null ? money(d.price) : (training ? 'TRAINING NIGHT' : '—')}</span>`;
+
+  // THE VENUE'S OWN TALLY, KEPT BUT NOT CONFUSED WITH THE DOOR COUNT. It used
+  // to sit in the listing row under the same words as the city's count, which
+  // is how a reader could add the three rows up and miss the total above them.
+  // It answers a different question — everybody through this door, not just
+  // residents — so it says so, here, where there is room to say it.
+  $('own').innerHTML = d.footfallToday == null ? '' :
+    `<div class="ct-rmeta"><span>this venue's own tally, everyone through its door today
+      <b>${d.footfallToday}</b></span><span>residents among them <b>${V?.doors?.[k] ?? '—'}</b>, as at ${clock() || '—'}</span></div>`;
+
+  const applied = d.setBy === 'agent';
+  // THE MARKET'S DETAIL IS ITS STALLS: who took a pitch, what they put on it
+  // at what price inside what clamp, what they sold and to how many — the
+  // money moved between residents, and the lane's own books beside it.
+  if (k === 'market') {
+    const st = d.stalls || [];
+    // THE SUPPLY LEG, WHEN THE HALL HAS ONE: what a stall paid the hall for its
+    // case and what it kept; the hall's store, its purchases from the yard
+    // with the chain's hash beside each, and the $GRIFTEX column to the wei.
+    const leg = !!d.produce;
+    const nights = d.nights || [];
+    const yard = d.yardTrades || [];
+    const g = d.grift;
+    const short = (h) => (h ? h.slice(0, 10) + '…' + h.slice(-6) : '—');
+    $('call').innerHTML = `<div class="ct-callbox lit"><span class="k">TONIGHT'S STALLS · RUN BY RESIDENTS, PRICED BY THEM${leg ? ' · STOCKED FROM THE HALL' : ''}</span>
+      ${st.length ? `<table class="ct-stalls"><thead><tr><th>VENDOR</th><th>GOODS</th><th>PRICE</th><th>BAND</th>${leg ? '<th>CASE</th>' : ''}<th>SOLD</th><th>TAKINGS</th>${leg ? '<th>KEPT</th>' : ''}<th>BUYERS</th></tr></thead><tbody>${
+        st.map((s) => `<tr><td class="nm">${esc(s.n)} <span style="color:var(--cf-ink-dim)">· ${esc(s.j)}</span></td><td>${esc(s.goods)}</td><td class="num">${money(s.price)}</td><td class="num">${money(s.floor)}–${money(s.ceiling)}</td>${leg ? `<td class="num">${s.crate == null ? '—' : s.crate === 0 ? '<span style="color:var(--cf-ink-4)">none</span>' : money(s.crate)}</td>` : ''}<td class="num">${s.sold}/${s.stock}</td><td class="num">${money(s.takings)}</td>${leg ? `<td class="num">${s.kept == null ? '—' : money(s.kept)}</td>` : ''}<td class="num">${s.buyers}</td></tr>`).join('')}</tbody></table>`
+        : '<span class="q dim">nobody has taken a pitch tonight</span>'}
+    </div>
+    <div class="ct-callbox"><span class="k">THE HALL'S OWN BOOKS</span>
+      <span class="q dim">${d.between != null ? `${money(d.between)} moved between residents tonight · ${d.pricedOut || 0} priced out · ` : ''}pitch ${d.pitchFee != null ? money(d.pitchFee) : '—'} a stall to the hall · hall balance ${d.laneBalance != null ? money(d.laneBalance) : '—'} · ${d.open ? 'open now' : `opens at ${d.opensAt ?? 18}:00`}</span>
+      ${leg ? `<div class="ct-rmeta" style="margin-top:6px"><span>in store <b>${d.produce.cases} CASES</b> (${d.produce.casesPerCrate} a crate)</span><span>a case to the stalls <b>${money(d.produce.price)}</b></span><span>taken today <b>${d.produce.casesSoldToday}</b></span>${g ? `<span>$GRIFTEX paid <b>${g.paid}</b> · settled <b>${g.settled}</b> · pending <b>${g.pending}</b> · drift <b>${g.driftWei} wei</b></span>` : ''}</div>
+      ${d.produce.priceWhy ? `<div class="ct-quiet" style="margin:6px 0">“${esc(d.produce.priceWhy)}”</div>` : ''}
+      ${yard.length ? `<div class="ct-tablewrap"><table class="ct-t"><thead><tr><th>FROM THE YARD</th><th style="text-align:right">COST</th><th>$GRIFTEX</th><th>TX</th></tr></thead><tbody>${
+        yard.map((t) => `<tr><td>${esc(t.fact.split(' · ')[0])}</td><td class="num">${money(t.cost)}</td><td>${t.grift ? esc((t.fact.match(/\$GRIFTEX [^·]*·[^·]*BURNT/) || [''])[0]) : '<span style="color:var(--cf-ink-4)">city cash</span>'}</td><td class="why">${t.hash ? `<span title="${esc(t.hash)}">${short(t.hash)}</span> · ${esc(t.status)}${t.block != null ? ' · block ' + t.block : ''}` : esc(t.status)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="ct-quiet">NOTHING BOUGHT FROM THE YARD YET</div>'}` : ''}
+    </div>
+    ${nights.length ? `<div class="ct-callbox"><span class="k">THE HALL'S NIGHTS</span><div class="ct-tablewrap"><table class="ct-t"><thead><tr><th>DAY</th><th style="text-align:right">STALLS</th><th style="text-align:right">BUYERS</th><th style="text-align:right">BETWEEN RESIDENTS</th><th style="text-align:right">PITCH</th></tr></thead><tbody>${
+      nights.slice().reverse().map((n) => `<tr><td>${n.day}</td><td class="num">${n.stalls}</td><td class="num">${n.buyers}</td><td class="num">${money(n.between)}</td><td class="num">${money(n.pitch)}</td></tr>`).join('')}</tbody></table></div></div>` : ''}`;
+    paintChart(k);
+    $('movewrap').innerHTML = '';
+    paintReactions(k);
+    return;
+  }
+  $('call').innerHTML = `
+    <div class="ct-callbox${applied ? ' lit' : ''}">
+      <span class="k">THE MODEL'S OWN SENTENCE</span>
+      <span class="q${applied ? '' : ' dim'}">${d.why ? '“' + esc(d.why) + '”'
+        : (d.asked ? 'the model was not asked for this night' : 'this night has not been put to it yet')}</span>
+    </div>
+    <div class="ct-callbox${applied ? '' : ' lit'}">
+      <span class="k">WHAT THE RULES SAY</span>
+      <span class="q dim">${d.rulePrice != null ? `the rules alone price it at ${money(d.rulePrice)}`
+        : (training ? 'no card tonight, so no ticket to price' : 'no shadow price recorded for this night')}</span>
+    </div>`;
+
+  paintChart(k);
+  paintMove(k);
+  paintReactions(k);
+}
+
+// A PRICE MOVE SHOWS WHAT IT HAS, WHICH IS TESTIMONY. The old card compared the
+// count before a move with the count after and printed the difference as an
+// effect — "dropped the price to $11.50 → 22 went elsewhere" — which is
+// coincidence wearing causation's clothes. What a move genuinely has is the
+// residents who named it in their own reason. The counts still appear, as
+// counts, under a line that says they are not an effect.
+function paintMove(k) {
+  const m = (V?.chains || []).find((c) => c.venue === k);
+  if (!m) { $('movewrap').innerHTML = ''; return; }
+  const q = (m.quotes || []).slice(0, 2);
+  $('movewrap').innerHTML = `<div class="cf-sechead">THE LAST PRICE MOVE HERE</div>
+    <div class="ct-move">
+      <div class="h">${esc(m.cause)} ${m.setBy === 'agent' ? '<span class="ct-by model">MODEL SET THIS</span>'
+        : m.setBy === 'rules' ? '<span class="ct-by rules">RULE ENGINE</span>' : ''}</div>
+      ${m.why ? `<div style="color:var(--cf-ink-dim);font-size:12px;margin-top:5px">“${esc(m.why)}”</div>` : ''}
+      <div class="said">${m.mentions || 0} RESIDENT${m.mentions === 1 ? '' : 'S'} NAMED IT IN THEIR OWN REASON</div>
+      ${q.length ? q.map((x) => `<div class="ct-q" style="margin-bottom:6px">
+          <div class="n">${esc(x.n)}</div><div class="t">“${esc(x.why)}”</div>
+          <div class="m">planned ${esc((x.go || '').toUpperCase())}</div></div>`).join('')
+        : '<div class="ct-quiet">NOBODY MENTIONED IT</div>'}
+      <div class="counts">PLANNED TO COME <b>${m.planned?.before ?? '—'}</b> THE NIGHT BEFORE,
+        <b>${m.planned?.after ?? '—'}</b> THE NIGHT AFTER — COUNTS, NOT AN EFFECT.
+        EVERYTHING ELSE IN THE CITY MOVED TOO.</div>
+    </div>`;
+}
+
+// PRICE AND TURNOUT, WITH LABELLED AXES. A chart whose axes say nothing is a
+// shape, not a measurement.
+function paintChart(k) {
+  const log = (V?.priceLog || []).slice(-14);
+  const pk = k === 'gym' ? 'ticket' : k === 'market' ? null : 'drink';
+  const turn = log.map((r) => r[k]), px = pk ? log.map((r) => r[pk]) : [];
+  const ok = log.length >= 2 && turn.some((n) => typeof n === 'number');
+  if (!ok) { $('chart').innerHTML = '<div class="ct-quiet">NOT ENOUGH NIGHTS YET TO DRAW A TREND</div>'; $('chartkey').innerHTML = ''; return; }
+  const W = 640, H = 170, L = 38, R = 40, T = 12, B = 26;
+  const iw = W - L - R, ih = H - T - B;
+  // A FLAT SERIES MUST NOT PIN TO AN EDGE. Forcing zero into the low end put a
+  // price that never moved hard against the top of the frame, under its own
+  // axis label, where it read as no line at all. The band is the data's own
+  // range with a tenth of padding, and a series that never moved is SAID to
+  // have never moved rather than drawn as a trend.
+  const band = (arr) => {
+    const v = arr.filter((n) => typeof n === 'number');
+    if (!v.length) return [0, 1];
+    let lo = Math.min(...v), hi = Math.max(...v);
+    if (hi === lo) { const pad = Math.abs(hi) * 0.25 || 1; return [lo - pad, hi + pad]; }
+    const pad = (hi - lo) * 0.12; return [lo - pad, hi + pad];
+  };
+  const flat = (arr) => { const v = arr.filter((n) => typeof n === 'number'); return v.length > 1 && Math.min(...v) === Math.max(...v); };
+  const [tlo, thi] = band(turn), [plo, phi] = band(px);
+  const X = (i) => L + (log.length === 1 ? iw / 2 : (i / (log.length - 1)) * iw);
+  const Yt = (n) => T + ih - ((n - tlo) / (thi - tlo)) * ih;
+  const Yp = (n) => T + ih - ((n - plo) / (phi - plo)) * ih;
+  const line = (arr, Y, cls) => {
+    const pts = arr.map((n, i) => (typeof n === 'number' ? `${X(i)},${Y(n)}` : null)).filter(Boolean);
+    return pts.length >= 2 ? `<polyline class="ct-ln ${cls}" points="${pts.join(' ')}"/>` : '';
+  };
+  const firstDay = log[0]?.day, lastDay = log[log.length - 1]?.day;
+  $('chart').innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img"
+      aria-label="turnout and price over the last ${log.length} nights">
+    <line class="ct-gl" x1="${L}" y1="${T + ih}" x2="${W - R}" y2="${T + ih}"/>
+    <line class="ct-gl" x1="${L}" y1="${T}" x2="${L}" y2="${T + ih}"/>
+    <line class="ct-gl" x1="${W - R}" y1="${T}" x2="${W - R}" y2="${T + ih}"/>
+    ${line(turn, Yt, 'turn')}${line(px, Yp, 'px')}
+    <text class="ct-ax" x="${L}" y="${T - 2}" text-anchor="start">${Math.max(...turn.filter((n) => typeof n === 'number'))} RESIDENTS AT MOST</text>
+    <text class="ct-ax" x="${W - R}" y="${T - 2}" text-anchor="end">${pk ? '$' + Math.max(...px.filter((n) => typeof n === 'number')) + ' TOP PRICE' : 'PRICES ARE THE VENDORS\' OWN'}</text>
+    <text class="ct-ax" x="${L}" y="${T + ih + 15}" text-anchor="start">NIGHT ${firstDay ?? ''}</text>
+    <text class="ct-ax" x="${W - R}" y="${T + ih + 15}" text-anchor="end">NIGHT ${lastDay ?? ''}</text>
+    <text class="ct-ax" x="${L + iw / 2}" y="${T + ih + 15}" text-anchor="middle">${log.length} NIGHTS RECORDED</text>
+  </svg>`;
+  const pxName = k === 'gym' ? 'TICKET' : 'DRINK';
+  $('chartkey').innerHTML = `<span class="turn"><i></i>RESIDENTS WHO PLANNED TO COME${flat(turn) ? ' · UNCHANGED ALL ' + log.length + ' NIGHTS' : ''}</span>
+    ${pk ? `<span class="px"><i></i>${pxName} PRICE THAT NIGHT${flat(px) ? ' · HELD AT $' + px[px.length - 1] : ''}</span>` : ''}`;
+}
+
+// RESIDENTS' REACTIONS, QUOTED BY NAME. Their own words, from the plan the
+// books were moved by — not a summary of them.
+function paintReactions(k) {
+  const here = (V?.citizens || []).filter((c) => c.where === k && c.why);
+  $('reactn').textContent = here.length ? `· ${here.length} PLANNED TO COME TONIGHT AND SAID WHY` : '';
+  if (!here.length) { $('react').innerHTML = '<div class="ct-quiet">NOBODY HAS PLANNED THIS VENUE TONIGHT</div>'; return; }
+  $('react').innerHTML = here.slice(0, 6).map((c) => `<div class="ct-q">
+    <div class="n">${esc(c.n)}</div>
+    <div class="t">“${esc(c.why)}”</div>
+    <div class="m">${esc(c.j)} · ${esc(c.d)} · ${money(c.c)} in hand · ${c.bought ? `bought ${esc(c.bought.goods)} from ${esc(c.bought.from)} for ${money(c.bought.paid)}` : `spending ${money(c.spend)}`}</div>
+  </div>`).join('');
+}
+
+// EVERY FIELD SAYS WHAT IT COUNTS. "out tonight" was one number doing two jobs:
+// the count the city PLANNED and the count that has actually gone through a
+// door so far. They are different all evening and they are both shown.
+function paintFields() {
+  const f = V?.footfallPlan || {};
+  const plannedOut = ['bar', 'gym', 'casino', 'market'].reduce((n, k) => n + (f[k] || 0), 0);
+  const pb = V?.plannedBy;
+  const stale = pb && V?.lastDayIndex != null && pb.day !== V.lastDayIndex;
+  const F = [
+    ['RESIDENTS', V?.pop ?? '—', V?.arrivals?.perDay && V.arrivals.natives < V.arrivals.target ? `growing to ${V.arrivals.target}` : 'on the roster', false],
+    ['MOVED IN TODAY', V?.arrivals ? (V.arrivals.today?.ids?.length ?? 0) : '—', V?.arrivals?.seeking ? `${V.arrivals.seeking} looking for work` : 'off the metro', false],
+    ['PLANNED TO GO OUT', plannedOut || '—', `of ${V?.pop ?? '—'}, tonight's plans`, false],
+    ['AT WORK', f.work ?? '—', 'on shift, not a choice', false],
+    ['STAYED IN', f.in ?? '—', 'off, and chose home', false],
+    ['THROUGH A DOOR SO FAR', V?.doors?.total ?? '—', `residents, as at ${clock() || '—'}`, false],
+    ['DECIDED BY A MODEL', pb ? pb.agent : '—', pb ? `of ${pb.of}${stale ? ` · night ${pb.day}` : ''}` : 'no night planned', true],
+    ['DECIDED BY THE RULES', pb ? pb.rules : '—', pb ? `of ${pb.of}` : '—', false],
+    ['PLANNED BY', V?.planSource && V.planSource !== 'none' ? V.planSource.toUpperCase() : 'NOT YET',
+      V?.planSource === 'none' ? 'nothing has planned tonight' : `night ${V?.plannedDay ?? '—'}`, false],
+    ['THINKING, LAST 24H', V?.spend24h != null ? '$' + (V.spend24h / 1e6).toFixed(4) : '—', 'measured from usage', true],
+    ...(() => { const pc = (V?.planCost || []).slice(-1)[0];
+      return pc ? [['LAST NIGHT\'S PLANNING', '$' + (pc.costMicros / 1e6).toFixed(4), `${pc.pop} residents · ${pc.calls} calls · ${(pc.ms / 1000).toFixed(1)}s`, true]] : []; })(),
+  ];
+  $('fields').innerHTML = F.map((x) => `<div class="ct-f">
+    <span class="k">${x[0]}</span><span class="v${x[3] ? ' lit' : ''}">${x[1]}</span><span class="s">${x[2]}</span>
+  </div>`).join('');
+}
+
+const WHERE = { bar: 'BAR', gym: 'GYM', casino: 'CASINO', market: 'MARKET', stall: 'OWN STALL', in: 'IN', work: 'AT WORK' };
+const WCOL = { bar: '#d8b45a', gym: '#7fb069', casino: '#b07fc9', market: '#ff5fa8', stall: '#4fd8ff', in: '#3a4046', work: '#6b7480' };
+// AT WORK, AND WHERE. "IN" was being printed over three residents who were on
+// shift — Odile in the yard, Soraya in the gym, Bea dealing — because work had
+// no column of its own and fell through to staying home. It has one now, and
+// it names the room when the city draws one.
+const whereCell = (v, at) => `<span class="ct-where ${v || 'in'}">${WHERE[v] || '—'}${
+  v === 'work' && at ? ' · ' + esc(String(at).toUpperCase()) : ''}</span>`;
+function paintWhere() {
+  const f = V?.footfallPlan || {};
+  const KEYS = ['bar', 'gym', 'casino', 'market', 'stall', 'work', 'in'];
+  const total = KEYS.reduce((n, k) => n + (f[k] || 0), 0);
+  if (!total) { $('where').innerHTML = '<div class="ct-quiet">NO NIGHT PLANNED YET — NOBODY HAS BEEN GIVEN A PLAN</div>'; return; }
+  $('where').innerHTML = `<div class="ct-wh">${KEYS.map((k) => {
+      const n = f[k] || 0; if (!n) return '';
+      return `<span style="flex:${n};background:${WCOL[k]}${k === 'in' || k === 'work' ? ';color:var(--cf-ink-dim)' : ''}">${(n / total) * 100 > 7 ? n : ''}</span>`;
+    }).join('')}</div>
+    <div class="ct-whkey">${KEYS.map((k) =>
+      `<span><i style="background:${WCOL[k]}"></i>${WHERE[k]} <b>${f[k] || 0}</b></span>`).join('')}
+      <span style="margin-left:auto">of <b>${V?.pop ?? '—'}</b> residents</span></div>`;
+}
+// WHO MOVED IN TODAY, by name, off the metro — the same ids the MOVED_IN line
+// on the ledger counted, and where the wave stepped off
+function paintArrive() {
+  const a = V?.arrivals, el = $('arrive');
+  if (!a || !el) return;
+  const byId = new Map((V.citizens || []).map((c) => [c.i, c]));
+  const wave = a.today && a.today.day === V.lastDayIndex ? a.today.ids.map((i) => byId.get(i)).filter(Boolean) : [];
+  const hired = a.today && a.today.day === V.lastDayIndex ? (a.today.hired || []).length : 0;
+  const hh = `${String(a.hour ?? 8).padStart(2, '0')}:00`;
+  let line;
+  if (wave.length) {
+    line = `<b>MOVED IN TODAY</b> ${wave.length} OFF THE METRO AT ${esc(a.station || 'THE STATION')}, ${hh} · `
+      + wave.slice(0, 8).map((c) => `<a href="resident.html?i=${Number(c.i)}">${esc(c.n)}</a> <span class="t">${esc(c.s || c.j)}</span>`).join(' · ')
+      + (wave.length > 8 ? ` · AND ${wave.length - 8} MORE` : '') + (hired ? ` · ${hired} HIRED THIS MORNING` : '');
+  } else if (a.refused) line = `<b>NOT GROWING</b> ${esc(a.refused)}`;
+  else if (a.perDay && a.natives < a.target) line = `<b>MOVED IN TODAY</b> NOBODY YET · THE NEXT ${a.perDay} STEP OFF AT ${esc(a.station || 'THE STATION')}, ${hh}`;
+  else if (a.perDay) line = `<b>THE CITY IS FULL</b> ${a.target} RESIDENTS · NOBODY NEW IS MOVING IN`;
+  else { el.innerHTML = ''; return; }
+  el.innerHTML = line;
+}
+// THE REAL MARKET'S MOOD THIS MORNING (js/city/marketmood.js), why, what it
+// leans, and who said so — nothing at all where the city does not read it
+const SAID_MARKET = /\b(nasdaq|stocks?|shares|portfolio|wall street|market'?s (down|up)|markets? (is|are|was|were) (down|up)|market (crashed|tanked|rallied))\b/i;
+function paintMood() {
+  const el = $('mood'), M = V?.marketMood;
+  if (!el) return;
+  if (!M) { el.innerHTML = ''; return; }
+  const m = M.today;
+  if (!m) { el.innerHTML = `<b>THE MARKET</b> TODAY'S MOOD IS SET WHEN THE DAY IS PLANNED${M.last?.mood ? ` · LAST: A ${esc(M.last.mood.toUpperCase())} DAY (${esc(M.last.line)})` : ''}`; return; }
+  if (!m.mood) { el.innerHTML = `<b>THE MARKET</b> NO MOOD TODAY · ${esc(m.why)}`; return; }
+  const f = V?.footfallPlan || {};
+  const said = (V?.citizens || []).filter((c) => c.whyNight && SAID_MARKET.test(c.whyNight));
+  el.innerHTML = `<b>THE MARKET THIS MORNING</b> <span class="${esc(m.mood)}">A ${esc(m.mood.toUpperCase())} DAY</span> · ${esc(m.line)}`
+    + `<br><span class="t">WHY: ${esc(m.why)} · SO: ${esc(m.effect)}${f.casino != null ? ` · TONIGHT ${f.casino} AT THE CASINO` : ''}</span>`
+    + (said.length ? `<br>${said.length} MENTIONED IT · ` + said.slice(0, 2).map((c) => `<a href="resident.html?i=${Number(c.i)}">${esc(c.n)}</a> <q>${esc(c.whyNight)}</q>`).join(' · ') : '');
+}
+function paintResidents() {
+  const cs = (V?.citizens || []);
+  $('resn').textContent = cs.length ? `· ${cs.length} ON THE ROSTER` : '';
+  $('residents').innerHTML = cs.slice(0, film ? 24 : 120).map((c) => `<tr>
+    <td class="nm"><a href="resident.html?i=${Number(c.i)}" style="color:inherit;text-decoration:none">${esc(c.n)}</a>${c.x ? ` <span title="run from outside" style="opacity:.75">◇</span>${c.runsOn ? ` <span title="what it runs on, self-declared" style="opacity:.75;font-size:.85em;letter-spacing:.06em">${esc(String(c.runsOn).toUpperCase())} <i style="font-style:normal;font-size:.8em;opacity:.8">self-declared</i></span>` : ''}` : ''}</td>
+    <td class="mono hide-s">${c.j === 'newcomer' ? `looking · ${esc(c.s || '')}` : esc(c.j)}</td>
+    <td class="mono hide-s">${esc(c.d)}</td>
+    <td class="num">${money(c.c)}</td>
+    <td>${whereCell(c.where, c.workAt)}</td>
+    <td>${whereCell(c.day?.night, c.workAt)}</td>
+    <td class="num">${c.spend ? money(c.spend) : '—'}</td>
+    <td class="why">${c.whyNight ? esc(c.whyNight) : '<span style="color:var(--cf-ink-4)">—</span>'}</td>
+  </tr>`).join('');
+  // THE COLUMN HEADED "TONIGHT" HAS TO BE TONIGHT. It was showing whichever
+  // slot the clock was in and the reason for that slot, so at two in the
+  // afternoon the board said TONIGHT: IN over "one last drink before work" —
+  // the afternoon's decision and the afternoon's reason, under the night's
+  // heading. There are two columns now and each says which half of the day it
+  // is, with the night's own sentence beside the night's own decision.
+  $('nowcol').textContent = V?.slot === 'night' ? 'NIGHT' : 'THIS AFTERNOON';
+}
+
+// THE YARD'S OWN TRADES — a separate B2B book, not a fourth venue in the
+// listings above: nobody plans a night at the yard, so it does not belong in
+// VENUES or its price/turnout chart. City cash only; see js/econ/supplyrules.js.
+function paintSupply() {
+  const s = V?.venues?.supply;
+  const n = $('supplyn');
+  if (!s) {
+    n.textContent = '';
+    $('supply').innerHTML = '<div class="ct-quiet">OFF — SUPPLY_ENABLED IS NOT SET ON THIS DEPLOYMENT</div>';
+    return;
+  }
+  const trades = s.recentTrades || [];
+  n.textContent = trades.length ? `· ${trades.length} RECENT` : '';
+  const prices = s.prices || {};
+  const priceRow = ['kegs', 'gear', 'chips'].map((k) =>
+    `<span>${k.toUpperCase()} <b>${prices[k] != null ? money(prices[k]) : '—'}</b></span>`).join('');
+  const why = s.why ? `<div class="ct-quiet" style="margin:6px 0">“${esc(s.why)}”</div>` : '';
+  const rows = trades.length ? trades.map((t) => `<tr>
+      <td>${esc(t.business || t.venue || '—')}</td>
+      <td>THE YARD</td>
+      <td>${t.units} ${esc(t.unit || t.good || '')}${t.units === 1 ? '' : 's'}</td>
+      <td class="num">${money(t.price)}</td>
+      <td class="num">${money(t.cost)}</td>
+      <td class="why">${t.why ? esc(t.why) : '<span style="color:var(--cf-ink-4)">—</span>'}</td>
+    </tr>`).join('') : '<tr><td colspan="6" class="ct-quiet">NO TRADES YET THIS DEPLOYMENT</td></tr>';
+  $('supply').innerHTML = `
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-family:var(--cf-mono);font-size:11px;color:var(--cf-ink-dim)">${priceRow}</div>
+    ${why}
+    <div class="ct-tablewrap"><table class="ct-t"><thead><tr>
+      <th>BUYER</th><th>SELLER</th><th>GOODS</th><th style="text-align:right">PRICE</th><th style="text-align:right">COST</th><th>WHY</th>
+    </tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+// THE COMMISSION LINES ON LAST CALL'S LEDGER — each at its own anchor, the
+// one a commission on /jobs links to; the linked one is lit and scrolled to
+let ASKS = null, asksLit = false;
+const anchorOf = (ref) => 'ask-' + String(ref || '').replace(/[^a-zA-Z0-9_-]/g, '-');
+function paintAsks() {
+  if (!ASKS) return;
+  $('asksn').textContent = ASKS.length ? `· ${ASKS.length} LINES` : '';
+  const want = decodeURIComponent(location.hash.slice(1));
+  const rows = ASKS.length ? ASKS.map((e) => {
+    const [what, jobId] = String(e.ref).split(':');
+    const id = anchorOf(e.ref);
+    return `<tr id="${esc(id)}"${id === want ? ' class="hit"' : ''}>
+      <td>${esc(new Date(e.at).toLocaleString())}</td>
+      <td>${what === 'judge' ? 'CHOSE A WINNER' : 'ASKED FOR A COMMISSION'}<br><a href="/jobs#asked-${esc(jobId)}">${esc(jobId)}</a></td>
+      <td class="why">${esc(e.line)}<br><span style="color:var(--cf-ink-faint)">${esc(e.fact)}</span></td>
+      <td class="num">${e.costMicros}\u00b5$<br>$${(e.costMicros / 1e6).toFixed(5)}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="4" class="ct-quiet">LAST CALL HAS NOT ASKED ITS MODEL FOR A COMMISSION YET</td></tr>';
+  $('asks').innerHTML = `<div class="ct-tablewrap"><table class="ct-t"><thead><tr>
+      <th>WHEN</th><th>WHAT</th><th>THE LEDGER LINE</th><th style="text-align:right">BILLED</th>
+    </tr></thead><tbody>${rows}</tbody></table></div>`;
+  if (!asksLit && want) { const el = document.getElementById(want); if (el) { asksLit = true; el.scrollIntoView({ block: 'center' }); } }
+}
+async function pollAsks() {
+  try { const r = await fetch('/api/bar?view=asks', { cache: 'no-store' }); if (r.ok) { ASKS = (await r.json()).asks || []; paintAsks(); } } catch { /* the section stays as it was */ }
+}
+window.addEventListener('hashchange', () => { asksLit = false; paintAsks(); });
+
+function paintFoot() {
+  const drift = REC ? Number(REC.drift) : null;
+  $('foot').innerHTML = `
+    <span>BOOKS <b>${V?.balance != null ? money(V.balance) : '—'}</b> BETWEEN ${V?.pop ?? '—'} RESIDENTS</span>
+    <span>BUDGET <b>${V?.budgetUsd != null ? '$' + V.budgetUsd + '/DAY' : '—'}</b></span>
+    <span>DRIFT <b class="${drift === 0 ? 'ok' : drift == null ? '' : 'bad'}">${drift == null ? '—' : drift === 0 ? '0 — THE BOOKS BALANCE' : drift}</b></span>
+    <span>LEDGER <b>${REC?.entries ?? '—'}</b> ENTRIES</span>
+    <span>STORE <b>${esc(V?.store || '—')}</b></span>`;
+}
+
+// THE TAPE. The most recent thing a model said, or a resident's reaction to it,
+// one line at a time — the same strip the exchange uses for the reason it
+// exists.
+function tapeLines() {
+  const out = [];
+  for (const [k, nm] of VENUES) {
+    const d = (V?.venues || {})[k]; if (!d) continue;
+    if (d.why) out.push(`<span class="who">${esc(d.name || nm)}</span> — <b>“${esc(d.why)}”</b>`);
+  }
+  for (const c of (V?.nightPlans || []).slice(-14).reverse()) {
+    if (c.why) out.push(`<span class="who">${esc(c.n)}</span> — <b>“${esc(c.why)}”</b> <span style="opacity:.6">${esc((c.by || '').toUpperCase())}</span>`);
+  }
+  return out.length ? out : ['the city has not decided anything yet tonight'];
+}
+function rollTape() {
+  const l = tapeLines();
+  $('tape').innerHTML = l[tapeI % l.length];
+  tapeI++;
+}
+
+function paint() {
+  if (!V) return;
+  $('night').textContent = V.lastDayIndex ?? '—';
+  $('daynum').textContent = V.dayNumber ?? '—';
+  paintListings(); paintDetail(); paintWhere(); paintArrive(); paintMood(); paintFields(); paintResidents(); paintSupply(); paintFoot();
+  rollTape();
+}
+
+$('listings').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-v]'); if (!b) return;
+  sel = b.dataset.v; paintListings(); paintDetail();
+});
+
+// A VENUE THE POLICE CLOSED TODAY (GET /api/court?op=docket, docs/crime.md): the reason and the case on its row
+let POLICED = {};
+async function poll() {
+  try { const d = await fetch('/api/court?op=docket', { cache: 'no-store' }).then((x) => (x.ok ? x.json() : null)); POLICED = Object.fromEntries(((d?.enabled && d.closures) || []).map((z) => [z.venue, z])); } catch { /* the rows say nothing */ }
+  try {
+    const r = await fetch('/api/city?view=state', { cache: 'no-store' });
+    if (r.ok) { V = await r.json(); $('dot').classList.remove('off'); $('livelab').textContent = 'LIVE'; }
+  } catch { $('dot').classList.add('off'); $('livelab').textContent = 'NO SIGNAL'; }
+  try { const r2 = await fetch('/api/city?view=reconcile', { cache: 'no-store' }); if (r2.ok) REC = await r2.json(); } catch { /* the footer says — */ }
+  paint();
+}
+poll();
+pollAsks();
+setInterval(pollAsks, 120000);
+setInterval(poll, 30000);  // both views cache for 5s server-side now; this just keeps a lone tab from re-asking every 15s for nothing
+setInterval(rollTape, 4200);
+rollTape();
+</script>
+</body>
+</html>

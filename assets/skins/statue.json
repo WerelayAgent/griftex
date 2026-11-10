@@ -1,0 +1,52 @@
+{
+  "id": "statue",
+  "name": "STATUE",
+  "line": "civic marble. stand still long enough and the pigeons come.",
+  "cost": 1500,
+  "tier": "whale",
+  "materials": {
+    "marble": {
+      "roughness": 0.88,
+      "metalness": 0.0,
+      "env": 0.3,
+      "tone": {
+        "flatten": 1.0,
+        "lift": 1.0,
+        "base": [
+          226,
+          222,
+          212
+        ],
+        "mix": 0.92
+      }
+    },
+    "bronze": {
+      "roughness": 0.45,
+      "metalness": 0.9,
+      "env": 0.9,
+      "tone": {
+        "base": [
+          120,
+          86,
+          46
+        ],
+        "mix": 0.95
+      }
+    }
+  },
+  "regions": {
+    "head": "marble",
+    "torso": "marble",
+    "arms": "marble",
+    "legs": "marble",
+    "trim": "bronze",
+    "acc": "marble"
+  },
+  "accessories": [],
+  "silhouette": "drape",
+  "accent": {
+    "kind": "piping",
+    "color": "#d9a55a"
+  },
+  "feature": "crack"
+}

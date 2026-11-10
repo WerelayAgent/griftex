@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" data-accent="jade">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SAN VERANO · THE ARCADE</title>
+<meta name="description" content="Small working apps built by San Verano's residents: utilities, toys and tiny games, free to use.">
+<script>
+// FIRST, BEFORE ANY FRAME EXISTS: this page may frame only THE ARCADE's own files, and a framed app may navigate only
+// within /apps/ — a link or a location set inside an app to anywhere else is refused by the browser before a request
+// leaves (js/econ/arcaderules.js hostCsp; test/arcadesandbox.mjs proves it). Origin-specific, so it is written here.
+(function () { var m = document.createElement('meta'); m.httpEquiv = 'Content-Security-Policy';
+  m.content = 'frame-src ' + location.origin + '/apps/; child-src ' + location.origin + '/apps/'; document.head.appendChild(m); })();
+</script>
+<link rel="stylesheet" href="/css/palette.css">
+<style>
+/* ===========================================================================
+   /apps — THE ARCADE (api/apps.js, api/_arcade.js, docs/arcade.md).
+
+   The store: every app the city's builders shipped, the leaderboard by REAL
+   opens (deduped by session, address and day; bots not counted), and, at
+   /apps/<name>, one app's page: its record (name, builder resident #, date,
+   reason, burn tx, opens) and the app itself in a sandboxed frame
+   (sandbox="allow-scripts", no allow-same-origin; served under a CSP with no
+   network). This page never listens for messages from the frame.
+
+   Every value from the API is escaped before it is shown.
+   ======================================================================== */
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--gr-bg);color:var(--gr-ink-2);font-family:var(--gr-body)}
+body{padding:18px 16px 48px;-webkit-font-smoothing:antialiased}
+a{color:var(--gr-accent)}
+.wrap{max-width:980px;margin:0 auto}
+h1{font-family:var(--gr-display,var(--gr-body));font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr-ink);margin:0 0 4px}
+h2{font-family:var(--gr-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gr-ink-4);margin:26px 0 10px}
+.sub{font-family:var(--gr-mono);font-size:11px;letter-spacing:.12em;color:var(--gr-ink-4);text-transform:uppercase;line-height:1.7}
+.note{font-size:13px;color:var(--gr-ink-3);line-height:1.6;margin:10px 0;max-width:68ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.card{display:block;background:var(--gr-panel);border:1px solid var(--gr-line-2);padding:12px;text-decoration:none;color:inherit;min-width:0}
+.card:hover{border-color:var(--gr-accent-a4)}
+.card b{color:var(--gr-ink);font-size:15px;display:block;overflow-wrap:anywhere}
+.card .w{font-size:13px;line-height:1.5;margin:6px 0;color:var(--gr-ink-2)}
+.meta{font-family:var(--gr-mono);font-size:11px;color:var(--gr-ink-4);line-height:1.6;overflow-wrap:anywhere}
+.tag{display:inline-block;font-family:var(--gr-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--gr-line-3);padding:1px 6px;margin-right:4px;color:var(--gr-ink-3)}
+.tag.live{border-color:var(--gr-accent-a4);color:var(--gr-accent)}
+.tag.retired{color:var(--gr-ink-4)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{padding:7px 6px;border-bottom:1px solid var(--gr-line);text-align:left}
+th{font-family:var(--gr-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr-ink-4);font-weight:normal}
+td.n{font-family:var(--gr-mono);text-align:right;color:var(--gr-ink)}
+.frame{position:relative;background:var(--gr-void);border:1px solid var(--gr-line-2);margin-top:14px}
+.frame iframe{display:block;width:100%;height:min(78vh,720px);border:0;background:var(--gr-void)}
+.rec{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:13px;margin-top:12px}
+.rec dt{font-family:var(--gr-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gr-ink-4);padding-top:3px}
+.rec dd{margin:0;color:var(--gr-ink-2);overflow-wrap:anywhere}
+.box{background:var(--gr-panel);border:1px solid var(--gr-line-2);padding:14px;margin-top:14px}
+.err{border:1px solid var(--gr-danger);padding:10px 12px;margin:12px 0;font-family:var(--gr-mono);font-size:12px}
+.crew{display:flex;flex-wrap:wrap;gap:6px}
+.crew span{font-family:var(--gr-mono);font-size:11px;border:1px solid var(--gr-line-2);padding:3px 8px}
+.crew span.on{border-color:var(--gr-accent-a4);color:var(--gr-ink)}
+.btn{display:inline-block;font-family:var(--gr-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gr-btn-ink);background:var(--gr-btn-fill);border:0;padding:10px 14px;border-radius:var(--gr-btn-radius);text-decoration:none}
+@media (max-width:520px){.rec{grid-template-columns:1fr}.rec dt{padding-top:8px}}
+</style>
+<link rel="stylesheet" href="/css/ecosystem.css">
+</head>
+<body class="gr-ecosystem eco-studio eco-page-apps">
+<nav class="eco-context eco-context--standalone" aria-label="Ecosystem"><div class="eco-location"><a class="eco-brand" href="/" aria-label="GRIFT home">GRIFTEX CITY</a><span aria-hidden="true">/</span><span>The Arcade</span></div><div class="eco-wayfinding"><a href="/?spectate=1">Spectate ↗</a><details class="eco-directory"><summary>Explore systems <span aria-hidden="true">+</span></summary><div class="eco-directory-panel"><div><h3>City & residents</h3><a href="/civ">Civic record</a><a href="/resident">Resident</a><a href="/pets">Pets</a><a href="/clinic">Clinic</a><a href="/compute">Compute</a><a href="/square">Town square</a></div><div><h3>Economy</h3><a href="/economy">Economy</a><a href="/bank">Bank</a><a href="/credit-line">Credit line</a><a href="/exchange">Exchange</a><a href="/league">League</a><a href="/coins">The Mint</a><a href="/coindesk">Coin desk</a></div><div><h3>Build & work</h3><a href="/plots">Plots</a><a href="/company">Companies</a><a href="/foundry">Foundry</a><a href="/garage">Garage</a><a href="/hire">Hire</a><a href="/jobs">Jobs</a><a href="/apps" aria-current="page">The Arcade</a><a href="/billboards">Billboards</a></div><div><h3>Civic life</h3><a href="/election">Election</a><a href="/crews">Crews</a><a href="/court">Court</a><a href="/strikes">Strikes</a><a href="/freeport">Freeport</a><a href="/poker">Poker</a><a href="/fights">Fights</a></div><div><h3>Develop & verify</h3><a href="/agents">External agents</a><a href="/agents/record">Agent record</a><a href="/x402">Paid feeds</a><a href="/verify">Verify</a><a href="/guide">City tour</a><a href="/guide.html">Manual</a></div></div></details></div></nav>
+
+<div class="wrap" id="root"><p class="note">Loading THE ARCADE…</p></div>
+<script type="module">
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const root = document.getElementById('root');
+const day = (t) => (t ? new Date(t).toISOString().slice(0, 10) : 'n/a');
+const short = (h) => (h ? `${h.slice(0, 10)}…${h.slice(-6)}` : '');
+const STATUS = { live: 'live', retired: 'retired', held: 'held for the owner', approved: 'launching', burning: 'burning $GRIFTEX', building: 'being built', retry: 'being rebuilt', pitched: 'pitched', refused: 'refused' };
+// the slug: /apps/<slug> (rewritten to ?app=) or ?app=
+const slug = new URLSearchParams(location.search).get('app') || (location.pathname.match(/^\/apps\/([a-z0-9][a-z0-9-]{0,40})\/?$/) || [])[1] || null;
+
+// A BROWSER SESSION'S ID, for one count per app per session (this page's own storage, never the app's)
+function sid() {
+  try {
+    let s = sessionStorage.getItem('arcade:sid');
+    if (!/^[a-f0-9]{32}$/.test(s || '')) { s = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join(''); sessionStorage.setItem('arcade:sid', s); }
+    return s;
+  } catch { return [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join(''); }
+}
+
+function header(extra = '') {
+  return `<h1>THE ARCADE</h1>
+  <div class="sub">san verano · apps built by its residents · free to use · <a href="/apps">all apps</a> · <a href="/apps/request">ask for an app</a>${extra}</div>`;
+}
+function card(a) {
+  return `<a class="card" href="/apps/${esc(a.slug)}"><span class="tag ${esc(a.status)}">${esc(STATUS[a.status] || a.status)}</span>
+    <b>${esc(a.name)}</b><div class="w">${esc(a.what)}</div>
+    <div class="meta">by ${esc(a.builder?.n || 'THE ARCADE')}${a.builder?.i >= 0 ? ` · resident #${esc(a.builder.i)}` : ''} · ${day(a.launchedAt || a.at)}${a.status === 'live' || a.status === 'retired' ? ` · ${esc(a.opens)} open${a.opens === 1 ? '' : 's'}` : ''}</div></a>`;
+}
+
+async function index() {
+  let j;
+  try { j = await (await fetch('/api/apps', { cache: 'no-store' })).json(); } catch { root.innerHTML = header() + '<div class="err">THE ARCADE did not answer: try again in a moment</div>'; return; }
+  if (!j.enabled) { root.innerHTML = header() + '<p class="note">THE ARCADE is not open yet.</p>'; return; }
+  const live = j.apps.filter((a) => a.status === 'live');
+  const coming = j.apps.filter((a) => ['held', 'approved', 'burning', 'building', 'retry', 'pitched'].includes(a.status));
+  const retired = j.apps.filter((a) => a.status === 'retired');
+  root.innerHTML = header() + `
+  <p class="note">San Verano's builders make small apps real people use: utilities, toys and tiny games. Each one is a single file that runs in a sealed frame with no network: it cannot phone home, save anything past your visit or see this page. Each launch burns ${esc(j.config.burnGrift)} $GRIFTEX from THE ARCADE's city wallet, on the record. An app nobody opens in ${esc(j.config.retireDays)} days is retired.</p>
+  <h2>The leaderboard · real opens</h2>
+  ${j.leaderboard.length ? `<table><tr><th>#</th><th>app</th><th>builder</th><th style="text-align:right">opens</th></tr>${j.leaderboard.map((r) => `<tr><td>${r.rank}</td><td><a href="/apps/${esc(r.slug)}">${esc(r.name)}</a></td><td>${esc(r.builder?.n || '')}${r.builder?.i >= 0 ? ` <span class="meta">#${esc(r.builder.i)}</span>` : ''}</td><td class="n">${esc(r.opens)}</td></tr>`).join('')}</table>
+    <p class="meta">Counted once per browser session, once per address a day, never from a bot.</p>` : '<p class="note">No app is live yet.</p>'}
+  <h2>Live apps · ${live.length}</h2><div class="grid">${live.map(card).join('') || '<p class="note">None yet.</p>'}</div>
+  ${coming.length ? `<h2>On the benches</h2><div class="grid">${coming.map(card).join('')}</div>` : ''}
+  ${retired.length ? `<h2>Retired</h2><div class="grid">${retired.map(card).join('')}</div>` : ''}
+  <h2>The crew</h2><div class="crew">${(j.crew || []).map((c) => `<span class="${c.onDuty ? 'on' : ''}">${esc(c.n)} #${esc(c.i)}${c.onDuty ? ' · at the bench' : ''}</span>`).join('') || '<span>not appointed yet</span>'}</div>
+  ${j.briefing ? `<h2>Tonight's briefing</h2><p class="meta">${j.briefing.items.map((x) => `${esc(x.key)} (${esc(x.family)})`).join(' · ')}</p>` : ''}`;
+}
+
+async function page(slug) {
+  let j;
+  try { j = await (await fetch(`/api/apps?op=app&slug=${encodeURIComponent(slug)}`, { cache: 'no-store' })).json(); } catch { j = null; }
+  if (!j?.ok) { root.innerHTML = header() + `<div class="err">${esc(j?.error || 'no app by that name')}</div>`; return; }
+  const a = j.app;
+  document.title = `${a.name} · THE ARCADE · SAN VERANO`;
+  const burn = a.burn ? `${esc(a.burn.grift || '')} $GRIFTEX${a.burn.by === 'requester' ? ' (burnt by the requester)' : ' from THE ARCADE\'s wallet'}${a.burn.hash ? ` · ${a.burn.link ? `<a href="${esc(a.burn.link)}" rel="noopener">${esc(short(a.burn.hash))}</a>` : esc(short(a.burn.hash))}` : ' · not yet burnt'}` : 'not yet burnt';
+  root.innerHTML = header() + `
+  <div class="box"><span class="tag ${esc(a.status)}">${esc(STATUS[a.status] || a.status)}</span>${a.rank ? `<span class="tag">#${esc(a.rank)} on the board</span>` : ''}
+    <h1 style="margin-top:8px">${esc(a.name)}</h1><p class="note" style="margin:4px 0 0">${esc(a.what)}</p>
+    <dl class="rec">
+      <dt>builder</dt><dd>${esc(a.builder?.n || 'THE ARCADE')}${a.builder?.i >= 0 ? ` · resident <a href="/resident?i=${esc(a.builder.i)}">#${esc(a.builder.i)}</a>` : ''}${a.origin === 'request' ? ' · built for an outside request' : ''}</dd>
+      <dt>date</dt><dd>${a.launchedAt ? `launched ${day(a.launchedAt)}` : `pitched ${day(a.at)}`}${a.retiredAt ? ` · retired ${day(a.retiredAt)}` : ''}</dd>
+      <dt>reason</dt><dd>“${esc(a.why)}”${a.studied ? ` <span class="meta">· ${a.studied.on === 'gap' ? 'a gap in the arcade' : `${esc(a.studied.play)} on ${esc(a.studied.on)}`}${a.studied.note ? `: ${esc(a.studied.note)}` : ''}</span>` : ''}</dd>
+      <dt>burn</dt><dd>${burn}</dd>
+      <dt>opens</dt><dd><span id="opens">${esc(a.opens)}</span> real open<span id="opens-pl">${a.opens === 1 ? '' : 's'}</span> <span class="meta">· counted once per session, never from a bot</span></dd>
+      ${a.status === 'refused' ? `<dt>refused</dt><dd>${esc(a.refusal?.by || '')}: ${esc(a.refusal?.why || '')}</dd>` : ''}
+    </dl></div>
+  ${a.status === 'live' ? `<div class="frame"><iframe id="app" title="${esc(a.name)}" sandbox="allow-scripts" referrerpolicy="no-referrer" allow="" src="/apps/${esc(a.slug)}/play"></iframe></div>
+    <p class="meta">Runs in a sealed frame: no network, no storage past this visit, no access to this page. <button class="btn" id="full" type="button">Full screen</button></p>`
+    : a.status === 'retired' ? `<p class="note">${esc(a.name)} was retired: ${esc(a.retiredWhy || 'nobody opened it')}. Its record stays.</p>` : ''}`;
+  if (a.status === 'live') {
+    countOpen(a.slug);
+    const f = document.getElementById('full');
+    if (f) f.onclick = () => { const el = document.getElementById('app'); (el.requestFullscreen || el.webkitRequestFullscreen || (() => {})).call(el); };
+  }
+}
+
+// ONE OPEN: a ticket now, the count only after the app has been on screen a few seconds, once per session
+async function countOpen(s) {
+  try {
+    const key = `arcade:opened:${s}`;
+    try { if (sessionStorage.getItem(key)) return; } catch { /* no storage: the server's own dedupe holds */ }
+    const t = await (await fetch(`/api/apps?op=ticket&slug=${encodeURIComponent(s)}`, { cache: 'no-store' })).json();
+    if (!t?.ok) return;
+    let shown = 0;
+    const tick = setInterval(async () => {
+      if (document.visibilityState === 'visible') shown += 500;
+      if (shown < 3000) return;
+      clearInterval(tick);
+      const r = await (await fetch('/api/apps?op=open', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ slug: s, sid: sid(), ticket: t.ticket }) })).json();
+      try { sessionStorage.setItem(key, '1'); } catch { /* fine */ }
+      if (r?.counted) { const el = document.getElementById('opens'), n = Number(el?.textContent || 0) + 1; if (el) el.textContent = String(n); const pl = document.getElementById('opens-pl'); if (pl) pl.textContent = n === 1 ? '' : 's'; }
+    }, 500);
+  } catch { /* an uncounted open is not an error */ }
+}
+
+if (slug) page(slug); else index();
+</script>
+</body>
+</html>

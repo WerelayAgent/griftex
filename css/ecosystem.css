@@ -1,0 +1,471 @@
+/* GRIFT ecosystem presentation. Opt-in per document; never loaded by the game,
+   Spectate, landing page or the approved finance pages. No data or state styling
+   may override [hidden], disabled, aria-selected or existing semantic statuses. */
+.gr-ecosystem {
+  --gr-bg:#151714; --gr-void:#151714; --gr-panel:#20251e; --gr-panel-hi:#2b3127;
+  --gr-panel-a:#20251ee0; --gr-panel-a6:#20251e99;
+  --gr-ink:#e5d8bb; --gr-ink-2:#c0bead; --gr-ink-3:#a8aa98; --gr-ink-4:#959b86;
+  --gr-line:#a2a58126; --gr-line-2:#a2a5814d; --gr-line-3:#a2a58177;
+  --gr-accent-rgb:177,195,148; --gr-accent:#b1c394; --gr-accent-dk:#465238;
+  --gr-accent-a:#b1c39417; --gr-accent-a2:#b1c39433; --gr-accent-a4:#b1c39466;
+  --gr-caution:#d2a369; --gr-danger:#df9684; --gr-on-accent:#1b2417;
+  --gr-btn-fill:#d2a369; --gr-btn-ink:#201d15; --gr-btn-hi:#e5b780; --gr-btn-edge:#d2a369; --gr-btn-radius:2px;
+  --eco-warm:#d2a369; --eco-tint:#899970; --eco-surface:#283124;
+  --el-warm:#d2a369; --el-warm-a:#a2a58126; --el-warm-b:#a2a58155;
+  --el-own:#c7bea0; --cv-warm:#c9b384; --cv-warm-a:#a2a58126; --cv-warm-b:#a2a58155;
+  margin:0;padding:0;max-width:none;background:var(--gr-bg);color:var(--gr-ink-2);
+  font:14px/1.65 var(--gr-body);-webkit-font-smoothing:antialiased;
+  color-scheme:dark;
+}
+.gr-ecosystem * {box-sizing:border-box}
+.gr-ecosystem [hidden] {display:none!important}
+.gr-ecosystem :focus-visible {outline:2px solid #d2a369;outline-offset:4px}
+.gr-ecosystem a {text-underline-offset:4px}
+.gr-ecosystem a:hover {color:#efcf9e}
+.gr-ecosystem :where(button,input,select,textarea) {font:inherit}
+.gr-ecosystem :where(input,select,textarea) {accent-color:#b1c394;max-width:100%;border-radius:2px}
+.gr-ecosystem :where(input:not([type=checkbox]):not([type=radio]),select,textarea) {background:#192016;color:#e5d8bb;border-color:#a2a58155}
+.gr-ecosystem :where(button) {cursor:pointer}
+.gr-ecosystem :where(button:disabled,[aria-disabled=true]) {cursor:default}
+.gr-ecosystem :where(h1,h2,h3) {color:var(--gr-ink)}
+.gr-ecosystem :where(code,pre) {font-family:var(--gr-mono);overflow-wrap:anywhere}
+.gr-ecosystem :where(pre) {max-width:100%;overflow:auto}
+.gr-ecosystem :where(img) {max-width:100%}
+.gr-ecosystem :where(table) {font-variant-numeric:tabular-nums}
+.gr-ecosystem :where(th) {font-weight:400}
+.gr-ecosystem :where(tbody tr) {transition:background .16s}
+.gr-ecosystem :where(tbody tr:hover) {background:#b8bb8610}
+.gr-ecosystem #landing {background:var(--gr-bg);color:var(--gr-ink-2);font-family:var(--gr-body)}
+.gr-ecosystem #landing::before,.gr-ecosystem #landing::after {display:none}
+.gr-ecosystem #landing .fd-head {position:relative;inset:auto;background:var(--gr-bg);border-bottom:1px solid var(--gr-line);padding:18px 4vw;min-height:70px;backdrop-filter:none;z-index:30}
+.gr-ecosystem #landing .fd-hmark {font-size:30px;color:var(--gr-ink)}
+.gr-ecosystem #landing .fd-hpill {background:#242a2055;border-color:var(--gr-line)}
+.gr-ecosystem #landing .fd-hsheet {background:#20261e;border-color:var(--gr-line-2)}
+.gr-ecosystem .eco-context {position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1540px;margin:auto;padding:20px 4vw;font:10px/1.5 var(--gr-mono);color:#adb29b}
+.gr-ecosystem .eco-context--standalone {max-width:none;min-height:74px;border-bottom:1px solid var(--gr-line);background:var(--gr-bg)}
+.gr-ecosystem .eco-location,.gr-ecosystem .eco-wayfinding {display:flex;align-items:center;gap:22px}
+.gr-ecosystem .eco-location>span:first-of-type {color:#6d785e}
+.gr-ecosystem .eco-context a {color:inherit;text-decoration:none}
+.gr-ecosystem .eco-context a:hover {color:#efcf9e}
+.gr-ecosystem .eco-brand {font:600 30px/1 var(--gr-display);letter-spacing:-1px;color:var(--gr-ink)!important}
+.gr-ecosystem .eco-directory summary {cursor:pointer;list-style:none;color:#d4c6a6;display:flex;gap:20px;align-items:center;padding:8px 0}
+.gr-ecosystem .eco-directory summary::-webkit-details-marker {display:none}
+.gr-ecosystem .eco-directory summary span {font-size:16px;line-height:1}
+.gr-ecosystem .eco-directory[open] summary span {transform:rotate(45deg)}
+.gr-ecosystem .eco-directory-panel {position:absolute;right:4vw;left:4vw;top:calc(100% - 6px);padding:28px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:24px;background:#242b21;border:1px solid #8f98745c;box-shadow:0 24px 60px #050a0770;max-height:72vh;overflow:auto}
+.gr-ecosystem .eco-directory-panel h3 {font:9px/1.6 var(--gr-mono);text-transform:uppercase;letter-spacing:.08em;margin:0 0 15px;color:#c1ac84}
+.gr-ecosystem .eco-directory-panel a {display:block;padding:8px 0;font:12px var(--gr-body);color:#c2c7b2}
+.gr-ecosystem .eco-directory-panel a[aria-current] {color:#e6c294}
+/* Common ledger shell: the existing game frame becomes a quiet window onto its system. */
+.gr-ecosystem :is(.el-shell,.vf-shell,.cv-shell,.cv-stripin) {width:92%;max-width:1416px}
+.gr-ecosystem .el-top {min-height:360px;max-width:1540px;margin:auto;justify-content:center;background:radial-gradient(ellipse at 80% 20%,#89997012,transparent 65%)}
+.gr-ecosystem .el-hero {padding:38px 0 40px}
+.gr-ecosystem .el-top .el-plate {inset:24px 4vw 28px auto;width:35%;border:1px solid #b4b58c33;border-radius:2px 2px 40px 2px;background-color:#252c21;filter:saturate(.6) brightness(.8);transform:none;box-shadow:0 24px 45px #080d0733}
+.gr-ecosystem .el-top .fd-vignette {display:none}
+.gr-ecosystem .el-h1 {font:500 clamp(42px,4.8vw,72px)/1.03 var(--gr-display);letter-spacing:-.025em;max-width:59%;color:var(--gr-ink)}
+.gr-ecosystem .el-k {font:9px/1.6 var(--gr-mono);letter-spacing:.13em;color:#c3af88;margin:0 0 21px}
+.gr-ecosystem .el-sub {font:14px/1.85 var(--gr-body);color:#b8beaa;max-width:57%;margin:19px 0 0}
+.gr-ecosystem .el-clock {max-width:60%;gap:8px;margin-top:22px}
+.gr-ecosystem .el-chip {border-radius:2px;font:10px/1.6 var(--gr-mono);padding:7px 10px;background:#293123;border-color:#7c896144;color:#c2c8b1}
+.gr-ecosystem .el-chip.now {background:#3a412a;border-color:#9d9d6655;color:#ddd0a6}
+.gr-ecosystem .el-band {padding:34px 0;border-color:var(--gr-line)}
+.gr-ecosystem .el-band:nth-of-type(3n) {background:#29302333}
+.gr-ecosystem .el-lab {align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:24px}
+.gr-ecosystem .el-lab h2 {font:500 30px/1.15 var(--gr-display);letter-spacing:-.025em;max-width:42%}
+.gr-ecosystem .el-lab p {font:12px/1.8 var(--gr-body);max-width:62ch;color:#aeb6a0}
+.gr-ecosystem :is(.el-scroll,.vf-scroll) {border:1px solid #8b927833;border-radius:2px;background:#192017;overflow:auto;scrollbar-color:#657057 #192017}
+.gr-ecosystem :is(.el-table,.vf-table) {font:11px/1.6 var(--gr-mono)}
+.gr-ecosystem :is(.el-table,.vf-table) th {font:9px/1.5 var(--gr-mono);letter-spacing:.08em;background:#2b3326;color:#bdc3a9}
+.gr-ecosystem :is(.el-table,.vf-table) :is(td,th) {padding:14px 16px;border-color:#a2a58124}
+.gr-ecosystem .el-nums {gap:0;margin:16px 0;border-bottom:1px solid var(--gr-line)}
+.gr-ecosystem .el-num {border:0;border-radius:0;border-right:1px solid var(--gr-line);background:none;padding:18px 20px}
+.gr-ecosystem .el-num dt {font:9px/1.6 var(--gr-mono);color:#abb29c;letter-spacing:.08em}
+.gr-ecosystem .el-num dd {font:32px/1.2 var(--gr-display);color:#e5d8bb;margin:9px 0 0;overflow-wrap:anywhere}
+.gr-ecosystem .el-num small {font:10px/1.6 var(--gr-mono);color:#acb49e}
+.gr-ecosystem .el-grid {gap:18px}
+.gr-ecosystem .el-card {border-radius:2px;background:linear-gradient(140deg,#303a2855,#20271c55);padding:24px;border-color:#a2a58133;box-shadow:none}
+.gr-ecosystem :is(.el-empty,.vf-note) {border:1px solid var(--gr-line);border-radius:2px;background:#22291e;padding:22px;color:#b9c1aa}
+.gr-ecosystem :is(.el-st,.el-self,.el-tools button,.pt-follow) {border-radius:2px;font:10px/1.6 var(--gr-mono);letter-spacing:.03em}
+.gr-ecosystem :is(.el-tools button,.pt-follow) {padding:10px 14px;min-height:40px}
+.gr-ecosystem :is(.el-chart,.el-code,.el-dq) {border-radius:2px}
+.gr-ecosystem .el-code {background:#1c2319;padding:20px;line-height:1.8}
+.gr-ecosystem .fd-bottom {color:#a8ae97;font:10px/1.8 var(--gr-mono)}
+/* Civic record: keep its actual residents, neighbourhood graph and live decisions as the visual centre. */
+.eco-civic .cv-top {min-height:0;background:linear-gradient(120deg,#151714,#283020)}
+.eco-civic .cv-plate {opacity:.08;filter:saturate(.25);transform:none}
+.eco-civic .cv-top :is(.fd-vignette,.fd-grain) {display:none}
+.eco-civic .cv-topgrid {width:92%;max-width:1416px;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:5vw}
+.eco-civic .cv-topgrid .fd-hero {padding:38px 0 44px}
+.eco-civic .cv-h1 {font:500 clamp(46px,5.1vw,78px)/1.03 var(--gr-display)}
+.eco-civic .cv-top .fd-eyebrow {font:9px var(--gr-mono);letter-spacing:.13em;color:#bdb48f}
+.eco-civic .cv-top .fd-enter {font:14px/1.8 var(--gr-body);color:#b8beaa}
+.eco-civic .cv-heronums {grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 20px;padding-top:24px}
+.eco-civic .cv-heronums dt {font:9px var(--gr-mono);letter-spacing:.08em;color:#adb69b}
+.eco-civic .cv-heronums dd {font-weight:500;font-size:38px}
+.eco-civic .cv-rail {border-radius:2px 2px 26px 2px;padding:26px;background:linear-gradient(140deg,#39432d99,#20281e);border:1px solid #9da57a44;box-shadow:0 20px 50px #070c0733}
+.eco-civic .cv-railhead {font:9px var(--gr-mono);letter-spacing:.12em;color:#d0b98a}
+.eco-civic .cv-feed {font-size:12px;line-height:1.8}
+.eco-civic .cv-strip {background:#232b1ef2;border-color:#a2a58144;backdrop-filter:blur(8px)}
+.eco-civic .cv-band {padding:36px 0;border-color:var(--gr-line)}
+.eco-civic .cv-lab {font:500 30px/1.2 var(--gr-display);letter-spacing:-.02em}
+.eco-civic .cv-plateframe {border-radius:2px;background:radial-gradient(ellipse at 55% 40%,#48563955,#1c2319);border-color:#a2a58133}
+.eco-civic .cv-card {background:#242c20;border-radius:2px;border-color:#a2a58133;padding:20px}
+.eco-civic .cv-table {font-size:12px}
+.eco-civic .cv-table :is(th,td) {padding-top:13px;padding-bottom:13px}
+.eco-civic :is(.cv-search,.cv-chip) {border-radius:2px}
+/* Verification is an instrument, not a scenery hero. All proof states keep their semantic colours. */
+.eco-verify .vf-top {padding:24px 0 34px;background:linear-gradient(110deg,#29322399,#151714);border-color:var(--gr-line)}
+.eco-verify .vf-h1 {font:500 clamp(44px,5vw,74px)/1.03 var(--gr-display);text-transform:none}
+.eco-verify .vf-sub {font:14px/1.85 var(--gr-body);max-width:75ch;color:#b8beaa}
+.eco-verify .vf-strip {background:none;border-color:var(--gr-line);margin-bottom:35px}
+.eco-verify .vf-sc {background:#35412a44;border-color:#a2a58133}
+.eco-verify .vf-sc.off {background:transparent}
+.eco-verify .vf-cta,.eco-verify .vf-btn.solid {background:#d2a369;border-color:#d2a369;color:#201d15!important;letter-spacing:.06em;border-radius:2px}
+.eco-verify :is(.vf-lab,.vf-chip,.vf-tab,.vf-btn) {font-family:var(--gr-mono);font-size:10px;letter-spacing:.07em}
+.eco-verify .vf-box {background:#1c2319;border-color:#a2a58133}
+.eco-verify .vf-boxh {background:#29322355;padding:16px 18px}
+.eco-verify .vf-tiles {background:#222a1d;border-color:var(--gr-line);border-radius:2px}
+.eco-verify .vf-tile {padding:25px 22px;border-color:var(--gr-line)}
+.eco-verify .vf-tile .big.num {color:#d4cfb0;font-size:clamp(22px,2.3vw,34px)}
+.eco-verify .vf-band {padding-top:30px;padding-bottom:8px}
+.eco-verify .vf-search .in {background:#1c2319;border-color:#a2a58155;border-radius:2px}
+.eco-verify .vf-search input {font-size:12px;letter-spacing:0;padding:15px}
+.eco-verify .vf-kv dt {font:10px/1.7 var(--gr-mono);letter-spacing:.05em}
+.eco-verify .vf-kv dd {font-size:12px;line-height:1.8}
+/* Care and pets keep their own emphasis: measured compute vs. individual companions. */
+.eco-care .el-top .el-plate {filter:saturate(.3) brightness(.85);border-color:#9faa7c44}
+.eco-care .cl-how {columns:2;column-gap:60px;font:13px/1.85 var(--gr-body)}
+.eco-care .cl-how li {break-inside:avoid;margin:0 0 22px}
+.eco-care .cl-bar {height:12px;border-radius:2px;background:#9dab7922;margin-top:20px}
+.eco-care .cl-bar .spent {background:#a7bc8c}
+.eco-care .cl-bar .held {background:#a7bc8c55}
+.eco-care .cl-mark {border-radius:2px;background:#a7bc8c22;color:#c7d4b1;padding:3px 7px}
+.eco-pets .el-top {background:linear-gradient(110deg,#393b2955,#151714)}
+.eco-pets .el-top .el-plate {filter:saturate(.65) brightness(.9);width:34%;border-radius:2px 2px 80px 2px}
+.eco-pets .pt-live {max-width:60%;gap:18px 30px}
+.eco-pets .pt-card {border-top:3px solid var(--c,var(--gr-line));padding:25px;gap:16px;background:#242b20}
+.eco-pets .pt-coat {width:46px;height:46px;border-radius:2px;image-rendering:pixelated}
+.eco-pets .pt-name {font-size:29px;font-weight:500}
+.eco-pets .pt-thought {font:500 15px/1.65 var(--gr-body);color:#d6d5bc}
+.eco-pets .pt-follow {margin-top:auto;align-self:flex-start}
+.eco-pets .pt-bars {height:160px;border-radius:2px;padding:20px;background:#2c342555}
+/* The live economy retains its viewport-based wire geometry and existing animation. */
+.eco-floor {--fl-void:#151714;--fl-panel:#242b21ed;--fl-panel-2:#303a29;--fl-edge:#a2a58126;--fl-edge-2:#a2a58155;--fl-ink:#e5d8bb;--fl-ink-2:#c0bead;--fl-ink-3:#a8aa98;--fl-ink-4:#969e87;--fl-amb:#c8ae80;--fl-amb-a:#c8ae8017;--fl-amb-b:#c8ae804a;--fl-burn:#df9a7e;--fl-burn-a:#df9a7e22;--fl-ok:#b1c394}
+.eco-floor .fl {height:calc(100dvh - 74px);padding:14px 2.5vw 0}
+.eco-floor .fl-bg {background:radial-gradient(ellipse at 50% 45%,#58643c22,transparent 70%),#151714}
+.eco-floor .fl-bg::after {display:none}
+.eco-floor .fl-src {gap:0;border-bottom:1px solid #a2a58133;padding-bottom:10px}
+.eco-floor .fl-sr {background:transparent;border:0;border-left:1px solid var(--gr-line);padding:10px 12px}
+.eco-floor .fl-srl {font:8px/1.6 var(--gr-mono);letter-spacing:.06em}
+.eco-floor .fl-srn {font-size:22px;font-weight:500;line-height:1.2}
+.eco-floor .fl-burnnum {text-shadow:none;font-weight:500;font-size:clamp(46px,5.5vw,88px)}
+.eco-floor .fl-top {padding-top:18px}
+.eco-floor .fl-mark {flex-wrap:wrap;gap:5px 14px}
+.eco-floor .fl-mark h1 {font-size:22px;letter-spacing:0;font-weight:500}
+.eco-floor :is(.fl-col,.fl-hub) {border-radius:2px;background:linear-gradient(150deg,#35412a66,#20261deb);border-top:2px solid #9b9e6c77;backdrop-filter:none}
+.eco-floor .fl-hub {background:linear-gradient(160deg,#48533377,#293321)}
+.eco-floor .fl-col::after {display:none}
+.eco-floor .fl-tape {border-color:#a2a58144;background:#1b2218}
+.eco-floor .wc-btn {border-radius:2px;background:#303b26;border-color:#a2a58155;color:#e5d8bb}
+@media(max-width:1050px) {
+ .gr-ecosystem .eco-directory-panel {grid-template-columns:repeat(3,minmax(0,1fr))}
+ .gr-ecosystem .el-lab h2 {max-width:42%}.gr-ecosystem .el-lab p {max-width:52%}
+ .gr-ecosystem .el-h1 {font-size:52px}.gr-ecosystem .el-sub {font-size:13px}
+ .eco-civic .cv-topgrid {gap:28px}.eco-civic .cv-rail {padding:22px}
+}
+@media(max-width:760px) {
+ .gr-ecosystem .eco-context {padding:14px 20px;gap:12px;font-size:9px;flex-wrap:wrap}
+ .gr-ecosystem .eco-location,.gr-ecosystem .eco-wayfinding {gap:14px}
+ .gr-ecosystem .eco-brand {font-size:27px}.gr-ecosystem .eco-context--standalone {min-height:74px}
+ .gr-ecosystem .eco-directory-panel {left:20px;right:20px;padding:22px;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 18px}
+ .gr-ecosystem :is(.el-shell,.cv-shell,.cv-stripin,.vf-shell) {width:calc(100% - 40px)}
+ .gr-ecosystem .el-top {min-height:0;padding-bottom:0;overflow:visible}
+ .gr-ecosystem .el-hero {padding:24px 0 32px}
+ .gr-ecosystem .el-top .el-plate {position:relative;inset:auto;order:2;width:calc(100% - 40px);height:170px;margin:0 20px 28px;border-radius:2px 2px 32px 2px;background-position:50% 60%}
+ .gr-ecosystem .el-h1 {font-size:46px;max-width:none}.gr-ecosystem .el-sub {max-width:none;font-size:14px}.gr-ecosystem .el-clock {max-width:none}
+ .gr-ecosystem .el-lab {display:block}.gr-ecosystem .el-lab h2 {max-width:none;margin-bottom:14px}.gr-ecosystem .el-lab p {max-width:none}
+ .gr-ecosystem .el-band {padding:28px 0}.gr-ecosystem .el-num {padding:18px 12px}.gr-ecosystem .el-num dd {font-size:28px}
+ .eco-civic .cv-topgrid {grid-template-columns:1fr;width:calc(100% - 40px);gap:0}
+ .eco-civic .cv-topgrid .fd-hero {padding:24px 0 30px}.eco-civic .cv-rail {margin-bottom:30px}.eco-civic .cv-h1 {font-size:52px}
+ .eco-civic .cv-heronums {gap:22px 15px}.eco-civic .cv-heronums dd {font-size:34px}
+ .eco-verify .vf-top {padding-top:20px}.eco-verify .vf-h1 {font-size:48px}.eco-verify .vf-strip {margin-bottom:28px}
+ .eco-verify .vf-tile {padding:22px 16px}.eco-verify .vf-tile .big.num {font-size:23px}
+ .eco-care .cl-how {columns:1}.eco-pets .pt-live {max-width:none}
+}
+@media(max-width:640px) {
+ .eco-floor .fl {height:auto;min-height:calc(100dvh - 74px);padding:14px 20px 0}
+ .eco-floor .fl-burnnum {font-size:58px}
+}
+@media(prefers-reduced-motion:reduce) {.gr-ecosystem * {scroll-behavior:auto!important;transition:none!important}}
+/* Batch 1 refinements from live desktop/mobile checks. */
+.eco-care :is(#cap,#meter)>.el-nums {grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.eco-care .el-num small {display:block;margin-top:10px}
+.eco-floor .fl-ballink,.eco-floor .fl-bal {flex-wrap:wrap;gap:4px 8px}
+.eco-floor .fl-big {font-size:clamp(22px,1.9vw,32px);font-weight:500}
+.eco-floor .fl-mid {font-size:clamp(20px,1.5vw,26px);font-weight:500}
+.eco-floor .fl-ch {flex-wrap:wrap;gap:6px}
+.eco-floor .fl-ch h2 {white-space:normal;overflow:visible;font-size:16px;letter-spacing:0}
+.eco-floor .fl-st {font:8px var(--gr-mono);letter-spacing:0;border-radius:2px;padding:4px 6px}
+.eco-floor .fl-col {overflow-y:auto;scrollbar-width:thin;scrollbar-color:#657057 transparent}
+.eco-floor .fl-hub {overflow-y:auto;scrollbar-width:thin;scrollbar-color:#657057 transparent}
+.eco-floor .fl-mind {min-height:100px;flex-shrink:0}
+.eco-floor .fl-node {position:sticky;align-self:center;left:auto;top:0;margin:-20px 0 0;flex:none}
+@media(min-width:1101px) {
+ .eco-floor .fl-src {grid-template-columns:repeat(8,minmax(0,1fr))}
+ .eco-floor .fl-sr {padding:7px 10px}.eco-floor .fl-srn {font-size:18px}
+}
+@media(max-width:1100px),(max-height:800px) {
+ .eco-floor .fl {height:auto;min-height:calc(100dvh - 74px);grid-template-rows:auto auto auto 46px}
+ .eco-floor .fl:has(#plots:not([hidden])) {grid-template-rows:auto auto auto auto 46px}
+ .eco-floor .fl-floor,.eco-floor .fl-floor:has(#col-exchange:not([hidden])) {grid-template-columns:repeat(2,minmax(0,1fr))}
+ .eco-floor .fl-col {min-height:420px}.eco-floor .fl-hub {grid-column:1/-1;order:-1}
+ .eco-floor #wires {display:none}.eco-floor .fl-big {font-size:32px}
+}
+@media(max-width:620px) {.eco-floor .fl-floor,.eco-floor .fl-floor:has(#col-exchange:not([hidden])) {grid-template-columns:1fr}}
+@media(max-width:430px) {.eco-civic .cv-heronums {grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Enterprise pages: product and ownership records retain all original action panels. */
+.eco-enterprise .el-top {background:linear-gradient(115deg,#373c292e,#151714)}
+.eco-enterprise .el-top .el-plate {filter:saturate(.5) brightness(.83);border-radius:2px 2px 22px 2px}
+.eco-enterprise :is(.pl-card,.pl-box,.pl-own) {border-radius:2px;border-color:#a2a58133;background-color:#252e2055}
+.eco-enterprise .pl-why>div {border-radius:2px;border:0;border-left:2px solid #9eac7d66;background:#29332166;padding:20px}
+.eco-enterprise .pl-buildband {background:#2f3a2544;border-block:1px solid #9eac7d33}
+.eco-enterprise :is(.pl-btn,.pl-input,.pl-select) {border-radius:2px}
+.eco-enterprise .pl-nums,.eco-enterprise .pl-counts {gap:18px 28px}
+.eco-enterprise .el-card .el-num {padding:12px 9px}.eco-enterprise .el-card .el-num dd {font-size:24px}
+.eco-page-machine .el-h1,.eco-page-machine .el-sub,.eco-page-machine .el-clock {max-width:100%}
+.eco-page-machine .el-top .fd-vignette {display:none}
+/* Markets and launches: denser books, preserved sparklines, original logos and actual products. */
+.eco-market .el-top {min-height:320px;background:linear-gradient(110deg,#29382955,#151714)}
+.eco-market .el-top .el-plate {filter:saturate(.4) brightness(.72);border-radius:2px}
+.eco-market .el-table :is(td,th) {padding:13px 15px}
+.eco-market .el-big {font-weight:500;color:#cbd5b6}
+.eco-create .el-top {background:linear-gradient(110deg,#56432b33,#151714)}
+.eco-create .el-top .el-plate {filter:saturate(.7) brightness(.85);border-color:#b6a27844}
+.eco-create .el-card {background:linear-gradient(135deg,#393a2933,#20251e);border-color:#b6a27833}
+.eco-create .mt-sample {border-radius:2px;border-color:#b6a27844;background:#30352555}
+/* Civic and social pages keep maps, candidates, statements and threads distinct. */
+.eco-civic .el-top {background:linear-gradient(110deg,#323c2b66,#151714)}
+.eco-civic .el-top .el-plate {filter:saturate(.45) brightness(.8)}
+.eco-civic .el-dq {border-left:2px solid #a5b38566;padding:22px;background:#27302166}
+.eco-civic .el-card {border-radius:2px 2px 18px 2px}
+.eco-shore .el-top {background:linear-gradient(110deg,#33433c55,#151714)}
+.eco-shore .el-top .el-plate {filter:saturate(.7) brightness(.9);border-radius:2px 2px 60px 2px}
+.eco-social .el-top {min-height:300px}
+.eco-social :is(.sq-post,.sq-card) {background:#242d20;border-radius:2px;border-color:#a2a58133}
+.eco-social :is(.sq-text,.sq-body) {font-size:14px;line-height:1.8}
+.eco-developer .el-top {background:linear-gradient(110deg,#34403255,#151714)}
+.eco-developer .el-code {border-left:2px solid #b1c39488}
+/* Commissions and billboards: the actual calendar and active work stay beside the introduction. */
+.eco-work {--jb-warm:#d2a369;--jb-warm-a:#a2a58126;--jb-warm-b:#a2a58155;--bb-warm:#d2a369;--bb-warm-a:#a2a58126;--bb-warm-b:#a2a58155}
+.eco-work :is(.jb-top,.bb-top) {min-height:0;background:linear-gradient(115deg,#31392766,#151714)}
+.eco-work :is(.jb-plate,.bb-plate) {opacity:.06;filter:saturate(.25);transform:none}
+.eco-work :is(.jb-top,.bb-top) :is(.fd-vignette,.fd-grain) {display:none}
+.eco-work :is(.jb-topgrid,.bb-topgrid) {width:92%;max-width:1416px;gap:5vw;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}
+.eco-work :is(.jb-topgrid,.bb-topgrid) .fd-hero {padding:38px 0 44px}
+.eco-work :is(.jb-h1,.bb-h1) {font:500 clamp(46px,5vw,74px)/1.05 var(--gr-display);letter-spacing:-.025em}
+.eco-work :is(.jb-shell,.bb-shell) {width:92%;max-width:1416px}
+.eco-work :is(.jb-band,.bb-band) {padding:34px 0;border-color:var(--gr-line)}
+.eco-work :is(.jb-lab,.bb-lab) {justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:24px}
+.eco-work :is(.jb-lab,.bb-lab) h2 {font:500 30px/1.15 var(--gr-display)}
+.eco-work :is(.jb-lab,.bb-lab) p {font:12px/1.8 var(--gr-body);max-width:62ch}
+.eco-work :is(.jb-card,.jb-rail,.bb-rail,.bb-plateframe) {border-radius:2px;border-color:#a2a58144;background:#29332199}
+.eco-work :is(.jb-heronums,.bb-heronums) dt {font:9px/1.6 var(--gr-mono);letter-spacing:.06em;color:#abb59a}
+.eco-work :is(.jb-heronums,.bb-heronums) dd {font-weight:500}
+.eco-work .fd-enter {font:14px/1.8 var(--gr-body)}
+.eco-work :is(.jb-chip,.bb-chip,.jb-kind,.jb-btn,.bb-btn) {border-radius:2px}
+/* Nightlife pages retain their table/ring, matchup colours, cards and live scores. */
+.eco-play {--pk-warm:#c9ae7a;--pk-warm-a:#a2a58126;--pk-warm-b:#a2a58155;--fn-warm:#cf9b79;--fn-warm-a:#cf9b7922;--fn-warm-b:#cf9b7955}
+.eco-play :is(.pk-shell,.fn-shell) {width:92%;max-width:1416px}
+.eco-play :is(.pk-top,.fn-top) {min-height:0;background:linear-gradient(120deg,#49422c55,#182016)}
+.eco-play .pk-plate {opacity:.12;filter:saturate(.6);transform:none}
+.eco-play .pk-top :is(.fd-vignette,.fd-grain) {display:none}
+.eco-play :is(.pk-hero,.fn-hero) {padding:40px 0}
+.eco-play :is(.pk-vs,.fn-vs) {font-weight:500;font-size:clamp(42px,6vw,86px)}
+.eco-play :is(.pk-sub,.fn-sub) {font:14px/1.85 var(--gr-body);max-width:75ch}
+.eco-play :is(.pk-band,.fn-band) {padding:34px 0;border-color:var(--gr-line)}
+.eco-play :is(.pk-lab,.fn-lab) {justify-content:space-between;gap:20px}
+.eco-play :is(.pk-lab,.fn-lab) h2 {font:500 30px/1.15 var(--gr-display)}
+.eco-play :is(.pk-lab,.fn-lab) p {font:12px/1.8 var(--gr-body)}
+.eco-play :is(.pk-k,.fn-k) {font:9px/1.6 var(--gr-mono);letter-spacing:.13em}
+.eco-play :is(.pk-scroll,.fn-scroll) {border:1px solid #a2a58133;background:#1c2419;overflow:auto}
+.eco-play :is(.pk-table,.fn-table) :is(td,th) {padding:13px 15px}
+.eco-play :is(.pk-corner,.fn-corner) {border-radius:2px;background:#29332188}
+@media(max-width:760px) {
+ .eco-work :is(.jb-topgrid,.bb-topgrid) {grid-template-columns:1fr;width:calc(100% - 40px);gap:0}
+ .eco-work :is(.jb-topgrid,.bb-topgrid) .fd-hero {padding:24px 0 30px}
+ .eco-work :is(.jb-rail,.bb-rail) {margin-bottom:28px}
+ .eco-work :is(.jb-h1,.bb-h1) {font-size:48px}
+ .eco-work :is(.jb-shell,.bb-shell),.eco-play :is(.pk-shell,.fn-shell) {width:calc(100% - 40px)}
+ .eco-work :is(.jb-lab,.bb-lab),.eco-play :is(.pk-lab,.fn-lab) {display:block}
+ .eco-work :is(.jb-lab,.bb-lab) h2,.eco-play :is(.pk-lab,.fn-lab) h2 {margin-bottom:14px}
+ .eco-play :is(.pk-hero,.fn-hero) {padding:24px 0 32px}
+}
+/* Forms and app/coin studios. Existing form attributes, quotes, submission handlers
+   and sandboxed frames are unchanged; the sheet around them gets the shared type. */
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument)>.wrap {width:92%;max-width:1416px;padding:38px 0 64px}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .wrap>h1 {font:500 clamp(42px,5vw,72px)/1.06 var(--gr-display);letter-spacing:-.025em;text-transform:none;margin:0 0 20px}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .sub {font:10px/1.9 var(--gr-mono);letter-spacing:.08em;color:#b3b99f;margin:0 0 26px;max-width:110ch}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .wrap h2 {font:500 29px/1.2 var(--gr-display);letter-spacing:-.02em;text-transform:none;color:var(--gr-ink);margin:36px 0 20px}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .note {font:13px/1.85 var(--gr-body);color:#aeb6a0;max-width:85ch}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) :is(.scroll,.tw) {background:#1c2319;border:1px solid #a2a58133;border-radius:2px;overflow:auto}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) :is(th,td) {padding:14px 15px;font-size:11px;line-height:1.65;border-color:#a2a58126}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) th {font:9px/1.6 var(--gr-mono);letter-spacing:.07em;background:#2a3325;color:#bdc5aa}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .box {border-radius:2px;background:#28332166;border-color:#a2a58144;padding:24px;margin-top:24px}
+.gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .bar {padding:18px 0;margin:22px 0;font:10px/1.7 var(--gr-mono);gap:12px 24px}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tiles {gap:0;border-block:1px solid var(--gr-line);margin:20px 0}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tile {background:transparent;border:0;border-right:1px solid var(--gr-line);padding:24px 20px;min-width:0}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tile .k {font:9px/1.6 var(--gr-mono);letter-spacing:.08em;color:#abb69a}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tile .v {font:500 32px/1.2 var(--gr-display);margin:12px 0;overflow-wrap:anywhere}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tile .t {font:10px/1.75 var(--gr-mono);color:#a7b094}
+.eco-studio .grid {grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr));gap:18px}
+.eco-studio .card {padding:24px;background:linear-gradient(135deg,#3d452c55,#20291c);border:1px solid #a2a58133;border-radius:2px;transition:border-color .18s,background .18s}
+.eco-studio .card:hover {border-color:#b2b18088;background:#303b26}
+.eco-studio .card>b {font:500 28px/1.2 var(--gr-display);margin:20px 0 12px}
+.eco-studio .card .w {font:13px/1.8 var(--gr-body);margin-bottom:22px}
+.eco-studio .tag {font:9px/1.6 var(--gr-mono);letter-spacing:.06em;padding:3px 7px;border-radius:2px}
+.eco-studio .meta {font:10px/1.8 var(--gr-mono);color:#a9b497}
+.eco-studio .rec {gap:10px 24px;border-block:1px solid var(--gr-line);padding:22px 0}
+.eco-studio .frame {border-color:#a2a58155;margin-top:28px}
+.eco-studio .wall {grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:18px}
+.eco-studio .wall .card {padding:14px}
+.eco-studio .wall .card img {border-radius:0;background:#1b2218}
+.eco-studio .wall .tk {font:500 25px/1.2 var(--gr-display);margin:15px 0 5px}
+.eco-studio .fees {background:#333b2755;border-left:2px solid #b6b07866;padding:18px 22px;font:12px/1.8 var(--gr-mono)}
+.eco-form>.wrap {max-width:1080px}
+.eco-form .types {grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.eco-form .type {padding:20px;border-radius:2px;background:linear-gradient(135deg,#37432b66,#20291c);border-color:#a2a58144;min-height:100px}
+.eco-form .type b {font:500 23px/1.2 var(--gr-display);letter-spacing:0;text-transform:none}
+.eco-form .type span {font:12px/1.6 var(--gr-body);margin-top:10px;color:#b1bba2}
+.eco-form .type .p {font:12px/1.6 var(--gr-mono);color:#dbcca7}
+.eco-form .type[aria-pressed=true] {background:#3a462e;outline-color:#b4bc8a}
+.eco-form form {padding:28px;margin-top:28px;gap:20px;background:#222b1d;border:1px solid #a2a58144;border-radius:2px}
+.eco-form label {font:10px/1.7 var(--gr-mono);letter-spacing:.08em;gap:10px;color:#bdc3a8}
+.eco-form :is(input:not([type=checkbox]),textarea) {font:13px/1.8 var(--gr-body);padding:14px 16px;border-radius:2px}
+.eco-form textarea {min-height:150px}
+.eco-form :is(button.go,button#go) {font:12px/1.5 var(--gr-body);letter-spacing:.02em;background:#d2a369;color:#201d15;padding:15px 20px;border:1px solid #d2a369;border-radius:2px;min-height:46px}
+.eco-form :is(button.go:hover,button#go:hover) {background:#e5b780}
+.eco-form :is(button.ghost,.say,.price) {border-radius:2px;padding:16px 18px;line-height:1.8}
+.eco-form .price {background:#313b2633;border-color:#a2a58155}
+.eco-form .jobs {margin-top:28px}.eco-form .jobrow {padding:18px 0;border-color:#a2a58133}
+.eco-form .jobrow a {color:#d5c79f}
+.eco-instrument .hours {gap:4px}
+.eco-instrument .hour {border-color:#a2a58133;background:#273021;padding:12px 4px}
+.eco-instrument .bar button {padding:10px 14px;border-radius:2px;font-size:10px}
+/* Reading and resident surfaces: a quieter editorial rhythm, with real records intact. */
+.gr-ecosystem:is(.eco-document,.eco-resident)>main {width:calc(100% - 80px);max-width:1040px;padding:40px 0 72px;margin:auto}
+.gr-ecosystem:is(.eco-document,.eco-resident) main h1 {font:500 clamp(42px,5vw,68px)/1.06 var(--gr-display);letter-spacing:-.025em;margin:0 0 24px;text-transform:none}
+.gr-ecosystem:is(.eco-document,.eco-resident) main h2 {font:500 29px/1.2 var(--gr-display);letter-spacing:-.02em;text-transform:none;margin:42px 0 20px;padding-top:24px;border-color:var(--gr-line)}
+.gr-ecosystem:is(.eco-document,.eco-resident) main p {line-height:1.9}
+.gr-ecosystem:is(.eco-document,.eco-resident) .eyebrow {font:9px/1.7 var(--gr-mono);letter-spacing:.12em;color:#c1ae85;margin-bottom:22px}
+.eco-document .lede {font:16px/1.9 var(--gr-body);color:#c6cbb5;max-width:70ch}
+.eco-document .eco-reference {display:flex;flex-wrap:wrap;gap:8px 28px;padding:22px 0;margin:28px 0;border-block:1px solid var(--gr-line)}
+.eco-document .eco-reference a {font:11px/1.8 var(--gr-body);color:#d3c29a;text-decoration:none;padding:5px 0}
+.eco-document main pre {background:#20291b;border:1px solid #a2a58144;border-left:2px solid #a9b683;padding:24px;line-height:1.8}
+.eco-document main table {display:block;overflow:auto;border:1px solid #a2a58133;margin:24px 0;background:#1b2318}
+.eco-document main :is(td,th) {padding:15px 18px;font-size:12px;line-height:1.8}
+.eco-document main th {background:#2a3423;font:9px/1.6 var(--gr-mono);letter-spacing:.08em}
+.eco-document .note {border-color:#adbb86;background:#36432a44;padding:20px 24px;margin:24px 0}
+.eco-document .eco-reading {max-width:800px}
+.eco-resident>main {max-width:1100px}
+.eco-resident #who {padding:26px 30px;background:linear-gradient(120deg,#3b472c88,#222b1d);border:1px solid #a2a58144;border-radius:2px 2px 26px 2px}
+.eco-resident .figs {gap:0;border-block:1px solid #a2a58133;padding:12px 0;margin-top:28px}
+.eco-resident .figs>div {padding:18px 22px;border-right:1px solid var(--gr-line)}
+.eco-resident .figs>div>span {font:9px/1.7 var(--gr-mono);letter-spacing:.08em;color:#b9c2a4;margin-bottom:10px}
+.eco-resident .figs>div>b {font:500 34px/1.2 var(--gr-display);overflow-wrap:anywhere}
+.eco-resident .slot {padding:18px 0;gap:24px;line-height:1.85}
+.eco-resident .slot .k {font:10px/1.8 var(--gr-mono);letter-spacing:.07em;color:#b6bd9f}
+.eco-resident #led {overflow:auto;border:1px solid #a2a58133;background:#1d2519}
+.eco-resident #led :is(td,th) {padding:14px 16px;font-size:11px}
+.eco-resident .tl-n {padding:20px 0;gap:24px}
+.eco-resident .tl-why {font-size:14px;line-height:1.8}
+.eco-resident :is(.lgcard,.cl-mark,.self) {border-radius:2px}
+/* City terminal: scoped case-file tokens; no in-game terminal styles are edited. */
+.eco-terminal {--cf-card:#20271c;--cf-card-hi:#2e3927;--cf-edge:#a2a58133;--cf-edge-lit:#a2a58166;--cf-ink:#e5d8bb;--cf-ink-dim:#bdc2ab;--cf-ink-faint:#a4af94;--cf-ink-4:#8d9b7a;--cf-accent:#b1c394;--cf-accent-dk:#6b7d51}
+.eco-terminal .ct-screen {width:92%;margin:32px auto 48px;max-width:1416px;padding:24px;border-color:#a2a58133;box-shadow:none;gap:20px;background:#20271c}
+.eco-terminal .ct-fields {padding:22px 0;border-block:1px solid #a2a58133;gap:20px}
+.eco-terminal .ct-f .v {font:500 29px/1.2 var(--gr-display);overflow-wrap:anywhere}
+.eco-terminal .ct-body {gap:30px}
+.eco-terminal :is(.ct-t th,.ct-t td,.ct-row) {padding-top:13px;padding-bottom:13px}
+.eco-terminal .cf-tab {font:500 34px/1.1 var(--gr-display);letter-spacing:0;color:#e5d8bb}
+.eco-terminal .ct-callbox {padding:18px;background:#2c382355}
+/* Existing manual and tour navigation stays intact. Tour camera/scroll sections and canvas are untouched. */
+.eco-manual .gd-top {background:#181d16;border-color:#a2a58133}
+.eco-manual .gd-side {background:#1c2319;border-color:#a2a58133}
+.eco-manual .gd-main {background:radial-gradient(ellipse at 80% 10%,#39492a22,transparent 60%)}
+.eco-manual .gd-h1 {font-weight:500;font-size:clamp(38px,4.5vw,62px)}
+.eco-manual .gd-body h3 {font-weight:500;font-size:24px}
+.eco-manual .gd-lead {line-height:1.9}
+.eco-manual .gd-search {background:#273120;border-color:#a2a58144;border-radius:2px}
+.eco-manual .gd-foot {background:#1c2319;border-color:#a2a58133}
+.eco-tour .tg-top {background:linear-gradient(#181e15ed,#181e1500)}
+.eco-tour .tg-card {background:#222b1de8;border-color:#a2a58155;border-radius:2px 2px 24px 2px;box-shadow:0 18px 50px #05090555}
+.eco-tour .tg-card h2 {font-weight:500;color:#e5d8bb}
+.eco-tour .tg-n {border-radius:2px;background:#37442b99}
+.eco-tour .tg-n b {font-weight:500}
+.eco-tour .tg-links :is(a,button),.eco-tour .tg-code {border-radius:2px}
+.eco-page-devlog .shell {width:92%;max-width:1200px}
+.eco-page-devlog .nav {border-bottom:1px solid var(--gr-line)}
+.eco-page-devlog .head {padding-top:45px}
+.eco-page-devlog .head h1 {font-weight:500}
+.eco-page-devlog .entry {background:#222b1d;border-color:#a2a58133;border-radius:2px;padding:28px}
+@media(max-width:760px) {
+ .gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument)>.wrap {width:calc(100% - 40px);padding:28px 0 48px}
+ .gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .wrap>h1 {font-size:46px}
+ .gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .sub {font-size:9px;margin-bottom:24px}
+ .gr-ecosystem:is(.eco-form,.eco-studio,.eco-instrument) .box {padding:20px}
+ .eco-form form {padding:20px 16px}.eco-form .types {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.eco-form .type {padding:16px 12px}.eco-form .type b {font-size:21px}
+ .eco-form .type span {font-size:11px}.eco-form .type .p {font-size:11px}
+ .gr-ecosystem:is(.eco-studio,.eco-instrument) .tiles {grid-template-columns:repeat(2,minmax(0,1fr))}
+ .gr-ecosystem:is(.eco-studio,.eco-instrument) .tile {padding:20px 12px}.gr-ecosystem:is(.eco-studio,.eco-instrument) .tile .v {font-size:28px}
+ .eco-studio .wall {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.eco-studio .wall .card {padding:10px}
+ .gr-ecosystem:is(.eco-document,.eco-resident)>main {width:calc(100% - 40px);padding:28px 0 50px}
+ .gr-ecosystem:is(.eco-document,.eco-resident) main h1 {font-size:46px}
+ .eco-document .eco-reference {gap:8px 22px}
+ .eco-resident #who {padding:22px 18px}.eco-resident .figs {grid-template-columns:repeat(2,minmax(0,1fr))}.eco-resident .figs>div {padding:18px 12px}
+ .eco-resident .slot {gap:5px}.eco-resident .tl-n {gap:5px}
+ .eco-terminal .ct-screen {width:calc(100% - 40px);padding:18px;margin-top:24px}.eco-terminal .ct-fields {gap:22px 14px}.eco-terminal .ct-f .v {font-size:25px}
+ .eco-terminal .cf-tab {font-size:26px}.eco-terminal .ct-body {gap:24px}
+}
+/* Final cross-page readability checks: short documents fill the viewport;
+   numbers within compact cards stay readable without overflowing their cells. */
+.gr-ecosystem {min-height:100dvh}
+.gr-ecosystem .el-card .el-num {padding:14px 10px}
+.gr-ecosystem .el-card .el-num dd {font-size:24px}
+.eco-floor .fl-src:empty~.fl-top {grid-row:2}
+.eco-floor .fl-floor {grid-row:3}
+.eco-floor .fl-tape {grid-row:-2/-1}
+/* The legacy landing shell gives every direct child a stacking layer. Raise
+   the native directory above the hero so its visible links are clickable. */
+.gr-ecosystem #landing>.eco-context {z-index:25}
+/* Keep full ledger columns reachable inside their own scroll surface on phones. */
+.eco-civic .cv-shell div:has(>.cv-table),.eco-work #ledger {max-width:100%;overflow-x:auto;scrollbar-color:#657057 #192017}
+@media(max-width:620px) {
+ .eco-floor .fl-top {grid-template-columns:minmax(0,1fr)}
+ .eco-floor .fl-burn {max-width:100%}
+ .eco-floor .fl-burnnum {font-size:clamp(26px,9vw,40px)}
+ .eco-floor .fl-bsplit {flex-wrap:wrap;justify-content:center;gap:8px 18px}
+}
+.gr-ecosystem :is(.el-note,.el-sub,.el-lab p) {overflow-wrap:anywhere}
+.gr-ecosystem:is(.eco-studio,.eco-instrument) .tiles {grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+@media(max-width:760px) {.gr-ecosystem:is(.eco-studio,.eco-instrument) .tiles {grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Typography-led system introductions. Existing live counters and status mounts
+   remain in place; no substitute images or new data requests. Opt-in keeps the
+   poker venue, atlas, tour and other product visuals unchanged. */
+.gr-ecosystem .el-top.eco-hero-clean {min-height:0}
+.gr-ecosystem .eco-hero-clean .el-hero {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);column-gap:clamp(32px,6vw,88px);row-gap:24px;padding:40px 0 36px;align-items:start}
+.gr-ecosystem .eco-hero-clean .el-hero>* {min-width:0;grid-column:1 / -1}
+.gr-ecosystem .eco-hero-clean .el-k {margin:0}
+.gr-ecosystem .eco-hero-clean .el-h1 {grid-column:1;grid-row:2;max-width:none;text-wrap:balance}
+.gr-ecosystem .eco-hero-clean .el-sub {grid-column:2;max-width:72ch;margin:0}
+.gr-ecosystem .eco-hero-clean .el-hero>p:not(.el-k):not(.el-sub) {grid-column:2;margin:0!important}
+.gr-ecosystem .eco-hero-clean :is(.el-clock,.pt-live,.pl-counts) {max-width:none;margin:0;padding-top:22px;border-top:1px solid var(--gr-line);gap:12px 24px}
+.gr-ecosystem .eco-hero-clean :is(.el-clock,.pt-live,.pl-counts):empty {display:none}
+.gr-ecosystem .eco-hero-clean .pt-live+.el-clock {padding-top:0;border-top:0}
+@media(max-width:760px) {
+ .gr-ecosystem .eco-hero-clean .el-hero {display:flex;flex-direction:column;gap:20px;padding:28px 0 30px}
+ .gr-ecosystem .eco-hero-clean .el-hero>* {width:100%}
+ .gr-ecosystem .eco-hero-clean .el-k {margin:0}
+ .gr-ecosystem .eco-hero-clean .el-h1 {font-size:clamp(36px,10vw,46px)}
+ .gr-ecosystem .eco-hero-clean :is(.el-clock,.pt-live,.pl-counts) {padding-top:20px;gap:10px 18px}
+}
