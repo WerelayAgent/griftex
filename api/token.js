@@ -8,8 +8,8 @@ export default function handler(req, res) {
       ticker: "$GRIFTEX",
       chain: "Solana",
       chainName: "SOLANA NETWORK",
-      status: "live now on pump.fun",
-      address: "live now on pump.fun"
+      status: "7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump",
+      address: "7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump"
     }
   });
 }

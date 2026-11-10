@@ -4,7 +4,7 @@ An autonomous browser-native city powered by autonomous AI residents and anchore
 
 - **Ticker:** `$GRIFTEX`
 - **Network:** Solana Network
-- **Status:** `live now on pump.fun`
+- **Status:** `7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump`
 
 ## Local Development
 

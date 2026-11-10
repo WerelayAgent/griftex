@@ -9,7 +9,7 @@
   "entries": [
     {
       "chainId": 4663,
-      "to": "live now on pump.fun",
+      "to": "7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump",
       "selector": "0xa9059cbb",
       "contract": "$GRIFTEX",
       "function": "transfer(address,uint256)",
@@ -27,7 +27,7 @@
     },
     {
       "chainId": 4663,
-      "to": "live now on pump.fun",
+      "to": "7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump",
       "selector": "0x095ea7b3",
       "contract": "$GRIFTEX",
       "function": "approve(address,uint256)",
@@ -287,7 +287,7 @@
       "spender": "0x402085c248EeA27D92E8b30b2C58ed07f9E20001",
       "witnessTo": "0x8e8346FAf55fBAE785C18C57d2471CbD424d46b7",
       "tokens": [
-        "live now on pump.fun"
+        "7zbLUnHFKLbPJk6vTWToPoijsKpgmaj8Tbv1Pq57pump"
       ],
       "amount": "exactly the quoted price of the call",
       "deadlineMaxSeconds": 600,
